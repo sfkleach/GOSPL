@@ -1,5 +1,11 @@
-Welcome to the GOSPL Trunk
-==========================
+Welcome to the GOSPL
+====================
+
+The GOSPL is a public collection of POPLOG source code that is 
+reviewed and maintained by Stephen Leach.
+
+Contents
+--------
 
 gospl           The master GOSPL archive itself.
 output          Output folder for builds.
