@@ -1,0 +1,26 @@
+HELP GENSYMBEFORE                                   R.Evans March 1984
+
+This procedure takes two words or strings as arguments and returns TRUE or
+FALSE according to whether the following criterion:
+
+Each word is split into two parts - a numeric part, consisting of all the
+digits (if any) at the RIGHT HAND END of the word, and an alphabetic part,
+consisting of the rest of the string. The alphabetic parts are compared using
+ALPHABEFORE, and if they are not identical, the result is returned. If the y
+are identical, the numeric parts are viewed as numbers and < is used to
+determine the ordering.
+
+Thus GENSYMBEFORE behaves like ALPHABEFORE except for words of the form
+produced by GENSYM. These are ordered in the same order as GENSYM produced
+them.
+
+For example:
+
+    : GENSYMBEFORE("CAT","DOG") =>
+    ** <TRUE>
+    : GENSYMBEFORE("CAT1","CAT2")=>
+    ** <TRUE>
+    : GENSYMBEFORE("CAT2","CAT12") =>
+    ** <TRUE>                               (ALPHABEFORE gives <FALSE>)
+
+See *SYSSORT *ALPHABEFORE *GENSYM  

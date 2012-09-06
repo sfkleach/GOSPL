@@ -1,0 +1,10 @@
+HELP XT_NEW_FORM                                    Steve Knight, Oct 93
+                                                    SIREN Project
+
+xt_new_form( PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED] ) -> WIDGET
+
+This procedure creates a Motif form widget.  The arguments are
+processed by *XT_NEW_ARGS.
+
+See also:
+    HELP *XT_NEW_ARGS

@@ -1,0 +1,199 @@
+HELP BUFFERS                                            Steve Leach, Nov 99
+
+lib buffers
+
+This file documents the buffers library, an implementation of extensible
+vectors.
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+  1   Introduction to LIB BUFFERS
+
+  2   Constructing Buffers
+
+  3   Queries About Buffers
+
+  4   Accessing and Updating Elements
+
+  5   Inserting and Deleting Elements
+
+  6   Iterating Over Buffer Elements
+
+-----------------------------------------------------------------------
+1  Introduction to LIB BUFFERS
+-----------------------------------------------------------------------
+
+Buffers are procedures which behave like extensible vectors.  They
+can be called and updated to access/update the elements of the buffer.
+Extensible vectors are difficult to implement without making some
+kind of tradeoff.  This implementation optimises these point-wise
+operations.
+
+You can create buffers using new_buffer.  This takes two arguments,
+a key on which to base the underlying vector, and a default to be
+used when the vector has to be filled with otherwise unspecified
+values.  Initially, the buffer is empty.
+
+You can add and remove elements to or from the end of the buffer using
+buffer_push and buffer_pop respectively.  You can add elements
+into the middle of a buffer using buffer_insert and remove them
+using buffer_remove.  All four of these procedures have multi-item
+analogues: buffer_push_n, buffer_pop_n, buffer_insert_n, buffer_remove_n.
+
+Addition and removal of elements is done in-place.  Extensible vectors
+are generally visualised as an imperative programming gadget and that
+is how they are approached here.
+
+
+
+
+
+-----------------------------------------------------------------------
+2  Constructing Buffers
+-----------------------------------------------------------------------
+
+buffer_copy( buffer ) -> new_buffer
+        Returns a new buffer that is exactly the same as the first
+        but shares no store.
+
+
+new_buffer( key|false, default ) -> buffer
+        This procedure creates a procedure that implements an
+        extensible vector-like object.  The underlying store is
+        implemented in by a vectorclass which is derived from a
+        key (see HELP *KEYS).  Instead of a key you can use <false>
+        and -vector_key- is used instead.  The default is employed
+        when extending the vector without specific values.
+
+
+-----------------------------------------------------------------------
+3  Queries About Buffers
+-----------------------------------------------------------------------
+
+buffer_length( buffer ) -> n
+        Returns the effective length of the buffer.  (The underlying
+        store may be considerably bigger.  You do not have to worry
+        about this.)
+
+
+is_buffer( item ) -> bool
+        Returns <true> if item is a buffer, otherwise <false>.
+
+
+is_empty_buffer( buffer ) -> bool
+        Returns <true> if the buffer is empty, otherwise <false>.
+
+
+-----------------------------------------------------------------------
+4  Accessing and Updating Elements
+-----------------------------------------------------------------------
+
+buffer( num ) -> value
+value -> buffer( num )
+        Access or update the num'th element of the buffer.  Like
+        all Poplog sequences, buffers are 1-indexed and num must
+        be in the range 1 to buffer_length( buffer ).
+
+        This is the same as subscr_buffer, see below.
+
+
+buffer_contents( buffer ) -> vec
+        Returns a vectorclass object vec containing all the elements
+        in the buffer.  No store is shared, this is a fresh vectorclass
+        object.
+
+
+dest_buffer( buffer ) -> ( item_1, ..., item_n, n )
+        Pushes the buffer contents onto the stack along with a
+        count of the number of items pushed.
+
+
+explode_buffer( buffer ) -> ( item_1, ..., item_n )
+        Pushes the buffer elements onto the stack.
+
+
+subscr_buffer( num, buffer ) -> value
+value -> subscr_buffer( num, buffer )
+        Accesses or updates the num'th element of the buffer.  Much
+        the same as applying the buffer except it checks that the
+        buffer satisfies is_buffer.
+
+
+-----------------------------------------------------------------------
+5  Inserting and Deleting Elements
+-----------------------------------------------------------------------
+
+buffer_insert( item, num, buffer )
+        Inserts an item into a buffer so that it has index num.
+        The buffer elements from num upwards are slid up by one
+        to make room.  If num is greater than the buffer length,
+        the buffer is extended and the initial default is
+        used to fill in any unspecified values.
+
+
+buffer_insert_n( item_1, ..., item_n, n, num, buffer )
+        Inserts n items so that they have indexes num to
+        num + n - 1.  The buffer elements from num upwards
+        to num are slid up by n to make room.  If num is greater
+        than the current buffer length, the buffer is extended and the
+        initial default used to fill in any unspecified values.
+
+
+buffer_pop( buffer ) -> item
+        Removes and returns the last element from the buffer.  If
+        the buffer is empty a mishap is raised.
+
+
+buffer_pop_n( n, buffer ) -> ( item_1, ..., item_n )
+        Removes and returns the last n elements from the buffer.  If
+        the buffer is empty a mishap is raised.
+
+
+buffer_push( item, buffer )
+        Adds item to the end of the buffer.  Buffers are optimised
+        for this operation.  To add an item anywhere else use
+        buffer_insert.
+
+
+buffer_push_n( item_1, ..., item_n, n, buffer )
+        Adds n items to the end of the buffer.  If you want to add
+        several items this is the most efficient way to do it.
+
+
+buffer_remove( num, buffer ) -> item
+        Removes the item at index num.  All the buffer elements
+        subsequent to num are slid down by one.  The item is
+        returned.
+
+
+buffer_remove_n( n, num, buffer ) -> ( item_1, item_2, ..., item_n )
+        Removes the n items starting from index num.  All the buffer
+        elements subsequent to num + n - 1 are slid down by n.  The items
+        are returned.
+
+buffer_set_length( num, buffer )
+        Sets the length of the buffer to the non-negative integer
+        num.  If this extends the buffer the elements are filled
+        by the default value.
+
+
+
+-----------------------------------------------------------------------
+6  Iterating Over Buffer Elements
+-----------------------------------------------------------------------
+
+app_buffer( buffer, proc )
+        Applies procedure proc to each item in the buffer.
+
+
+map_buffer( buffer, proc ) -> new_buffer
+        Returns a new buffer based on all the elements of buffer
+        with proc applied to them.  Copes gracefully with proc
+        returning an arbitrary number of arguments.
+
+
+ncmap_buffer( buffer, proc ) -> buffer
+        Applies procedure proc to every element of buffer,
+        replacing that element with the result of calling proc.
+        Does not cope gracefully with proc returning anything
+        other than a single argument.

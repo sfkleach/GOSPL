@@ -1,0 +1,24 @@
+HELP HANDLE                                             Steve Knight, Nov 93
+                                                        SIREN Project
+
+raise EXN( ARG1, ..., ARGn )
+handle STMNTS on PATTERN do STMNTS endhandle
+new_exception() -> EXN
+sys_raise( ARG1, ..., ARGn, N, EXN )
+
+-- Using the handle/endhandle syntax ----------------------------------------
+
+handle
+    STMNTS
+on EXN( ARG1, ..., ARGn ) where EXPR do
+    STMNTS
+endhandle
+
+
+-- Syntax of the handle ... endhandle construct -----------------------------
+
+PATTERN ::= BASE [ WHERE ]
+BASE    ::= EXN [ ( VAR1, ..., VARn ) ]
+WHERE   ::= where EXPRESSION
+
+-----------------------------------------------------------------------------

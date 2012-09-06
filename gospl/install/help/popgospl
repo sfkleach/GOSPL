@@ -1,0 +1,6 @@
+HELP POPGOSPL                                       Steve Leach, Dec 04
+
+    uses popgospl
+
+Makes the GOSPL library available.  This is an extensive library of
+add-ons for Poplog.

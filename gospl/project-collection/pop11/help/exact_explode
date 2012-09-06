@@ -1,0 +1,6 @@
+HELP NEXPLODE                                       Steve Leach, Jun 98
+
+    exact_explode( x, n ) -> ( x1, ... xn )
+
+The procedure -exact_explode- explodes its argument x and checks
+that it put exactly n items on the stack.

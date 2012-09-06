@@ -1,0 +1,11 @@
+HELP XT_SET_VALUES                                  Steve Knight, Oct 93
+                                                    SIREN Project
+xt_set_values( WIDGET, BINDING1, ..., BINDINGn )
+
+A convenience function that substitutes for (and is more efficient than)
+the following
+
+    XtSetValues(
+        WIDGET,
+        XptArgList( [ BINDING1 ... BINDINGn ] )
+    )

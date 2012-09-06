@@ -1,0 +1,6 @@
+HELP NO_DUPLS                                           Steve Knight, Oct 93
+                                                        SIREN Project
+    no_dupls( LIST ) -> LIST'
+
+Removes the duplicated elements in a list, using "==" as the equality
+test.  It preserves list order.  Leading duplicate elements are removed.

@@ -1,0 +1,7 @@
+HELP SPLIT_FIELDS                                         Steve Knight, Jun 98
+
+split_fields( <source:string>, <separator:string> ) -> ( f1, ..., fN )
+
+This procedure takes a source string and splits it into its
+separate fields at the boundaries of separators.  Empty fields
+are preserved.  The N results are left on the stack.

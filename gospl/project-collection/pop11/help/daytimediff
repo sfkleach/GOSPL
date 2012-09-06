@@ -1,0 +1,6 @@
+HELP DAYTIMEDIFF                                          R.Evans March 1984
+
+daytimediff() returns the elapsed time since it was last called (in seconds,
+based on a 24 hr clock). The first call returns the current time.
+
+Compare with *TIMEDIFF

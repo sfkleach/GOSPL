@@ -1,0 +1,86 @@
+HELP EPSON_FX_1000                                  Steve Knight, Oct 91
+
+    lib epson_fx_1000
+    gprint <file>           ;;; macro
+    prgraph( <proc>, <optional bool> )
+
+This library makes available two commands for making use of the EPSON FX 1000
+printer.
+
+-- The gprint Command -------------------------------------------------
+
+    GPRINT is a command which prints out a file on the EPSON printer,
+converting VED's line drawing characters into proper line-drawing on the
+printer. There are three forms of gprint as follow:
+
+      % gprint foo       - from shell, print file foo
+
+      : gprint foo       - from POP11 (use it like LOAD etc.)
+
+      <enter> gprint     - inside ved, gprint current file
+
+This final form (<enter> gprint) is selective about graphics printing - it
+only uses graphics (reduced line spacing etc) for lines that contain graphics
+characters. Other lines are printed normally.
+
+IMPORTANT: gprint opens the printer directly, and to do this, it has to
+    lock the printer queue. If it fails to do this (eg because another job is
+    currently being printed), a mishap results ('Can't lock LP queue'), and
+    the command is aborted - try again later!
+
+
+Notes about GPRINT:
+
+    1) GPRINT converts the line drawing characters used by VED (more
+       specifically the codes as used by VISUAL 200 terminals) into specially
+       defined line-drawing characters for the printer. All other characters
+       are left alone.
+    2) The line-spacing is reduced to 7, to make sure the veritcal lines join
+       up properly. Unfortunately this means that adjacent lines of TEXT tend
+       to be rather close (indeed descenders and ascenders overlap). This
+       problem is caused by the line printer driver only allowing 7 bits of
+       data to be sent and hence can only be cured by a system hacker!
+       Using <enter> gprint with arguments (see above) is one way of avoiding
+       this problem. Alternatively, the variable PRGRAPH_LINESPACING can be
+       set to change this if desired - at the expense of gaps in the vertical
+       lines. BUG!! don't make line spacing more than 8 !
+    3) Graphics printing is always leaves the printer in PICA mode.
+
+
+-- The prgraph Procedure ----------------------------------------------
+
+    PRGRAPH is a utility to allow proper printing of graphics characters on
+the EPSON FX-100 printer.
+
+    The procedure PRGRAPH takes one or two arguments:
+
+            prgraph(proc,bool)   or    prgraph(proc)
+
+
+    PRGRAPH sets up an environment where the procedure GRAPH_CHAROUT is a
+character consumer which send characters to the printer, translating graphichs
+characters as necessary, and then calls PROC. Thus any output produced  by PROC
+and sent to GRAPH_CHAROUT will be printed with graphics as appropriate.
+
+    The boolean BOOL dictates whether to set up the graphics characters or not
+(true means do set them up). In general, it should be TRUE, except where
+successive calls of PRGRAPH are made and the character data remains set up
+between them. PRGRAPH(PROC) is the same as PRGRAPH(PROC,TRUE).
+
+
+Initialisation for graphics printing sets the following (see EPSON manual
+for more details):
+
+        download char set, unidirectional, line spacing = 7, PICA mode
+
+After PROC is called the settings are reset to:
+
+        rom char set, bidirectional, line spacing = 12
+
+
+The graphics line spacing defaults to 7, giving the prettiest graphics, but
+may be changed by assigning a new value to PRGRAPH_LINESPACING.
+The reset procedure will reset the font to ELITE mode if the variable
+PRGRAPH_ELITE is true - it defaults to false.
+
+-----------------------------------------------------------------------

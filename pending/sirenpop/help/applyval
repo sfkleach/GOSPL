@@ -1,0 +1,6 @@
+HELP APPLYVAL                                           Steve Knight, Oct 93
+                                                        SIREN Project
+    applyval( IDENTCHAIN )
+
+This simple procedure dereferences an ident chain IDENTCHAIN and applys
+the result.

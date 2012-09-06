@@ -1,0 +1,15 @@
+HELP USESSRC             Fri Feb  2, 1990            Steve Knight
+
+    usessrc <filename>;
+
+This command works identically to "uses" except that files on the
+-vedsrclist- are searched, rather than -popuseslist-.  This is useful
+when using *LOAD_PROJECT for loading files from the "src" directory.
+Files loaded in this way can be viewed later, using the -ved_src-
+command.
+
+See also:
+    HELP *LOAD_PROJECT
+    HELP *USES
+    HELP *VEDSRCLIST
+    HELP *VED_SRC

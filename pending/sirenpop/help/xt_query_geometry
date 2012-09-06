@@ -1,0 +1,7 @@
+HELP XT_QUERY_GEOMETRY                                  Steve Knight, Dec 93
+                                                        SIREN Project
+
+xt_query_geometry( WIDGET ) -> ( X, Y, WIDTH, HEIGHT )
+
+This procedure calls the Xtoolkit intrinsic XtQueryGeometry.  This is
+discussed on p389 of the "X Toolkit Intrinsics Programming Manual".

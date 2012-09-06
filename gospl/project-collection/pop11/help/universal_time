@@ -1,0 +1,74 @@
+HELP UNIVERSAL_TIME                                     Steve Knight, March 94
+
+    lib universal_time
+
+This library provides very basic facilities for translating between an
+integer "universal time", which is defined as seconds after (or before)
+the year 1900, and Gregorian date format.
+
+decode_universal_time( ______u_time, _________time_zone ) -> ( ______second, ______minute, ____hour, ____date, _____month, ____year, _________time_zone )
+    Given a universal time and a timezone (false for GMT), returns the
+    date components.
+
+
+encode_universal_time( _______second, _______minute, _____hour, _____date, ______month, _____year, _________time_zone ) -> ______u_time
+    Given date components and a timezone (false for GMT) return a
+    universal time.
+
+
+get_universal_time() -> ______u_time
+get_decoded_time() -> ( ______second, ______minute, ____hour, ____date, _____month, ____year, _________time_zone )
+    Gets the current time either as a universal time or as a
+    set of date components.
+
+
+day_of_week( ______u_time, _________time_zone ) -> _______day_num
+name_of_day( _______day_num ) -> ____word
+number_of_day( ____word ) -> _______day_num
+    day_of_week returns the day for a given universal time.  The day is
+    encoded as a number as shown below.  The other two functions
+    translate between day names and numbers.
+
+        1   Monday
+        2   Tuesday
+        3   Wednesday
+        4   Thursday
+        5   Friday
+        6   Saturday
+        7   Sunday
+
+
+name_of_month( _____month ) -> ____word
+number_of_month( ____word ) -> _____month
+    Translates between the numerical encoding for month and the
+    name of the month using the table below.
+
+        1   January
+        2   February
+        3   March
+        4   April
+        5   May
+        6   June
+        7   July
+        8   August
+        9   September
+        10  October
+        11  November
+        12  December
+
+
+length_of_month( _____month ) -> _n
+    How many days in a particular month.  The month can be supplied
+    as a month number or a month name (word).
+
+
+seconds_per_minute
+minutes_per_hour
+seconds_per_hour
+seconds_per_day
+seconds_per_week
+    Useful constants for working with time.
+
+
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------

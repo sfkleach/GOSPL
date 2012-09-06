@@ -1,0 +1,70 @@
+HELP XT_NEW_WIDGET_TREE                                 Steve Knight, Nov 93
+                                                        SIREN Project
+
+xt_new_widget_tree( PARENT, TREE ) -> MAP
+
+This procedure is used to create an entire collection of widgets from a
+tree-like representation.  A tree has the form
+    <TREE> ::= [ <TAG> <CONSTRUCTOR> <ADDITIONAL ARGUMENTS> <TREES> ]
+Each tree is used to construct a hierarchy of widgets.  The subtrees are
+constructed after the parent widget is constructed (because child widgets
+are constructed subsequent to their parents).
+
+PARENT is expected to be either a widget, to be used as the base of
+the widget tree, or <false>.  In the latter case, a top level shell
+widget is allocated and realised using -xt_be_aware-. The result MAP is
+a new property which maps user-defined tags into the newly created
+widgets.
+
+In principle -xt_new_widget_tree- could be used for other purposes than
+widget construction.  However, this does not seem very likely because
+of the special argument-using structure it assumes for the constructors.
+
+
+
+-- Argument Processing ------------------------------------------------
+
+<TAG>
+    A tag is optional, if present it must be unique for the widget
+    constructed.  The widget is constructed using the supplied
+    <CONSTRUCTOR> procedure and inserted into the property MAP with
+    key <TAG>.  Tags may be any non-procedural value.
+
+<CONSTRUCTOR>
+    This is a widget constructing procedure.  The PARENT is passed as
+    the first argument.  See below for suitable constructors.
+
+<ADDITIONAL ARGUMENTS>
+    After the <TAG> and <CONSTRUCTOR> are removed from the list
+    representing the tree, the remainder is examined for any non-tree
+    elements -- these are assumed to be actual parameters for the
+    constructor.  These are pushed onto the stack as addition elements.
+
+    A tree-like value is a list whose first or second
+    element is a procedure.  Anything else is understood to be
+    an argument.  This obviously limits arguments to non-lists
+    or lists without procedural elements.  However, as this procedure
+    is primarily intended for programming convenience, that is a
+    tolerable restriction.
+
+<SUBTREES>
+    After the <ADDITIONAL ARGUMENTS> are removed from the list
+    representing the tree, the remainder is assumed to be further
+    trees.  The new widget is constructed by called <CONSTRUCTOR>,
+    immediately inserted into MAP if there is a <TAG>, and used
+    as the parent for the creation of the new trees.
+
+
+-- Suitable Constructors ----------------------------------------------
+
+The family of widget constructors that are designed to work with this
+routine are the xt_new_<widget> procedures.  For example,
+
+    xt_new_row_column
+    xt_new_frame
+    xt_new_push_button
+
+However, shell creation does not match this approach because of the
+difference in arguments between shells and widgets.
+
+-----------------------------------------------------------------------

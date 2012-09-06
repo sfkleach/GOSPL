@@ -1,0 +1,15 @@
+HELP IS_STRDATE                                     Steve Knight, Oct 93
+                                                    SIREN Project
+is_strdate( STRING ) -> BOOL
+
+WARNING:
+    This work is incomplete.  It currently always returns true.
+    In completing this work it will be necessary to define how
+    the preferences are managed.
+
+This procedure returns true if the string STRING represents a date in
+the preferred format.
+
+See also:
+    HELP *IS_STRINTEGER
+    HELP *IS_STRFLOAT

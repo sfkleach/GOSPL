@@ -1,0 +1,6 @@
+HELP READ_VARIABLES                                     Steve Knight, Nov 93
+                                                        SIREN Project
+read_variables() -> WORD_LIST
+
+This procedure reads a comma separated list of words up to a
+terminating semi-colon.  The words are read from *PROGLIST.

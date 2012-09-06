@@ -1,0 +1,14 @@
+HELP XT_NEW_CASCADE_BUTTON                              Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_cascade_button( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a Motif cascade button widget.  The arguments are
+processed using *XT_NEW_ARGS.
+
+The created widget is not automatically managed.
+
+
+See also:
+    HELP *XT_NEW_ARGS

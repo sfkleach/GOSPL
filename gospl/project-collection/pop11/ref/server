@@ -1,0 +1,192 @@
+REF SERVER                                         Steve Leach, Nov 2004
+
+    lib server
+
+This library provides a simple framework for writing servers in Pop-11.
+
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+  1   Servers
+
+  2   Request Handlers
+      2.1   Functions
+      2.2   Dynamic Locals of Request Handlers
+
+  3   Formatting Output
+
+-----------------------------------------------------------------------
+1  Servers
+-----------------------------------------------------------------------
+
+newserver() -> ______server                                        [_________procedure]
+        Creates and returns a new server instance.
+
+
+subscr_server( ____________port_num:int, ______server ) -> _______handler             [_________procedure]
+_______handler -> subscr_server( ____________port_num:int, ______server )
+        Returns the _______handler procedure associated with a port number  for
+        the ______server. If there is no handler set up, it returns false.  In
+        update mode, it assigns _______handler to be the handler for ________port_num.
+
+        Since subscr_server is the class_apply of server_key
+        (see ___REF * ____KEYS), this can also be called as
+
+                ______server(________port_num) -> _______handler
+                _______handler -> ______server(________port_num)
+
+        A request handler takes no inputs and returns no results.
+
+
+start_server( ______server )                                         [_________procedure]
+        Starts up the  server, listening  on all the  ports for  which a
+        server  has  an  associated  handler.  When  a  client   process
+        connects, a new  socket is  created and the  request handler  is
+        started inside a new Poplog process (coroutine).
+
+        The handler is run inside  a dynamic environment which makes  it
+        fairly easy to write handling  code. The newly allocated  socket
+        is dynamically bound to cusocket and for programming convenience
+        four other  dynamic  bindings  are  made  cugetchar,  cugetline,
+        cuputchar and cuputline.
+
+        A request handler  may be suspended  any time it  tries to  read
+        input. It  is the  responsibility of  the programmer  to  ensure
+        couroutine safety in this situation.
+
+
+suspend_server( ______server )                                     [_________procedure]
+        To be written
+
+
+stop_server( ______server )                                        [_________procedure]
+        To be written
+
+
+server_key                                                    [________constant]
+        The key of server objects.
+
+
+-----------------------------------------------------------------------
+2  Request Handlers
+-----------------------------------------------------------------------
+
+A request handler is an ordinary procedure that takes no input and
+has no outputs.  It gets access to its dynamic environment through
+several dynamic local variables described below.
+
+2.1  Functions
+--------------
+
+take_break()                                                 [_________procedure]
+        Because Pop-11 does not  support true threading  at the time  of
+        writing, programmers  should  ensure  that  long-lived  requests
+        occasionally suspend  in order  that the  server can  attend  to
+        other incoming requests. This is  done by calling take_break  at
+        any suitable point.
+
+        This procedure  may  or may  not  actually suspend  the  running
+        request handler. However,  the programmer  should always  assume
+        that control will be transferred to another competing coroutine.
+
+
+2.2  Dynamic Locals of Request Handlers
+---------------------------------------
+
+The following variable are all dynamic locals of the client process.
+
+
+cusocket                                                          [____vars]
+        The client-facing socket  through which  all communication  with
+        the client process is performed.
+
+
+cugetchar() -> ____char                                          [_________procedure]
+        A repeater for accessing the  client byte stream on a  character
+        by character basis. Returns termin when the stream is closed.
+
+
+cugetline() -> ______string                                        [_________procedure]
+        A repeater for accessing the client stream on a string by string
+        basis. Returns termin when the stream is closed.
+
+
+cuputchar( ____char )                                            [_________procedure]
+        A consumer for sending a character to the client.
+
+
+cuputline( ____line )                                            [_________procedure]
+        A consumer for sending a string to the client.
+
+
+-----------------------------------------------------------------------
+3  Formatting Output
+-----------------------------------------------------------------------
+
+fsend(_____itemN, ..., _____item2, _____item1, _______control:______string)              [_________procedure]
+fsend( ______________control:string, _______arglist )
+        Prints a control string to cuputchar using printf.
+
+
+fsendC(_____itemN, ..., _____item2, _____item1, _______control, ________consumer )         [_________procedure]
+fsendC( _______control, _______arglist, ________consumer )
+        Prints the _______control string to ________consumer using printf.
+
+
+fsendln( _____itemN, ..., _____item2, _____item1, _______control:______string )          [_________procedure]
+fsendln( ______________control:string, _______arglist )
+        Prints the _______control string to cuputchar using nprintf.
+
+
+fsendlnC( _____itemN, ..., _____item2, _____item1, _______control, ________consumer )      [_________procedure]
+fsendlnC( ______________control:string, _______arglist, __________________consumer:procedure )
+        Prints the _______control string to ________consumer using nprintf.
+
+
+send( ____item )                                                 [_________procedure]
+        Prints an item to cuputchar using pr.
+
+
+sendC( ____item, __________________consumer:procedure )                            [_________procedure]
+        Prints ____item to ________consumer using pr.
+
+
+sendln( ____item )                                               [_________procedure]
+        Prints ____item to cuputchar using npr.
+
+
+sendlnC( ____item, __________________consumer:procedure )                          [_________procedure]
+        Prints ____item to ________consumer using npr.
+
+
+to_consumer( ___________p:procedure ) -> ___________q:procedure                    [_________procedure]
+        Given a  procedure _p,  returns a  procedure _q  that when  called
+        dynamically localizes cucharout  to the consumer  on top of  the
+        stack and then calls  _p. In other  words, _q works  as if it  was
+        defined like this
+
+            define _q( ________/*args*/, ________consumer );
+                dlocal cucharout = ________consumer;
+                _p( __/* ______args*/ )
+            enddefine;
+
+        This  is  useful   for  converting   ordinary  Pop-11   printing
+        procedures into ones that use an explicit consumer.
+
+
+to_cuputchar( ___________p:procedure ) -> ___________q:procedure                   [_________procedure]
+        Given a  procedure _p,  returns a  procedure _q  that when  called
+        dynamically localizes cucharout to  cuputchar and then calls  _p.
+        In other words, _q works as if it was defined like this
+
+            define _q( ________/*args*/ );
+                dlocal cucharout = cuputchar;
+                _p( __/* ______args*/ )
+            enddefine;
+
+        This  is  useful   for  converting   ordinary  Pop-11   printing
+        procedures into ones that use cucharput.
+
+
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------

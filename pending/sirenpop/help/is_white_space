@@ -1,0 +1,6 @@
+HELP IS_WHITE_SPACE                                     Steve Knight
+                                                        SIREN Project
+is_white_space( CHARACTER ) -> BOOLEAN
+
+Returns true if CHARACTER is the ASCII code for space, tab, newline or
+return.

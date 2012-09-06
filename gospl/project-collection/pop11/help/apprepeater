@@ -1,0 +1,11 @@
+HELP APPREPEATER                                Steve Knight, Oct 1991
+
+    apprepeater( <repeater:R>, <procedure:P> )
+
+Applies the procedure P to all the results of the repeater R, exhausting the
+repeater in the process.
+
+For example,
+
+    [% apprepeater( 'fred'.stringin, consword(% 1 %) ) %] =>
+    ** [f r e d]

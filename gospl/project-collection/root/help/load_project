@@ -1,0 +1,19 @@
+HELP LOAD_PROJECT                                    Steve Leach, 15th Dec 04
+
+    load_project _________directory
+
+This syntax word loads a directory as a GOSPL project.  The project structure
+is as follows.  Note that all the files and directories are optional and may
+be safely omitted.
+
+    init.p ............ file loaded on "uses_project"
+    auto/  ............ autoloadable directory
+    help/  ............ help files, or "how-to"s, directory
+    lib/   ............ library directory
+    ref/   ............ reference files, see REF STANDARDS
+    src/   ............ other source files
+    teach/ ............ tutorial files
+
+Loading a project extends the various Poplog search paths so that files in the
+auto directory are autoloadable, files in the lib directory can be used, and
+the help, teach, ref files are all accessible in Ved.

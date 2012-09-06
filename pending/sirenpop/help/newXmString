@@ -1,0 +1,9 @@
+HELP newXmString                                        Steve Knight, Oct 93
+                                                        SIREN Project
+    newXmString( ITEM ) -> MOTIF_STRING
+
+Converts any POP-11 item to a Motif string.  The string conversion is
+performed by -pr-.
+
+See also:
+    HELP *strXmString

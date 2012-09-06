@@ -1,0 +1,10 @@
+HELP Motif                                              Steve Knight, Oct 93
+                                                        SIREN Project
+Motif <Name>
+
+This syntax word permits abbreviations for:
+
+    XptWidgetSet( "Motif" )( <Name> )
+
+See also:
+    HELP *Toolkit

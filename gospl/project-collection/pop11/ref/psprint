@@ -1,0 +1,133 @@
+REF PSPRINT                                   Jonathan Meyer, 1 Apr 1993
+
+       COPYRIGHT Integral Solutions Ltd 1993. All Rights Reserved.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<     PostScript Printing     >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Overview
+ --  Printing to PostScript printers from VED
+ --  Printing to PostScript printers from UNIX
+ --  PostScript Consumer
+ --  Related Information
+
+Overview
+--------
+This document  describes a  collection of  facilities for  printing  VED
+files, including their character  attributes (bold, underline, etc.)  to
+PostScript printers.
+
+
+The following  constants hardwired  into the  PostScript  output
+
+    lines per page: 66
+    rows per line: 80
+    page size: A4
+    left,bottom margin: 0.5", 0.5"
+    font: 11 point courier
+
+The following dstring text attributes are coped with:
+
+    bold, italic, underlined, inverse video, coloured text.
+
+The following extended characters are also dealt with:
+
+    standard graphics characters (\G- \Glt \Gbr etc.)
+    ISOLatin1 characters
+
+See REF * ITEMISE * POP_CHARACTER_SET.
+
+Printing to PostScript printers from VED
+----------------------------------------
+If you do (possibly in your vedinit.p file):
+
+    uses vedpsprint;
+
+Now <ENTER> print  and <ENTER> printmr  are extended to  allow an  extra
+option, '-d', which allows you to specify the output device type. If you
+use '-d ps'  (currently the  only argument  the '-d'  accepts) then  the
+output device  type is  assumed  to be  a  PostScript printer,  and  VED
+generates PostScript code  which prints bold,  italic, underlining,  and
+inverse video correctly.  If you  specify no output  device type,  ASCII
+output is generated.
+
+See HELP * VED_PRINT for details on options to <ENTER> print.
+
+For example:
+
+    <ENTER> print -d ps
+
+    <ENTER> printmr -d ps -p lw
+
+
+Printing to PostScript printers from UNIX
+-----------------------------------------
+The library LIB * PSPRINT provides a UNIX command line interface to  the
+VED PostScript printing facilities. This library is run by the
+UNIX command psprint. For example:
+
+    % psprint -p spa file1.p file2.p
+
+prints the file 'file1.p' and 'file2.p' to the printer 'spa'.
+
+PostScript Consumer
+-------------------
+The  VED  PostScript  printing  facility  works  using  the  low   level
+PostScript line consumer:
+
+postscript_line_consumer(DEVICE) -> CONSUME_P                [procedure]
+        Takes a device and returns a consumer which takes (d)strings and
+        writes them to device in as ASCII PostScript instructions  which
+        a PostScript printer can interpret.
+
+        CONSUME_P is a procedure of the form:
+
+            CONSUME_P(DSTRING)
+
+        When CONSUME_P is passed  -termin-, it generates the  PostScript
+        code to print the contents of  the current page. If DEVICE  is a
+        Poplog device, consuming  a -termin- does  not close the  device
+        (the caller is responsible for closing it).
+
+        If DEVICE is a string it is treated as a filename, and syscreate
+        is used to create a new file. For this case only, CONSUME_P will
+        close the  device it  creates when  it is  passed -termin-.
+
+        The following  constants hardwired  into the  PostScript  output
+        (wouldn't be too hard to change...)
+
+            lines per page: 66
+            rows per line: 80
+            page size: 8" x 10.5"
+            left,bottom margin: 0.5", 0.5"
+            font: 11 point courier
+
+        The following dstring text attributes are coped with:
+
+            bold, italic, underlined, inverse video, coloured text.
+
+        The following extended characters are also dealt with:
+
+            standard graphics characters (\G- \Glt \Gbr etc.)
+            ISOLatin1 characters
+
+        See REF * ITEMISE * POP_CHARACTER_SET.
+
+        For coloured  text,  the  consumer  will  print  foreground-only
+        coloured  text  using  a  50%  gray,  and  foreground+background
+        coloured text using a 20%/80% gray combination.
+
+
+Related Information
+-------------------
+    REF * VEDFILE_LINE_CONSUMER  - writing VED files to disc
+    HELP * VED_PRINT             - printing in VED
+
+
+--- $poplocal/local/ref/psprint
+--- Copyright Integral Solutions Ltd 1993. All rights reserved. --------

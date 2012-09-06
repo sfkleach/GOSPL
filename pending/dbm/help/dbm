@@ -1,0 +1,49 @@
+HELP DBM                                      Jonathan Meyer, May 1993
+
+DBM is an interface to the GNU GDBM database.
+
+To access DBM, do:
+
+    uses popdbm;
+    uses dbm_core;
+
+Then see REF * DBM for details of the interface.
+
+-- Installation Instructions ------------------------------------------
+
+Install dbm as a subdirectory of $poplocal/local. Then do:
+
+    cd $poplocal/local/help
+    ln -s ../dbm/help/dbm .
+
+    cd $poplocal/local/lib
+    ln -s ../dbm/lib/popdbm.p .
+
+Then do:
+
+    cd $poplocal/local/dbm/gdbm
+    ./mkgdbm
+
+-- Support ------------------------------------------------------------
+
+Contact jonm@integ.uucp for support.
+
+-- News ---------------------------------------------------------------
+
+25/5/93, JM
+    Changed to use GDBM instead of NDBM.
+    Added -dbm_compact-. See REF *DBM.
+
+    Made popdbm.p look for popdbm environment variable to dictate where
+    dbm resides. popdbm now defines where all files are located.
+
+24/5/93, JM
+    Added -dbm_writeable-.
+    Added -is_dbm_property_arg-. See REF *DBM.
+
+23/5/93, JM
+    Added support for 'permanent procedures' in *DATAINOUT.
+
+
+--- $poplocal/local/help/dbm --------------------------------------------
+--- Copyright Integral Solutions Ltd 1993. All rights reserved. ---------

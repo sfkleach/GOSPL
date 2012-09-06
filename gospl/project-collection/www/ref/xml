@@ -1,0 +1,260 @@
+REF XML                                          Steve Leach, Feb '00
+
+
+The XML library presents a simple interface for XML elements.  In the
+main, elements are treated as vector-like and the names of the
+operation are formed analogously.  Attributes are given a much less
+prominent role.  So "element_length" returns the number of children
+and not the number of attributes, for example.
+
+The constructors reflect the primacy of children over attributes.  The
+children are individually supplied but the attributes are supplied as
+a name/value list.
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+  1   CONSTRUCTORS
+
+  2   PREDICATES
+
+  3   ACCESSING CHILDREN
+
+  4   ITERATING OVER CHILDREN
+
+  5   ACCESSING ATTRIBUTES
+
+  6   ITERATING OVER ATTRIBUTES
+
+  7   HTML PREDICATES
+
+  8   READING AND RENDERING XML/HTML EXPRESSIONS
+
+  9   MISCELLANEOUS
+
+
+---------------
+1  CONSTRUCTORS
+---------------
+
+copy_element( e ) -> e'
+    Same as
+    new_element( e.element_dest, e.element_attribute_list, e.element_type )
+
+
+new_element( c1, ..., cN, N, attrs=[], type ) -> e
+    Creates a new element e with children c1 to cN, attributes
+    list attrs, and element type -type-.  If the optional attrs
+    parameter is omitted it defaults to [].
+
+
+r_copy_element( item ) -> item'
+    If -item- is an element it is recursively copied.  Otherwise it
+    is returned.
+
+
+
+-------------
+2  PREDICATES
+-------------
+
+is_element( item ) -> type|false
+    If item is an element it returns the type name; otherwise <false>
+    is returned.  The type name is a word.
+
+
+element_type( e ) -> type
+    Returns the type name of an element.
+
+
+
+---------------------
+3  ACCESSING CHILDREN
+---------------------
+
+element_dest( e ) -> ( c1, ..., cN, N )
+    These procedures return all the children of an element e along
+    with the number of children.
+
+
+element_children_list -> [ c1 ... cN ]
+element_datalist( e ) -> [ c1 ... cN ]
+    These procedures return the children of an element e as a list.
+
+
+element_explode( e ) -> ( c1, ..., cN )
+element_children( e ) -> ( c1, ..., cN )
+    This procedure returns all the children of an element e.
+
+
+subscr_element( n, e ) -> v
+v -> subscr_element( n, e )
+    Returns or updates the n-th child of element e.  Note that the
+    numbering starts from 1.
+
+
+element_last( e ) -> cN
+    Same as subscr_element( element_length( e ), e )
+
+
+element_first( e ) -> c1
+    Same as subscr_element( 1, e )
+
+
+element_length( e ) -> n
+    Returns the number of children of an element.
+
+
+--------------------------
+4  ITERATING OVER CHILDREN
+--------------------------
+
+map_element_children( e, p ) -> e'
+    This procedure applies p to each child of e in turn (from first
+    to last) and builds a new element e' from the results.  e' has
+    the same attributes as e.  The children of e' are the results.
+    p should return 0 or more results.
+
+
+app_element_children( e, p )
+    This procedure applies p to each child of e in turn from first
+    to last.
+
+
+for v in_children e do ...
+    This for-form iterates across all the children of an element e.
+
+
+
+-----------------------
+5  ACCESSING ATTRIBUTES
+-----------------------
+
+element_value( name, e ) -> v
+v -> element_value( name, e )
+    Accesses or updates the name/value pair for element e.  If there
+    is no attribute with that name, <false> is returned.  Similarly
+    updating with <false> deletes the attribute of that name.
+
+
+element_attributes( e ) -> ( name1, value1, ... nameN, valueN )
+    Returns the interleaved name/value attributes of an element
+    on the stack.
+
+
+element_attributes_list( e ) -> [ name1 value1 ... nameN valueN ]
+    Returns the interleaved name/value attributes of an element
+    in a list.
+
+
+----------------------------
+6  ITERATING OVER ATTRIBUTES
+----------------------------
+
+map_element_attributes( e, p ) -> e'
+    This procedure applies p to every name/value pair in alphabetical
+    order.  Note that p should take the following form
+        p( name, value ) -> ( name1, value1, ... )
+    The results are gathered up and used as the basis for a new element e'
+    that has the same children but this new set of attributes.
+
+
+app_element_attributes( e, p )
+    This procedure applies p to every name/value pair in alphabetical
+    order.  Note that p should take the following arguments
+        p( name, value )
+
+
+for n, v in_attributes do ...
+    Note that the alphabetical ordering is always respected.
+
+
+------------------
+7  HTML PREDICATES
+------------------
+
+These predicates allow us to implement the differences between
+parsing HTML and XML.  These predicates are drawn from the tables
+given in Ian S. Graham's excellent book "HTML 4.0 Sourcebook".
+
+is_stand_alone( type:word ) -> bool
+    Takes an element type name and returns true if it is used as
+    a "standalone" HTML element.  A standalone element has a start
+    tag but no end tag.  An example of a standalone element
+    would be <IMG SRC="...">.
+
+
+is_optionally_closed( type:word ) -> bool
+    Optionally closed means that the end tag may be omitted.  An
+    example of this would be <P>.
+
+
+may_contain( parent:word, child:word ) -> bool
+    This predicate returns <true> if the parent element may contain
+    the child element directly.
+
+
+
+---------------------------------------------
+8  READING AND RENDERING XML/HTML EXPRESSIONS
+---------------------------------------------
+
+The source in the following procedures supplies a stream of characters.
+It can be a filename, an open device, or a character repeater.
+
+
+in_xml_item( source ) -> repeater
+in_html_item( source ) -> repeater
+in_hybrid_item( source ) -> repeater
+    This is the building block routine for parsing XML or HTML
+    source.  It returns a repeater that will return elements or
+    strings until exhaustion, whereupon it returns <termin>.  The
+    strings represent CDATA.  White space is carefully preserved
+    and typically requires careful handling.  You may find the
+    predicates -is_white_space- and -trim_white_space- useful.
+
+
+is_white_space( string ) -> bool
+    Returns <true> if string consists exclsuively of white space
+    otherwise <false>.  White space characters are space, tab, carriage
+    return, newline, formfeed.  (Pop11 does not seem to recognise
+    vertical tab - otherwise I would include that too.)  It is useful
+    for stripping out layout strings from a XML element tree.
+
+
+read_xml_item( source ) -> element|string
+read_html_item( source ) -> element|string
+read_hybrid_item( source ) -> element|string
+    Reads a single XML/HTML item from a source.  Returns <termin> when
+    there is no more to read.
+
+
+read_xml_item_list( source ) -> [element|string]
+read_html_item_list( source ) -> [element|string]
+read_hybrid_item_list( source ) -> [element|string]
+    Returns a dynamic list of XML/HTML items.
+
+
+render_html_item( e )
+render_xml_item( e )
+render_hybrid_item( e )
+    Renders the XML/HTML item e in the standard form to -cucharout-.
+
+
+
+----------------
+9  MISCELLANEOUS
+----------------
+
+nc_r_app_element_names( element, fc_type, fc_attr )
+    Recurses over an XML tree applying a procedure -fc_type- to
+    every type name and a procedure -fc_attr- to every attribute
+    name.  These are expected to return a single result which
+    updates the original value.  Typically these are expected to
+    be either -lowertoupper-, -uppertolower- or -identfn-.
+
+    To avoid an in-place update, use r_copy_element first.
+
+
+trim_white_space( string, start:bool, end:bool ) -> string
+    Removes white space characters from the beginning and/or the
+    end of a string.

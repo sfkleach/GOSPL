@@ -1,0 +1,12 @@
+DBM dbm 41 41 42 
+dbm_close dbm 59 59 61 
+dbm_compact dbm 131 131 133 
+dbm_open dbm 47 47 56 
+dbm_property dbm 206 206 231 
+dbm_reopen dbm 136 136 142 
+dbm_value dbm 66 68 98 
+dbm_writeable dbm 125 125 128 
+discdatain datainout 53 53 74 
+discdatain datainout 54 54 74 
+discdataout datainout 77 77 97 
+discdataout datainout 78 78 97 

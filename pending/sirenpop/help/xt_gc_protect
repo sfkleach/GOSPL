@@ -1,0 +1,7 @@
+HELP XT_GC_PROTECT                                      Steve Knight, Oct 93
+                                                        SIREN Project
+    xt_gc_protect( WIDGET )
+
+This procedure protects a WIDGET against garbage collection until
+it is explicitly deleted.  It is intended to be used on top-level
+shells in order to avoid the need for top-level variables.

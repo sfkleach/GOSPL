@@ -1,0 +1,95 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; doc pragmas             Steve Knight            Fri Nov 28 1986 ;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Pragmas are commands that are outside the standard language.  In the case of
+this Scheme implementation they are used for instructing the compiler to
+change its mode of compilation.  The Scheme compiler has a fair range of
+flexibility governed by these pragmas.
+
+Each pragma is laid out by giving its format and an example of use.
+The pragma is described informally and finally all the defaults are described.
+
+
+         CONTENTS - (Use <ENTER> g to access sections)
+
+ -- calling mode pragma
+ -- case sensitivity
+ -- nil as boolean pragma
+ -- optimising tail calls pragma
+ -- protect identifier pragma
+ -- source pragma
+ -- timing statistics on read-eval-print loop pragma
+
+
+-- calling mode pragma ------------------------------------------------
+
+    format: (pragma-call-mode) => <option>              
+            (pragma-call-mode! <option>)
+            where
+                <option> = 'proc | 'data | 'unchecked                  
+
+    default:'proc         
+
+    eg:     (pragma-call-mode! unchecked)
+
+
+-- case sensitivity ---------------------------------------------------------
+
+    format: (pragma-cs) => <option>
+            (pragma-cs! <option>)
+            where
+                <option> = 'lower-case | 'upper-case | #f
+
+    default:'lower-case   
+
+    eg:     (pragma-cs) => #f
+
+-- nil as boolean pragma ----------------------------------------------
+
+    format: (pragma-nil-as-bool) => <option>
+            (pragma-nil-as-bool! <option>))
+            where
+                <option> = #t | #f | 'warn
+
+    default:'warn         
+
+    eg:     (pragma-nil-as-bool! warn)
+
+
+
+-- optimising tail calls pragma ---------------------------------------
+
+    format: (pragma-opt-tail-call) => <bool>
+            (pragma-opt-tail-call! <bool>)
+
+    default:#t            
+
+    eg:     (pragma-opt-tail-call! #f)
+
+
+-- protect identifier pragma ------------------------------------------
+
+    format: (pragma-protect <id>) => <bool>
+            (pragma-protect! <id> <bool>)
+
+    eg:     (pragma-protect! '+ #f)
+
+
+-- source pragma ------------------------------------------------------
+
+    format: (pragma-source) => <bool>
+            (pragma-source! <bool>)
+
+    default:#t            
+
+    eg:     (pragma-source) => #t
+
+
+-- timing statistics on read-eval-print loop pragma -------------------
+
+    format: (pragma '(time-loop <bool>))
+
+    eg:     (pragma '(time-loop #t))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

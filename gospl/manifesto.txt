@@ -1,0 +1,132 @@
+Manifesto for the Global Open Source Poplog Library (GOSPL)
+
+-- Manifesto ----------------------------------------------------------------
+
+GOSPL defines a format for individual contributions or "projects"
+that supports :-
+
+    *   collection of projects using the syntax
+            uses_project_collection <directory>
+
+    *   configuration-free project loading - EITHER by loading
+        from a collection of projects OR by loading an explicit
+        location
+            uses_project <name>         ;;; from collection dir.
+            load_project <directory>    ;;; explicit location
+
+    *   automatic generation of overview documentation
+
+    *   viewing via a web browser
+
+    *   projects to be enabled on an individual or mass basis
+
+    *   projects to be written for more than all subsystems and
+        mixes of subsystems
+
+    *   projects to make available both source code and
+        documentation
+
+    *   initialisation of each enabled project
+
+    *   prepares ground for a more structured autoloading
+        system
+
+    *   project conflicts to be managed
+
+    *   checks correctness of projects
+
+    *   project dependencies to be tracked forwards and backwards
+
+
+-- Directory Structure for Pop-11 Projects ----------------------------------
+
+A project directory contains the following top-level files and directories.
+All of these files and directories are optional.
+
+    init.p      Initialization file, loaded immediately the project is
+                loaded.  In general, you should aim to keep this
+                lightweight in consideration of users who are only
+                trying to learn the project or refer to its documentation.
+
+    auto        Autoloadable directory which is put onto the search path
+                -popautolist- when the project is loaded.
+
+    doc         Documentation directory put onto the search path
+                -veddoclist- when the project is loaded.  Not used a
+                great deal these days, conceived of as being useful for
+                long documents that were too unwieldy to read on the
+                screen.
+
+    help        Directory of user guide files put onto the search
+                path -vedhelplist- when the project is loaded.  See
+                HELP *STANDARDS for the official format.
+
+    include     Directory of include files, put onto the search
+                path -popincludelist- when the project is loaded.
+
+    lib         Directory of optional libraries that have to be
+                explicitly loaded with the -lib- or -uses- commands.
+                It is put onto the search path -popuseslist- when
+                the project is loaded.
+
+    ref         Directory of reference files put onto the search
+                path -vedreflist- when the project is loaded.  See
+                HELP *STANDARDS for the official format.
+
+    src         Source code directory, typically used for the core
+                of the project, perhaps loaded by the init.p file.
+                This directory is put onto the -vedsrclist- and
+                the files can be loaded with the GOSPL commands
+                -libsrc- and -usessrc-.  They can be browsed in
+                Ved via ENTER showlib <name> RETURN.
+
+    teach       Directory of tutorial files put onto the search
+                path -vedteachlist- when the project is loaded.
+
+
+-- Proposed Directory Structure for Mixed Language Projects -----------------
+
+The main problem is that it might be necessary to mark the subsystem
+folders to cause the subsystems to be loaded.  Poplog doesn't have a proper
+autoloading mechanism for subsystems :-(
+
+<project directory>
+    <subsystem>
+        init.<extn>
+        auto
+        doc
+        help
+        include
+        lib
+        ref
+        src
+        teach
+
+-- Outstanding Issues -------------------------------------------------------
+
+---- Object Files
+
+How do we fit in architecture dependent object files? Perhaps we need the idea
+of plug-in libraries ... *.o/*.sl files that are self-documenting!  Add them
+in and Poplog auto-configures it as a full extension.
+
+Could add a new "extern" subdirectory to the list of supported folders.
+
+
+---- Keywords
+
+Should be able to declare keywords associated with the components of
+the project.
+
+
+---- Dependencies
+
+The -uses_project- syntax is really an imperative way of signifying
+dependencies.  It would be much neater for inter-project dependencies
+to be declared in a separate format.
+
+The reason I haven't done that is that it would make it much more
+difficult for someone to use a GOSPL project if they haven't already got
+GOSPL installed.  I really think this is an ambition best left for later.
+
+-----------------------------------------------------------------------------

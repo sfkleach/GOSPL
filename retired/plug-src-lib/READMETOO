@@ -1,0 +1,71 @@
+            Adding the PLUG Source Code Archive to Poplog
+            =============================================
+
+ -- Introduction
+ -- A Typical Setup
+ -- Using the PLUG archive from Lisp, Prolog, or Standard ML
+
+-- Introduction -------------------------------------------------------
+
+This file is written for your local Poplog manager.  In many cases this means
+you, of course.  However, if it doesn't then you'll want to bring to to the
+attention of whoever has the responsibility of keeping your Poplog system up
+to date and healthy.  Unfortunately, this document is more or less aimed
+exclusively at UNIX users, since it is too long since I used anything else.
+
+Installing the PLUG archive is a fairly simple affair, in fact.  You need to
+achieve the following goals -
+
+    (a) Arrange for users to set the variable $popplug to point to
+        the directory in which the archive root resides.  Note that
+        this means that this file would be $popplug/plug/READMETOO
+
+    (b) To access the archive, they should compile the file
+            $popplug/plug/setup.p
+
+It doesn't matter how you achieve these goals.  So what follows is a
+description of the most typical way.
+
+To check your setup works, you should be able to type
+    lib plug_acrhive_check
+and receive the message
+    ;;; PLUG source code archive available (Version <whatever>).
+If this works then you can start by finding out what's in the archive.
+    ENTER help plug_archive
+or finding out what's new
+    ENTER help plug_news
+
+
+-- A Typical Setup ----------------------------------------------------
+
+To do (a), which is setting $popplug, you can edit the Poplog setup scripts
+in $poplocal/local/com/poplog and add the line
+    setenv popplug <root directory>
+If your users are Bourne shell users then the file
+$poplocal/local/com/poplog.sh should be edited with the lines
+    popplug=<root directory>
+    export popplug
+
+To do (b), add the line
+    load $popplug/plug/setup.p
+to your $poplib/init.p or, for system-wide access, to $popsys/init.p.  Note
+that if you want to suppress the loading message, then you instead use
+    compile( '$popplug/plug/setup.p' );
+
+The 'setup.p' file merely changes various search paths, such as -popliblist-,
+so that you may successfully use the plug archive.
+
+
+-- Using the PLUG archive from Lisp, Prolog, or Standard ML -----------
+
+At the time of writing, Poplog has no uniform way of adding libraries for the
+other languages it supports.  The mechanism described here is not satisfactory
+but it works.
+
+If you want to add the PLUG archive for language "foo++" with extension ".fpp"
+then you would edit the initialisation file ($poplib/init.fpp) to compile
+the file
+    $popplug/plug/setup.fpp
+The setup files extend the search lists of the relevant packages.
+
+-----------------------------------------------------------------------

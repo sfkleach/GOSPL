@@ -1,0 +1,6 @@
+HELP cons_last                                      Steve Leach, Nov 99
+
+    cons_last( item, list1 ) -> list2
+
+Returns a list2 whose elements are all the elements of list1 followed
+by item.

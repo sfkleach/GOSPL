@@ -1,0 +1,37 @@
+HELP <<| ... |>>                                  Steve Knight, Jan 1991
+
+<<| id1 .... idN |>>
+
+These syntax brackets are a shorthand way of writing procedures which consist
+exclusively of a series of calls.  For example, if you wanted to write the
+function which finds the second element of a list you could use
+    <<| tl hd |>>
+which, when applied, calls "tl" and then calls "hd".
+
+The id1 ... idN are all variables, optionally separated by commas.  The
+procedure created by <<| id1 ... idN |>> is exactly equivalent to
+
+    procedure();
+        id1();
+        id2();
+        ...
+        chain( idN )
+    endprocedure;
+
+The <<| ... |>> syntax offers an alternative way of composing functions.  This
+is often done using the infix operators "<>" and -pdcomp-.  However, it has
+a couple of advantages
+
+    1.  <<| ... |>> is a compile-time construct, unlike "<>" which executes
+        at run-time.  This typically gives an efficiency bonus.
+
+    2.  <<| ... |>> can apply variables whose values are not procedures,
+        unlike "<>", by using their -class_apply-.
+
+As a minor detail, note that the last variable is not simply applied but
+chained-to.  See *CHAIN for full details. Roughly speaking, this means that
+the procedure created by the <<| ... |>> finishes by exiting and calling the
+last variable.  Therefore, when you look at the callstack (e.g. by using
+-caller-) the <<| ... |>> procedure will not be there when the last variable is
+being called.  This is exactly the same behaviour as when you use "<>"
+to compose procedures, too.

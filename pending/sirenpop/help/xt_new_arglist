@@ -1,0 +1,18 @@
+HELP XT_NEW_ARGLIST                                 Steve Knight, Oct 93
+                                                    SIREN Project
+
+    xt_new_arglist( BINDING1, ..., BINDINGn ) -> ARGLIST
+
+A convenience function that creates a list of arguments suitable for
+-XptArgList- or -XptVaArglist- from an arbitrary number of bindings
+on top of the stack.
+
+A binding is EITHER of the following
+
+    (1) A vector of even length.  This is divided into 2-vectors which
+        are inserted into the result list.  So as well as writing
+            {numColumns 4} {packing ^XmPACK_TIGHT}
+        one can write
+            {numColumns 4 packing ^XmPACK_TIGHT}
+
+    (2) A vector of bindings.

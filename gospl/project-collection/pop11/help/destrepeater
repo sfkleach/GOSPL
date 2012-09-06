@@ -1,0 +1,10 @@
+HELP DESTREPEATER                               Steve Knight, Oct 91
+
+    destrepeater( R ) -> ( i1, ..., iN, N )
+
+Explodes a repeater R and puts all a count of all the exploded elements on
+top of the stack.
+
+e.g.
+    destrepeater( listtopd( [a b c] ) ) =>
+    ** a b c 3

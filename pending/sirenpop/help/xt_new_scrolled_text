@@ -1,0 +1,14 @@
+HELP XT_NEW_SCROLLED_TEXT                               Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_scrolled_text( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a new Motif text widget that is contained inside
+a ScrolledWindow using -XmCreateScrolledText-.  The arguments are processed
+using *XT_NEW_ARGS.
+
+The menu bar widget returned by this function is automatically managed.
+
+See also:
+    HELP *XT_NEW_ARGS

@@ -1,0 +1,149 @@
+<html>
+<head>
+<title>CERN HTTPD Logfile Analysis</title>
+</head>
+<body>
+<h1>CERN HTTPD Logfile Analysis</h1>
+
+<blockquote>
+<pre>
+for <i>variable</i> in_cern_logfile <i>expression</i> do
+    <i>statements</i>
+endfor;
+</pre>
+</blockquote>
+
+Analysing the CERN HTTPD logfile is made complicated by the poor formatting
+of the logfile.  To simplify matters, I have written an extension to the
+for-loop that iterates over each line of a logfile, decoding each line.
+(This extension is autoloaded, so you do not have to do anything special
+to make it available.)
+<p>
+
+For each line of the logfile, this loop binds the <i>variable</i>
+to the components of the line.  For each line there are 7 components
+which are :-
+<ol>
+<li>Domain name of client (<tt>log_entry_domain</tt>)
+<li>Remote identity (<tt>log_entry_remote_ident</tt>)
+<li>User name (<tt>log_entry_user</tt>)
+<li>Time of access (<tt>log_entry_utime</tt>)
+<li>Request (<tt>log_entry_request_data</tt>)
+<li>Status code (<tt>log_entry_status_code</tt>)
+<li>Proxy bytes (<tt>log_entry_proxy_bytes</tt>)
+</ol>
+I'm not sure what all of these fields are!
+<p>
+
+There are access procedures that correspond to each of these fields
+and, for the more complex fields, there are procedures that pull out
+the subcomponents.  However, you can simply index the <i>variable</i>
+to get any field.  So if you wanted to get the proxy-bytes then you
+might write
+<blockquote>
+<pre>
+lvars i;
+for i in_cern_logfile 'aibp.log' do
+    nprintf( 'Proxy bytes = %p', [% i( 7 ) %] )
+endfor;
+</pre>
+</blockquote>
+<p>
+
+<hr size=4>
+
+<h2>Interface</h2>
+
+<dl>
+
+<dt><b><font size=+1><tt>app_cern_logfile( <i>logfile, procedure</i>)</tt></font></b>
+<dd>A procedural version of the loop syntax.  It could have been
+    written as
+<blockquote><pre>
+define app_logfile( f, p ); lvars f, p;
+    lvars i;
+    for i in_cern_logfile f do
+        p( i )
+    endfor
+enddefine;
+</pre></blockquote>
+<p>
+
+
+<dt><b><font size=+1><tt>log_entry_domain( <i>variable</i> ) -> <i>domain_name</i></tt></font></b>
+<dd>Given a log-entry, returns the domain name of the client
+    machine.  This is the same as the first field of the log-entry.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_remote_ident( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the remote identity as a string.  This
+    is the same as the second field of the log-entry.
+    When this is not applicable, ``-'' is returned.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_user( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the user-name as a string.  This is the
+    same as the third field of the log-entry.  When this is not
+    applicable, ``-'' is returned.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_time_data( <i>variable</i> ) -> <i>seconds, minutes, hour, date, month, year</i></tt></font></b>
+<dd>Given a log-entry, parses the 4th field to return the second,
+    minute, hour, day-of-month, number-of-month, and year of the access.
+    All of these fields are numbers.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_utime( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the time in universal-time format
+    (compatible with Common Lisp).
+<p>
+
+<dt><b><font size=+1><tt>log_entry_request_data( <i>variable</i> ) -> <i>method, url, rest, protocol</i></tt></font></b>
+<dd>Given a log-entry, returns the method (GET, POST), the
+    URL, any name/value pairs, and the protocol used by the request.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_url( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the URL.  This is provided as a slightly
+    more efficient version of the above, on the basis that it will
+    be common to want to do analyses that only look at the URL.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_status_code( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the entry status as a number or a
+    string.  It always attempts to convert to a number if possible.
+<p>
+
+<dt><b><font size=+1><tt>log_entry_proxy_bytes( <i>variable</i> ) -> <i>string</i></tt></font></b>
+<dd>Given a log-entry, returns the proxy-bytes as a number or a
+    string.  It always attempts to convert to a number if possible.
+<p>
+
+</dl>
+
+<hr size=4>
+
+<h2>Examples</h3>
+
+<h3>How Many Accesses to a Particular Directory?</h3>
+
+This example arises from the desire to track how many accesses
+to the NCT material there were.  This material lives in
+<tt>/services/nct</tt>.
+<p>
+
+<blockquote>
+<pre>
+lvars num_accesses = 0;
+lvars i;
+for i in_cern_logfile 'cd /usr/WWW/WWW/httpd-log' do
+    if isstartstring( '/services/nct', log_entry_domain( i ) ) then
+        num_accesses + 1 -> num_accesses;
+    endif;
+endfor;
+</pre>
+</blockquote>
+
+
+</body>
+</html>

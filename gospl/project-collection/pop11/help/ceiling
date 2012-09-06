@@ -1,0 +1,8 @@
+HELP CEILING			26th July			Steve Knight
+
+ceiling( number ) -> integral
+
+A mathematical function for rounding numbers up.  
+
+See also:
+    * FLOOR.

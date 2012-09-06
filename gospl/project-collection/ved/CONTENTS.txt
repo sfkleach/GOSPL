@@ -1,0 +1,49 @@
+auto/pteach.p           macro for looking at prolog teach files
+auto/start_vturtle.p    run vturtle from outside ved
+auto/ved_cliquenet.p    visualise call structure of a program
+auto/ved_clock.p        
+auto/ved_complete.p     
+auto/ved_ctlog.p        logging routines for VED users (orig. Comp & Thought students)
+auto/ved_ctplay.p       playback of a log file created by ved_ctlog
+auto/ved_deletefile.p    delete the current file from the disc and VED
+auto/ved_gcprint.p      EPSON FX-100 printing (condensed)
+auto/ved_gprint.p       EPSON FX-100 printing
+auto/ved_incsearch.p    incremental search in VED, similar to emacs ^S
+auto/ved_keymap.p       produces an exhaustive keymap for VED key bindings
+auto/ved_mergefile.p    merge current & previous then delete current file
+auto/ved_nograph.p      make the current buffer printable by any printer
+auto/ved_noul.p         no underlines - strip nroff underlines out of text
+auto/ved_preserve.p     copy current window to preserve.tmp & then edit it
+auto/ved_procnet.p      show call structure of a program
+auto/ved_psprint.p      
+auto/ved_pteach.p       access prolog teach files
+auto/ved_pvar.p         
+auto/ved_query.p        
+auto/ved_shcol.p        
+auto/ved_show_keys.p    show all keys bindings in a ved buffer
+auto/ved_sla.p          
+auto/ved_slb.p          
+auto/ved_ul.p           nroff-style underline in marked range
+auto/ved_v200keys.p     
+auto/ved_vlib.p         load a library and show identifiers loaded
+auto/ved_wmod.p         
+auto/vedcomplete.p      
+auto/vedcomplete.p.orig    
+auto/vedcompleteb.p     
+auto/vedcompletions.p    
+auto/vedpsprint.p       
+auto/vedusecompletion.p    
+lib/bbcvt100.p          bbc micro as terminal setup
+lib/callslist.p         builds a list of all procedure calls in Pop11 program in VED
+lib/chunks.p            supports operations on rectangular blocks in VED
+lib/helplog.p           log all help requests to a file
+lib/latex.p             
+lib/minicifer.p         cifer terminal setup
+lib/shownet.p           displays networks using VED
+lib/talltree.p          changes showtree to make tall trees
+lib/ved_clock.p         VED based alarm clock!
+lib/vedabbprops.p       abbreviation expansion table
+lib/vedabbs.p           abbreviation expansion facility
+lib/vedendabbs.p        example of abbreviation facility
+lib/vedfnc.p            alternative VED file name completion library
+lib/vednkothe.p         backspace key makes next key work in other file

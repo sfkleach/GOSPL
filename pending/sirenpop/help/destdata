@@ -1,0 +1,6 @@
+HELP DESTDATA                                           Steve Knight, Jul94
+                                                        SIREN Project
+destdata( _________structure ) -> ____item1, ____item2, ..., _____itemN, _N
+
+This procedure explodes _________structure onto the stack together
+with a count of how many items were put on the stack.

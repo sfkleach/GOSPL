@@ -1,0 +1,7 @@
+HELP SYSSORT_BY                                         Steve Knight, Feb 94
+
+syssort_by( LIST, [COPY_FLAG], ACCESS_PROC, COMPARATOR_PROC )
+
+This procedure sorts a list of items.  For each items X & Y being compared
+it applies the proecdure ACCESS_PROC and compares the results using the
+comparison procedure COMPARATOR_PROC.

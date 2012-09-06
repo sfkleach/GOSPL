@@ -1,0 +1,103 @@
+HELP @                                                  Steve Leach, Nov 99
+
+<expr> @<variable> <expr>
+
+The "@" syntax is a kind of super-powered "." notation; it makes any
+ordinary variable act like an infix operator.  The purpose of the @
+operator is to make it possible to write more expressions without
+parentheses.
+
+For example, rather than write
+
+    : maplist( sort( names ), uppertolower ) =>
+    ** [steve tom violet zaza]
+
+this extension allows you to write
+
+    : names.sort @maplist uppertolower =>
+    ** [steve tom violet zaza]
+
+The precedence of "@" is 8.5 and has been carefully chosen to be
+marginally tighter than "and" and "or" (precedence 9).  This means
+that "@" is looser than any ordinary infix operator such as
+"+", "-", (etc) "=", "<", (etc) "matches", or "<>".  And it is
+much looser than ".", so it combines very nicely with that.
+
+Experience has shown this precedence gives the best and most
+natural results.
+
+You may not find this syntactic extension is to your taste.  Our
+experience is that, with a little common-sense, it creates visually
+lighter and more intuitive code.  Like all such extensions it can
+be abused and, because it is a relatively novel piece of syntax, it
+does need a bit of experimentation to fit it into your overall
+coding style.
+
+
+-- Postfix @ ----------------------------------------------
+
+
+Just like any Poplog infix operator, you can omit the left or right hand
+arguments.  In particular, "@" is deliberately designed to support the
+following postfix idiom :-
+
+    <expr> @f @g @h
+
+which means the same as
+
+    ( expr ).f.g.h
+
+And you can mix and match infix and postfix uses.  It is perfectly
+acceptable style, in the author's view, to write code such as this :-
+
+    f <> g @sort @delete master_set
+
+The meaning is obvious, once you get used to reading "@".  It is
+equivalent to
+
+    delete( sort( f <> g ), master_set)
+
+
+-- @( ... ) -----------------------------------------------
+
+If the symbol that follows "@" is a "(" then code is compiled
+up to the matching ")" and applied as if it was infix.
+
+    : 1 @( nonop + <> sqrt ) 3 =>
+    ** 2.0
+
+This seems like a bizarre extension!  It certainly is ugly!
+
+The reason behind it is that in legacy code, you may need to change the
+operator in an expression like this :-
+
+    <very large expression> @foo <another large expression>
+
+Suppose we needed to replace "foo" by "foo.f" then we are
+faced with a potentially large edit which disturbs quite a lot
+of indentation.  Rather than force the maintainer to go through
+this rearrangement, which may be desirable but inconvenient, we
+permit a direct substitution :-
+
+    <very large expression> @(foo.f) <another large expression>
+
+which minimises the change required.  Of course, the wise
+maintainer will make a note to revisit this when matters have
+calmed down - or simply use a tool such as grep to find all
+instances of "@(" in the code.
+
+
+-- Additional Notes on Style ------------------------------
+
+Every syntactic addition is controversial and this one more than most.
+This one comes from the fertile mind of Chris Dollin.  Chris and I
+have worked with this syntax extension for a couple of years and
+it is fair to say that we could not live without it.
+
+However, it is probably necessary to get the agreement of your
+co-workers and/or supervisors before spraying this one all around
+your code.  If they are reluctant to see the benefit of this
+wonderful piece of sugar, please send a cry of help to myself
+(steve@watchfield.com) or Chris Dollin (kers@hpl.hp.com).
+
+-----------------------------------------------------------

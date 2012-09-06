@@ -1,0 +1,8 @@
+HELP LIB_PROJECT_WARNING                            Steve Leach, Jan 05
+
+    lib_project_warning( project_name )
+
+A call to this procedure is  planted by the syntax word lib_project,  in
+order to inform the user that the project ____________project_name is about to
+be compiled.  The default value of lib_project_warning is the procedure
+sys_lib_project_warning.

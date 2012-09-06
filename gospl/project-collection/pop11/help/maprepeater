@@ -1,0 +1,13 @@
+HELP MAPREPEATER                                Steve Knight, Oct 91
+
+    maprepeater( R, F ) -> MR
+
+This procedure converts a repeater R into a new repeater MR such that
+    MR() == F( R() )
+i.e. each element has F applied to them.  However, unlike "apprepeater",
+the repeater R is not expanded.
+
+In addition, the new repeater has an updater, so that values can be pushed
+back onto the repeaters internal buffer.
+
+See also HELP * REPEATERS

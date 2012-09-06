@@ -1,0 +1,21 @@
+HELP XT_NEW_PANED_WINDOW                                Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_paned_window( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a Motif paned window widget. The arguments are
+processed using *XT_NEW_ARGS.
+
+Examples:
+
+In these one-line examples, -my_shell- is a variable bound to a top-level
+shell.
+
+    xt_new_paned_window( my_shell ) -> widget
+    xt_new_paned_window( my_shell, 'fred' ) -> widget
+    xt_new_paned_window( my_shell, { marginWidth 6 } ) -> widget
+    xt_new_paned_window( my_shell, 'fred', { marginWidth 6 } ) -> widget
+
+See also:
+    HELP *XT_NEW_ARGS

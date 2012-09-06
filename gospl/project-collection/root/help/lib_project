@@ -1,0 +1,9 @@
+HELP LIB_PROJECT                                    Steve Leach, Jan 05
+
+    lib_project ____________project_name
+
+The lib_project command is used for loading projects by name.  The
+search list pop_project_search_list is used to find a matching project
+directory.  If a directory with name ____________project_name is found, a
+notification message is printed using lib_project_warning and the
+project is loaded.

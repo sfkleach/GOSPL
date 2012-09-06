@@ -1,0 +1,17 @@
+HELP SYSPLANT                                          Steve Knight, Jun 87
+
+sysplant( pop11-code-as-list );
+
+This procedure causes POP VM code to be planted for the given list.  The list
+is treated as if it were PROGLIST for the duration of the code planting.
+
+e.g. With LIB SHOWCODE loaded
+
+sysplant( [ fred( x, y, z ) -> bill( r ) ] );
+
+    PUSH    x
+    PUSH    y
+    PUSH    z
+    CALL    fred
+    PUSH    r
+    UCALL   bill

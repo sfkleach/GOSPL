@@ -1,0 +1,14 @@
+HELP POPGOSPL_INTERNAL_VERSION                      Steve Leach, Dec 04
+
+    popgospl_internal_version
+
+A vectorclass object that provides the major, minor and incremental version
+numbers of the version specification of the GOSPL library.
+
+    popgospl_internal_version(1)        MAJOR
+    popgospl_internal_version(2)        MINOR
+    popgospl_internal_version(3)        INCREMENTAL
+
+Currently implemented as a string.  However, its implementation may shift to
+being a dstring or vector in the future - so don't rely on its representation
+as being anything other than a vectorclass.

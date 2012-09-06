@@ -1,0 +1,9 @@
+HELP DISCOUTLINE                                    Steve Knight
+
+discoutline( file ) -> <line consumer>
+
+Given a file name, discoutline returns a line consumer that outputs each line
+to the file with a newline appended.
+
+See also:
+    HELP * DISINLINE

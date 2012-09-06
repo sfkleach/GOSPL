@@ -1,0 +1,109 @@
+LOCALHELP NEWTOKENISER      Sun Jun 26, 1988        Steve Knight x 24061
+
+newtokeniser( start_node, graph ) -> tokeniser
+
+This package makes available a tokenising tool called NEWTOKENISER.  This
+tokeniser is based around the idea of a finite state machine.  It is geared up
+to exploit the features and idioms of Pop11.  The tokeniser is used by
+applying it to a character repeater to yield an token repeater (ie.
+tokeniser).
+
+-- The Interface ------------------------------------------------------
+
+The essential format is that the graph is a list of node specifiers.  Each
+node is specified as
+
+    [ node_name arc1 arc2 .... arcN ]
+
+where an arc looks like
+
+    [ condition move destination_node ] or
+    [ condition move destination_node action]
+
+The idea is that control moves from node to node by tranversing arcs.  Each
+arc has three things associated with it in addition to the start and end
+nodes.
+
+    1.  CONDITION.                 
+            This may be either the word "termin", the word "else",
+            a single character, a string, or procedure.
+            In each case it denotes which character (or termin) on the
+            input stream will cause this arc to be traversed.  The cases
+            are as follows
+                (a) "termin" (or in fact <termin> itself)
+                        Only termin will satisfy this condition
+
+                (b) "else"   (or in fact <false>)
+                        Any characters not otherwise considered will
+                        satisfy this condition (excludes termin)
+
+                (c) a character code
+                        The character denoted by the code is the only
+                        character which will satisfy this condition
+
+                (d) a string
+                        Any member of the string will satisfy this
+                        condition
+
+                (e) a procedure
+                        Any character which, when supplied as a parameter
+                        to the procedure, returns true.  eg. isuppercode
+                        specifies all uppercase alphabetic codes.
+
+    2.  MOVE.
+            This is one of the following symbols
+                ->      erase
+                =>      accept
+                *=>     pushback
+            The erase symbol consumes the current input character.
+            The accept symbol consumes the current input character but
+            pushes it onto the stack and increases the COUNT (qv)
+            The pushback symbol does not consume the current input character
+            but leaves it alone.
+
+    3.  DESTINATION.
+            This is either the name of the next node to move to OR a
+            procedure.  In the latter case, it means that the tokeniser
+            should run the procedure and exit.  This is typically a procedure
+            such as -consword- or -consstring-.  The COUNT is always put on
+            top of the stack before this procedure executes.             
+
+    4.  ACTION.
+            This is an optional field.
+
+            This is either FALSE or a procedure.  (FALSE being equivalent
+            to IDENTFN, for these purposes.)  If it is a procedure, then
+            traversing that arc will cause the procedure to be executed.
+            It will find a COUNT on top of the stack.
+
+            Note that the COUNT is always adjusted to account for the number
+            of items on the stack.  This is done by running -stacklength-.             
+
+Execution begins at the node specified by start.  Control then moves from node
+to node until an exit point (procedure) is reached.  The procedure is executed
+and the routine is cleanly exited.
+
+-- Simple example -----------------------------------------------------
+
+This example shows hows to extract all sequences of `a`s & turn them into
+strings.
+
+vars ttt;
+newtokeniser(
+    "start",
+    [
+        [start
+            ['a'    => grab_a]
+            [else   -> start]
+            [termin => ^erase]
+        ]
+        [grab_a
+            ['a'    => grab_a]
+            [else   -> ^consstring]
+            [termin *=> ^consstring]
+        ]
+    ],
+) -> ttt;
+
+'aaabbbaaacccaaa'.stringin.ttt.pdtolist.expandlist =>
+** [aaa aaa aaa]

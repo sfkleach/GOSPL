@@ -1,0 +1,485 @@
+REF DATAINOUT                                Jonathan Meyer, Sept 9 1992
+
+       COPYRIGHT Integral Solutions Ltd 1993. All Rights Reserved.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<                              >>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<  DATA REPEATERS/CONSUMERS    >>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<                              >>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Overview
+ --  Datatypes that can be used
+ --  Circular Datastructures
+ --  Data Repeaters/Consumers
+ --  Data Reading/Writing Facilities
+ --  Notes
+ --  Permanent procedures
+ --  Objectclass Instances
+ --  File Format
+ --  Comparisons with other Poplog offline facilities
+ --  See Also
+
+Overview
+--------
+Data repeaters/consumers created by -discdatain- and -discdataout- allow
+certain Poplog data structures to  be recorded to disc and  subsequently
+read back into  Poplog.
+
+
+Datatypes that can be used
+--------------------------
+The datatypes  coped  with are:  words,  numbers, lists,  vector  types,
+record types, vector  arrays, properties and  the special items  -true-,
+-false-,    -nil-,    -undef-,     -nullstring-,    -nullvector-     and
+-null_external_ptr-, and 'permanent procedures' (see below).
+
+By default, the data repeaters/consumers will mishap if you try to  save
+a procedure, device, process, section, ident, external_ptr_class object,
+prologterm or prologvar, or  other system type (but  see the details  of
+the FLAGS argument on -sys_write_data- below).
+
+
+Circular Datastructures
+-----------------------
+Data repeaters/consumers can cope with circular datastructures (where an
+element of the datastructure points  back to the datastructure  itself).
+As a side  effect of  this, data  repeaters/consumers are  also able  to
+preserve identity (ie.  == )  within any  single item  written and  read
+back.
+
+
+Data Repeaters/Consumers
+------------------------
+discdatain(FILENAME) -> DATA_REP                             [procedure]
+discdatain(FILENAME, FLAGS) -> DATA_REP                      [procedure]
+        Returns a data repeater for the filename FILENAME, which may  be
+        a string  or  word  --  if a  word  then  -pop_default_type-  is
+        appended to the name (see REF *chario). DATA_REP is of the form:
+
+            DATA_REP() -> ITEM
+
+        where ITEM is the next item in the data stream, or -termin- if
+        the end of the data stream is reached.
+
+        Note that, despite the name  of this procedure, FILENAME is  not
+        restricted to  being  a  disc  file;  it  may  be  any  suitable
+        operating system device. A mishap  will result if the  specified
+        file cannot be opened.
+
+        FILENAME may also be  a device record  open for reading,  e.g. a
+        device  created  by   -sysopen-  or  -syspipe-   (in  Unix)   or
+        -sysmailbox- (in VMS).  In that  case a data  repeater for  that
+        device is  returned. It  may  also be  a character  repeater  as
+        returned by -discin-.
+
+        The optional integer FLAGS argument controls several aspects of
+        how data is read. See -sys_write_data- below. If omitted, FLAGS
+        defaults to 2:1.
+
+
+discdataout(FILENAME) -> DATA_CONS                           [procedure]
+discdataout(FILENAME, FLAGS) -> DATA_CONS                    [procedure]
+        Returns a data consumer for  the filename FILENAME (which is  as
+        for -discin-). If FILENAME  is a disc file,  then a new file  is
+        created, otherwise  the file  is simply  opened; a  mishap  will
+        result if the specified file cannot be created or opened.
+        DATA_CONS is of the form:
+
+            DATA_CONS(ITEM)
+
+        Where ITEM can be  any of the  following types: words,  numbers,
+        lists, vector types, record types, vector arrays, properties and
+        the special items -true-, -false-, -nil-, -undef-, -nullstring-,
+        -nullvector- and -null_external_ptr-. Consuming  -termin-
+        flush any output and close any devices made my discdataout.
+
+        FILENAME may also be a device record open for writing, in  which
+        case a data consumer for that device is returned. It may also be
+        a character cumsumer as returned by -discout-.
+
+        The optional integer FLAGS argument controls several aspects of
+        how data is written. See -sys_write_data- below.
+
+
+Data Reading/Writing Facilities
+-------------------------------
+-discdatain-  and  -discdataout-  are  written  using  the  lower  level
+procedures sys_read_data and sys_write_data:
+
+sys_read_data(DEVICE, FLAGS) -> STATUS                       [procedure]
+        DEVICE can  be  a device  opened  for reading,  or  a  character
+        repeater as returned by -discin-.
+
+        Reads the next datastructure from DEVICE. Returns -true- if  the
+        read is successful (in which case the data that is read is  left
+        on top of the  stack), -termin- if the  end of the device  input
+        stream is reached,  or -false-  if the  data could  not be  read
+        because of some other error.
+
+        The FLAGS argument is an  integer whose bits have the  following
+        meanings:
+
+            Bit     Meaning
+            ---     -------
+            0       If clear, and the end of the input stream DEVICE  is
+                    reached prematurely (ie. before a complete item  can
+                    be  read),   a   mishap  is   generated.   If   set,
+                    sys_read_data returns -termin- if  it  encounters a
+                    premature end of stream.
+
+           1        If clear, and an error occurs  while reading a  data
+                    item, a mishap is  generated. If set,  sys_read_data
+                    returns -false- if  it encounters  an error  reading
+                    the stream.
+
+
+sys_write_data(DEVICE, DATA, FLAGS) -> NBYTES                [procedure]
+        Writes a datastructure to disc, returning the number of bytes of
+        disc space that  the structure occupies.  This is the  procedure
+        used by -discdataout-.
+
+        DEVICE can either be a device opened for writing or a  character
+        consumer (as returned by -discout-). It can be -pop_null_device-
+        if you wish  only to  determine how much  space a  datastructure
+        will occupy on disc.
+
+        DATA is  a Poplog  item. The  datatypes coped  with are:  words,
+        numbers, lists,  vector  types,  record  types,  vector  arrays,
+        properties  and  the  special  items  -true-,  -false-,   -nil-,
+        -undef-, -nullstring-,  -nullvector-,  -null_external_ptr-,  and
+        'permanent procedures' (see below).
+
+        The FLAGS argument is an  integer whose bits have the  following
+        meanings:
+
+            Bit     Meaning
+            ---     -------
+            0       If clear, any attempt to write a datastructure which
+                    cannot be represented  on disc  (eg. pop  processes,
+                    devices,  procedures,  external_ptr  class   objects
+                    etc.) will  generate a  mishap. If  set, -undef-  is
+                    written to disc instead of the datastructure, and no
+                    mishap is generated.
+
+            1       If clear, identity is preserved for compound numbers
+                    (see REF  *DATA/Representation of  Data in  POPLOG).
+                    Thus, if an identical (ie. ==) number appears  twice
+                    in DATA, this  fact is recorded  and preserved  when
+                    the data is restored from disc. If set, identity for
+                    numbers is ignored.
+
+            2       If clear, identity for datastructures with no "full"
+                    fields (eg. packed vectors, words, strings, etc.) is
+                    preserved. Otherwise, identity for these objects  is
+                    not preserved, so if  the identical (ie. ==)  string
+                    appears twice in DATA, on reading the data back from
+                    disc the two strings will  no longer be the same  ==
+                    datastructure.
+
+            3       If clear,  identity for  datastructures with  "full"
+                    fields is  preserved.  If set,  identity  for  these
+                    datastructures is  ignored.  NB.  If  DATA  contains
+                    circular references (eg. one  of the fields of  DATA
+                    is DATA  itself)  and  this bit  of  FLAGS  is  set,
+                    -sys_write_data- will loop forever.
+
+        Preserving identity in a class of datastructures takes more time
+        and generates more garbage than  ignoring the identity for  that
+        class. On  the  other  hand,  files  written  will  probably  be
+        slightly  more   compact  if   you  preserve   identity,   since
+        identical datastructures are not written to disc twice.
+
+
+Notes
+-----
+1) User-defined recordclasses and vectorclasses are tagged on disc using
+their -dataword-. If the key associated  with a dataword is not  defined
+when the data is read back in, or if the key is not of the correct  type
+(vectorclass or recordclass) sys_read_data will generate a mishap.
+
+2) If the number of fields in a user-defined recordclass associated with
+a dataword is different from the  number of fields of a record  recorded
+on disc  using  the  same  dataword,  sys_read_data  will  automatically
+truncate or pad the data read from disc so as to fit the new recordclass
+size correctly.
+
+3) If the field specification  of a user-defined vectorclass  associated
+with a dataword is  different from the field  specification of a  vector
+recorded on disc using the same dataword, sys_read_data will attempt  to
+coerce the data to the new  specification. A mishap is generated if  the
+data cannot be coerced. This data coercion will usually only work if the
+new field specification is  more relaxed than the  old (ie. it  occupies
+more bits).
+
+4) Words created using -word_identifier- cannot be written.
+
+5) Currently, property tables will be restored from disc using a GC_TYPE
+of "perm".
+
+6) Except  for  -null_external_ptr-,  no  datastructures  with  external
+pointers in them  can be  written. If  bit 0  of the  FLAGS argument  to
+sys_write_data is set, records with exptr fields will have those  fields
+written as null_external_ptr, and "exptr" vectors will be converted into
+vectors containing nulls. Otherwise a mishap is generated.
+
+7) Dynamic lists are NOT expanded for writing.
+
+8) You may run into recursion limits for very deeply nested structures.
+
+Permanent procedures
+--------------------
+Many procedures  in Poplog  have  a -pdprops-  which  is the  name  of a
+permanent identifier whose value is the procedure. For example:
+
+    ;;; print out the pdprops (i.e. the name) of -identfn-
+    pdprops(identfn) =>
+    ** identfn
+
+    ;;; retrieve the value of the identifier called "identfn"
+    valof("identfn") =>
+    ** <procedure identfn>
+
+When a data consumer is passed a procedure for which:
+
+    * the -pdprops- of the procedure is a word
+    * the word_dict_status of the word is -true-
+    * isdefined(word) returns -true-
+    * valof(word) is the procedure itself
+
+then the pdprops  and the pdnargs  of the procedure  are written to  the
+output stream. When a data repeater meets a word written in this way, it
+checks that:
+
+    * isdefined(word) returns -true-
+    * valof(word) is a procedure
+    * the pdnargs of the procedure is correct
+
+and if these conditions are satisfied it returns the procedure.
+
+This  is  a  simple  mechanism  for  writing  datastructures  containing
+procedures to disc.
+
+Objectclass Instances
+---------------------
+When you write a datastructure  containing an objectclass instance,  the
+method instance_data{in/out}  is  used  to  convert  the  instance  into
+something which can be recorded in a file.
+
+instance_dataout(________instance) -> ____data                              [______method]
+        This takes an objectclass instance  and returns an item  (e.g. a
+        vector, a list,  etc.) that should  be written to  disc to  make
+        that instance persist. The item, along with the dataword of  the
+        instance are written to the file.
+
+
+instance_datain(data, ________instance) -> ________instance                     [______method]
+        This is passed  a new  instance (created with  class_new of  the
+        appropriate  class)  and   an  item  of   data  generated   with
+        instance_dataout. It  should return  the instance  after it  has
+        been initialised with information held in ____data.
+
+
+e.g.
+
+        define :class Point;
+            slot x; slot y;
+        enddefine;
+
+        define :method instance_dataout(p:Point);
+            {% p.x, p.y %}
+        enddefine;
+
+        define :method updaterof instance_datain(data, p:Point) -> p;
+            data(1) -> p.x;
+            data(2) -> p.y;
+        enddefine;
+
+
+File Format
+-----------
+It is outside the scope of this document to give a full specification of
+the file format used. However, the basic elements of the file format are
+described.
+
+Each item in the stream starts with a 1 byte tag item, which is used  to
+specify the type of the thing that follows.
+
+The bits in the tag byte are layed out as:
+
+   XSSTTTTT
+
+where the X field is used  as a sign bit, the  SS field is used to  hold
+size information (and can be in the range 0-3) and the TTTTT field holds
+type information.
+
+There are 32 possible primitive types:
+
+Number types:
+
+    N_INTEGER      = 0,
+    N_DECIMAL      = 1,
+    N_BIGINTEGER   = 2,
+    N_COMPLEX      = 3,
+    N_RATIO        = 4,
+
+Unique quoted items:
+
+    Q_UNDEF        = 5,
+    Q_TRUE         = 6,
+    Q_FALSE        = 7,
+    Q_NIL          = 8,
+    Q_NULLSTRING   = 9,
+    Q_NULLVECTOR   = 10,
+    Q_NULLEXPTR    = 11,
+
+Builtin vector types:
+
+    V_STRING       = 12,
+    V_DSTRING      = 13,
+    V_SHORTVEC     = 14,
+    V_INTVEC       = 15,
+    V_WORD         = 16,
+    V_VECTOR       = 17,
+
+Builtin record types:
+
+    R_REF          = 18,
+    R_PAIR         = 19,
+    R_ARRAY        = 20,
+    R_PROPERTY     = 21,
+    R_UNDEF        = 22,
+
+User defined records and vectors:
+
+    U_RECORD       = 23,       ;;; user defined record class
+    U_VECTOR       = 24,       ;;; user defined vector class
+
+Types used for preserving identity:
+
+    P_MARKNEXT     = 25,      ;;; next item should be marked
+    P_MARKREFER    = 26,      ;;; used to refer back to marked items
+
+Miscellaneous types:
+
+    M_PROCNAME     = 27,      ;;; refer to a procedure by name
+    M_LIST         = 28,       ;;; a flat list of unshared pairs
+
+Types 29-31 are reserved for future use.
+
+Zero or  more data  bytes follow  the tag  byte -  the exact  number  is
+determined from information in the tag byte itself by looking at the  SS
+type and size bits.
+
+For example, the  item -false- is  represented using a  single tag  byte
+whose type field is Q_FALSE, and has no subsequent data bytes.
+
+For pop integers,  one tag byte  is written  and one, two  or four  data
+bytes are written - the number of data bytes written is recorded in  the
+SS field of the tag byte (if the SS field is 1, one byte follows, if the
+SS field is  2, two  bytes follow, if  the SS  field is 3  then 4  bytes
+follow). So the integer four is written as (shown in binary):
+
+        tag        data
+   XSSTTTTT           4
+   --------    --------
+   00100000    00000100
+
+
+i.e. the size field  is 1 (one byte  is used to record  the size of  the
+string) and  the TTTTT  field is  0 (i.e.  N_INTEGER). The  number  is a
+positive one size the X sign bit is not set.
+
+The number 0 is written as the tag byte 0 (and has no data bytes).
+
+Integers are always written  as positive MSB numbers,  with the sign  of
+the integer recorded in the sign (X) bit of the tag byte (for most other
+types, the sign bit is unused).
+
+This mechanism  ensures that  structures containing  many integers  will
+still be fairly compact.
+
+For Pop items which are of  a variable length (e.g. strings), the  first
+data that follows the tag byte is the length of the item. Following the tag
+and the length is the actual data.
+
+For these types, the size  bits in the tag byte  are used to record  how
+many bytes have been used to encode  the datalength of the item. So  the
+string 'ABC' is written as:
+
+         tag      size     data
+    XSSTTTTT         3        A       B         C
+    --------  -------- -------- -------  --------
+    00101100  00000011 10000001 10000010 10000011
+
+i.e. the size field  is 1 (one byte  is used to record  the size of  the
+string), the TTTTT field is 01100  (i.e. V_STRING), the first data  item
+is the number  3 (i.e. the  string is  3 characters long)  and the  next
+three bytes are the 3 characters of the string.
+
+Packed data types is  always written using the  raw underlying data  for
+the item, written out in MSB order. So floats are written as either 4 or
+8 byte  quantities, intvecs  are  written out  as  multiples of  4  byte
+quantities, etc.
+
+Non-packed types are always written recursively an item at a time.
+
+The two special types  P_MARKNEXT and P_MARKREFER  are used to  preserve
+identity in a datastructure. The mechanism works roughly as follows:
+
+  vars mark_table = [];
+
+  define get_next_item() -> item;
+    if tag == P_MARKNEXT then
+        get_next_item() -> item;
+        item :: mark_table -> mark_table;
+    elseif tag == P_MARKREFER then
+        get_next_item() -> n;
+        mark_table(n) -> item;
+    elseif tag == ...
+    endif;
+  enddefine;
+
+i.e. P_MARKNEXT indicates that the following item should be added to the
+mark table, and P_MARKREFER allows you to address items that are already
+added to the mark table.
+
+
+Comparisons with other Poplog offline facilities
+------------------------------------------------
+Unlike *DATAFILE, data  repeaters/consumers write data  using a  compact
+binary (non-ascii) representation.  This makes data  repeaters/consumers
+ideal when you  have large amounts  of data to  store. Note that  binary
+representations cannot be sent as email without further processing via a
+filter (eg. see MAN *UUENCODE). They also cannot be edited using VED or
+other text editors.
+
+Unlike *ARRAYFILE  (which also  uses a  compact binary  representation),
+files written using data repeaters/consumers can  be read on any of  the
+currently supported Poplog architechtures (NOTE  - THIS IS NOT YET  TRUE
+OF VMS). The data repeaters/consumers automatically account for byte and
+bit ordering on Poplog  hosts, performing bit-  and byte- swapping  when
+necessary.
+
+On  the  other   hand,  the   *SYSSAVEINCR  mechanism   uses  a   binary
+representation, and  copes with  circular datastructures,  and can  also
+write procedures directly  to disc. Unfortunately,  files written  using
+*SYSSAVEINCR are very non-portable  since they can only  be read by  the
+same Poplog system that wrote them.
+
+The *DATAFILE, *ARRAYFILE and *SYSSAVEINCR facilities all write a single
+datastructure   into   a   file.   On   the   other   hand   the    data
+repeaters/consumers allow you to write a series of datastructures into a
+file or device, and  retrieve them sequentially. This  is useful if  you
+wish to pass  datastructures between two  Poplog processes e.g.  using a
+pipe.
+
+
+See Also
+--------
+    HELP *DATAFILE *ARRAYFILE *SYSSAVEINCR
+
+--- $poplocal/local/dbm/ref/datainout ----------------------------------
+--- Copyright Integral Solutions Ltd 1993. All rights reserved. --------

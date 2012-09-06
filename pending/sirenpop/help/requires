@@ -1,0 +1,13 @@
+HELP REQUIRES                                           Steve Knight, Nov 93
+                                                        SIREN Project
+requires library <NAME>;
+requires loading <NAME>;
+
+The syntax word "requires" is useful for loading files relative to a
+particular path.
+
+    requires library <NAME>     searches -popuseslist-
+    requires loading <NAME>     searches for file in current directory
+
+Once the file is loaded by -requires-, it is never loaded again.  (The
+absolute name of the file is saved.)

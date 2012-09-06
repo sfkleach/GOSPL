@@ -1,0 +1,353 @@
+HELP SHOWNET                                       Chris Thornton, Aug 84
+
+
+This library provides a procedure SHOWNET (analogous to *SHOWTREE) which takes
+a network, represented as a list of lists and draws it on the screen using
+VED. It can be called from inside or outside VED.
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ -- Example
+ -- Interpreting the display
+ -- Data
+ -- Structured nodes
+ -- Hard copy
+ -- ENTER commands
+ -- Variables
+ -- Procedures
+ -- Warning 1
+ -- Warning 2
+ -- Example
+ -- Interpreting the display
+ -- Data
+ -- Structured nodes
+ -- Hard copy
+ -- ENTER commands
+ -- Variables
+ -- Procedures
+ -- Warning 1
+ -- Warning 2
+
+
+-- Example -----------------------------------------------------------------
+
+   lib shownet;
+   vars net;
+
+   [ [fred douglas gribbin]
+     [marvin john bruce]
+     [desdemona barbarella]
+     [douglas]
+     [gribbin marvin mulsgrovy]
+     [bruce mulsgrovy]
+     [marvin desdemona herb]
+     ] -> net;
+
+   shownet(net);
+
+
+generates the following VED buffer.
+
+                -----------
+                |herb     |--
+                ----------- |
+                            |
+------------    ----------- |   --------   ---------   ------
+|mulsgrovy |----|bruce    |-----|marvin|---|gribbin|---|fred|
+------------ |  -----------  | |-------- | ---------  |------
+             |               | |         |            |
+             |               | |         V            |
+             ----------------+-+----------            |
+                             | |                      |
+                             | |                      |
+------------    -----------  V |           ---------  V
+|barbarella|----|desdemona|--- |           |douglas|---
+------------    -----------    |           ---------
+                               |
+                -----------    V
+                |john     |-----
+                -----------
+
+-- Interpreting the display ------------------------------------------------
+
+Links between nodes are represented as 'valid' lines. You can tell a 'valid'
+line from an 'invalid' one without too much difficulty. The valid lines are
+the ones which
+
+(1) connect one side of one node with the OTHER side of another;
+(2) go straight on at 'crossroads',
+(3) always go upwards except where there is an arrow pointing downwards (or
+   vice versa).
+
+
+-- Data --------------------------------------------------------------------
+
+SHOWNET takes a data-list composed of sublists as argument. By default the HD
+of each sublist should contain the name (or 'key') of the root node, and the
+TL the names (or 'keys') of all the nodes which the node is linked to (if
+any);
+
+i.e. it should be of the form    [<node> <relatives>]
+
+e.g.   [gribbin marvin mulsgrovy]
+
+To change these defaults (and to define 'Keys') you have to redefine the
+appropriate procedures (see below).
+
+Any sublist in the data list can represent multiple valid links; the sublist
+[gribbin marvin mulsgovy] represents two links: one from gribbin to marvin and
+one from gribbin to mulsgrovy. An alternative way of representing these two
+links would be to use two sublists; e.g. [gribbin marvin] & [gribbin
+mulsgrovy].
+
+Any element of the data list which is not itself a list, is considered to be
+'extra information' and is printed out (virtually) verbatim above the net.
+This makes it easy to specify titles etc.
+
+
+-- Structured nodes --------------------------------------------------------
+
+Each node in the net has an 'identifying structure'; in the simplest case (as
+above) this structure is simply a word; e.g. "gribbin". However, nodes can
+also have arbitrarily complex identifying structures: some possibilities
+are numbers (e.g. 2.34), strings (e.g. 'the string which identifies this
+node'), vectors and lists; an identifying structure can actually
+be anything which is 'printable'.
+
+Example:
+
+shownet(['SILLY' [[just one node identified by 'a string' {and a vector} ] ]]);
+
+generates the following VED buffer
+
+
+SILLY
+
+
+----------------
+|just          |
+|one           |
+|node          |
+|identified    |
+|by            |
+|a string      |
+|{and a vector}|
+----------------
+
+(Note the title.)
+
+In special cases, there may be a need for a node to have an identifying
+structure which is itself a network; a special procedure (NETBUFFER) is
+provided to facilitate this. NETBUFFER is called in the same way as SHOWNET
+but instead of displaying the network, it returns it as a a vector of strings.
+The vector returned also gets assigned to the global variable IT.
+
+Example.
+
+   shownet([ [%netbuffer([ [1 2 3 4]])% A] [B A] [C ^it]]);
+
+
+generates the following buffer.
+
+
+-------------
+|A          |
+-------------
+      |
+      |--------------
+      |             |
+-------------       |
+|--- --- ---|       |
+||3| |4| |2||       |
+|--- --- ---|       |
+| |   |   | |       |
+| |   ----| |       |
+| --------| |       |
+|         | |       |
+|        ---|       |
+|        |1||       |
+|        ---|       |
+-------------       |
+      |             |
+      |             |
+      |             ---------------
+-------------               -------------
+|C          |               |B          |
+-------------               -------------
+
+
+(NB. VED_SIDEWAYS has been used here to fit the net on screen -- see below.)
+
+Nets can be nested arbitrarily deep; however, as the example shows, average
+node-size grows dramatically with each nesting!
+
+
+-- Hard copy ---------------------------------------------------------------
+
+The best way to print the display is with GPRINT. If GPRINT is not available
+then it will be necessary to convert the graphics characters generated by
+SHOWNET to ordinary characters (using NOGRAPH) before printing. GPRINT and
+NOGRAPH are autoloadable VED <ENTER> commands. (See *GPRINT)
+
+
+-- ENTER commands ---------------------------------------------------------
+
+
+<ENTER> backwards
+
+turns 'backwards' mode on and off. In backwards mode, the longitudinal
+structure of the network is generated from right to left. Sometimes this can
+improve the general layout. If SHOWNET is drawing you extremely tangled nets,
+try running it in backwards mode.
+
+
+<ENTER> inverse
+
+turns 'inverse' mode on and off. In inverse mode, SHOWNET draws the
+net with the directionality of links reversed; i.e. the sublist [gribbin
+marvin mulsgrovy] is interpreted as denoting the two links [marvin gribbin]
+and [mulsgrovy gribbin].
+
+
+<ENTER> tallnodes
+
+turns 'tallnodes' mode on and off. In tallnodes mode, SHOWNET generates a
+network with upright nodes.
+
+
+<ENTER> report
+
+turns 'report' mode on and off. In report mode, SHOWNET prints out the status
+of the important layout-contolling variables underneath the net.
+
+
+<ENTER> again
+
+causes SHOWNET to re-execute with whatever argument it was last called
+with. (- will generate an error if there has been no previous call!) This is
+useful after you have changed the value of a variable to alter the layout
+behaviour (see below).
+
+
+<ENTER> watch
+
+turns watch mode on and off. In watch mode you get to see the net being
+drawn.
+
+
+<ENTER> sideways
+
+flips the VED buffer on to its side, or, if it has already been flipped, flips
+it back up again. This facility can be used in conjuction with TALLNODES to
+generate networks of different dimensions (e.g. for printing purposes).
+
+
+<ENTER> savenet
+
+causes the current value of SHOWNETNAME (see below) to be changed, so that
+SHOWNET will not overwrite the current buffer in a future execution.
+
+
+<ENTER> printable
+
+ensures that the current VED buffer is not too wide to print nicely on the
+printer. If the file is too wide to be printed, the right hand edge gets
+chopped off and stuck on at the bottom. (NB. this command assumes that the
+printer can handle 130 columns of output. If you are using a printer which can
+handle more than this, you can provide an optional argument to <ENTER>
+printable specifying the number of columns desired; e.g.
+<ENTER> printable 200)
+
+
+-- Variables ---------------------------------------------------------------
+
+The various layout-controlling variables can be set directly by the user.
+These variables are published by section $-shownet.  You can therefore
+access a variable such as "vgap" by writing
+    $-shownet$-vgap
+or by subscribing to $-shownet.  (See HELP *EXTEND_SECTION for details 
+on publish/subscribe.)
+
+
+
+SCALARS
+
+    vgap        (can be set to any integer value greater than 0:
+                   controls vertical spacing)
+
+    hgap        (can be set to any integer value greater than 0:
+                   controls horizontal spacing)
+
+                (scalars default to 0)
+
+
+BOOLEANS
+
+    backwards   (can be set <true> or <false>; controls backwards mode)
+
+    inverse     (can be set <true> or <false>; controls inverse mode)
+
+    report      (can be set <true> or <false>; controls report mode)
+
+    tallnodes   (can be set <true> or <false>; controls tallnodes mode)
+
+    watch       (can be set <true> or <false>; controls watch mode)
+
+                (booleans default to <false>)
+
+
+MISC
+
+    shownetname (contains the name of the buffer to be used by SHOWNET)
+
+                (default is "net1")
+
+    arrow       (contains the ascii code for the disambiguating arrow)
+
+                (default is `V`)
+
+    sideways_arrow (contains the code for the arrow in 'sideways' inversion)
+
+                (default is `>`)
+
+
+-- Procedures ------------------------------------------------------------
+
+Various procedures can be defined by the user.  As for the variables,
+these are tucked away in section $-shownet.  So you must write
+    $-shownet$-shownetinit
+to get at the "shownetinit" (or subscribe to $-shownet).
+
+SHOWNETDEFAULTS is the defaults procedure used when calling vededitor to
+display the net. It defaults to VEDHELPDEFAULTS.
+
+SHOWNETINIT is called before the net is planned. It defaults to IDENTFN.
+
+NODEFACE is the procedure which maps items in the data list onto identifying
+structures to be displayed in the network. By default it is assumed that the
+items in the data list ARE the identifying structures to be displayed; i.e.
+the procedure defaults to IDENTFN.
+
+FULLNODE is the procedure which determines whether or not a node is displayed
+inside a box. It takes an identifying structure as argument and should return
+<true> or <false>. The default procedure always returns <true>.
+
+ROOT is the procedure which determines which of the nodes in each
+data-sublist is to be considered the 'root' node. It defaults to HD.
+
+RELATIVES is the procedure which determines which of the nodes in each
+data-sublist are to be considered the 'relatives' of the root node. It
+defaults to TL.
+
+
+-- Warning 1 --------------------------------------------------------------
+
+The heuristics embodied in SHOWNET assume a network which shows a 
+high degree of 'tree-structuredness' (locally and globally).  This means 
+the program likes TSNs (Tree-Structure Nets) much better than it likes 
+non-TSNs. If you throw pure heterarchy at it, you get back a bird's nest!
+
+
+-- Warning 2 ---------------------------------------------------------------
+
+Execution time varies exponentially with network size.

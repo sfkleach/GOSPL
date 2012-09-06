@@ -1,0 +1,7 @@
+HELP SYS_USES_PROJECT                                 Steve Leach, Dec 99
+
+    sys_uses_project( ____name )
+
+This procedure searches pop_project_search_list for a directory
+which matches ____name.  If the project has never been loaded before, the
+project is loaded using sys_load_project, otherwise nothing is done.

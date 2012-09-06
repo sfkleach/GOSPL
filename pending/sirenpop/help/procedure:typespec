@@ -1,0 +1,8 @@
+HELP PROCEDURE:TYPESPEC                             Steve Knight, Oct 93
+                                                    SIREN Project
+    defclass NAME {
+        NAME : procedure,
+    }
+
+This typespec is useful for restricting fields of a class to have
+procedure-valued entries.

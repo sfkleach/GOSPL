@@ -1,0 +1,85 @@
+HELP CTBRACKETS                                         Steve Knight, Jan 92
+
+lib ctbrackets;
+
+This library makes three different forms of compile-time evaluation brackets
+available.
+
+The syntax
+    <# STATEMENTS #>
+executes the statements immediately and ensures that they return exactly one
+result.  Code is planted which will push the result as a literal onto the
+stack.
+
+    <# 1 + 2 #> =>
+    ** 3
+
+These brackets are called get-one-item-brackets, because they check there's
+only meant to be one item.
+
+The syntax
+    <## STATEMENTS ##>
+executes the statements immediately and plants code to push all the values
+onto the stack at run-time.  It works just like the <# and #> brackets but
+without the check.
+These brackets are called get-many-items brackets. e.g.
+    <## explode( 'fred' ) ##> =>
+    ** 102 114 101 100
+
+The syntax
+    <#| STATEMENTS |#>
+works just like the get-many-items bracket but in addition plants a count on
+top of the stack.  These brackets are called get-counted-items brackets. e.g.
+    <#| appdata( 'fred', conslist(%1%) ) |#> =>
+    ** [102] [114] [101] [100] 4
+
+
+Ideas for Using Count Brackets
+------------------------------
+
+It should be pointed out that compile-time brackets like these are only useful
+occasionally and mainly for improving the efficiency of your code.  More often
+than not, you should use lconstant to create compile-time constants because
+then readers will find the name suggestive.  (However, you can't use lconstant
+to achieve the effect of get-many-items or get-counted-items.)
+
+One really good occasion for their use is when writing constant lists or
+vectors.  Not every programmer appreciates that when writing expressions like
+    [the cat sat on the mat]
+the Pop11 compiler doesn't recognise it as a constant.  However, if you know
+that you are never going to update the contents of this list (which is
+typically the case) then you can *insist* that the Pop11 compiler treats it as
+a literal using <# ... #> brackets.
+
+If you are using the Pop11 matcher then, in all likelihood, all your patterns
+are compile-time constants.  However, the Pop11 compiler will be (unhelpfully)
+building each pattern every time you use it.  This slows the program down a
+great deal.  Again, popping <# ... #> around a pattern is a great way to
+improve performance with a very small impact on program readability and
+maintainability.
+
+[An alternative way to achieve this effect is to use popconstruct.  However,
+beware of autoloading while popconstruct is in effect -- it can have dangerous
+results!  I don't recommend it.  Also, the modern way of using popconstruct is
+via +constr on compile_mode.  I don't recommend using it that way either.]
+
+If you are using the PLUG source code archive, then you will already have
+access to the stack iteration loop
+
+    for i in_items EXPR do
+        ...
+    endfor
+
+this works very nicely in combination with get-many brackets.  For example,
+
+    lvars i;
+    for i in_items <## explode( 'fred' ) ##> do
+        i =>
+    endfor;
+    ** 102
+    ** 114
+    ** 101
+    ** 100
+
+Generally speaking, whenever you are using complex constants, there's an
+opportunity to use these get-brackets profitably.

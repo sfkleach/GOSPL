@@ -1,0 +1,7 @@
+HELP exact_dl                                       Steve Leach, Nov 99
+
+    exact_dl( L, n )
+
+This procedure is a variation on -dl- (see HELP * dl).  It takes an
+integer n and ensures that the number of results returned is exactly
+n.

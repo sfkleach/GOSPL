@@ -1,0 +1,10 @@
+HELP XT_NEWG_LABEL                                      Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_newg_label( PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED] ) -> GADGET
+
+This procedure creates a Motif label gadget.  The arguments are processed
+using *XT_NEW_ARGS.
+
+See also:
+    HELP *XT_NEW_ARGS

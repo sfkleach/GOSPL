@@ -1,0 +1,8 @@
+HELP SPLIT                                          Steve Leach, Jun 98
+
+    split( string ) -> ( s1, ..., sN )
+
+This splits a string into substrings at whitespace boundaries.  The
+4 characters counting as whitespace are space, tab, newline and
+carriage return i.e. \s (ASCII 32), \t (ASCII 9), \n (ASCII 10), \r.
+(ASCII 13).

@@ -1,0 +1,27 @@
+HELP SYS_LOAD_PROJECT            Fri Feb  2, 1990            Steve Knight
+
+    sys_load_project( _______dirfile );
+
+This procedure installs the directory or file _______dirfile as a new project.
+If _______dirfile is a file, its parent directory is used in its place.  It
+also runs any initialisation that might be required.  The directory is
+expected to contain any of the following files and sub-directories.  If
+the file/directory is missing, the appropriate action is simply omitted.
+
+init.p          an initialisation file - the current directory is set to
+                be <dir> while this is loading;
+auto            directory for autoloading from (also can use "lib" explicitly)
+doc             hard-copy documentation
+help            on-line documentation
+lib             library directory
+src             source directory (see * LIBSRC)
+ref             on-line reference information
+
+By using load_project you can structure multi-file applications into single
+projects which can be added to your local library in a structured manner.
+
+To use the 'src' directory effectively, you may find it useful to
+use the -libsrc- or -usessrc- command, which act as lib or uses but with
+popuseslist rebound to vedsrclist.
+
+See also HELP *LOAD_PROJECT

@@ -1,0 +1,43 @@
+HELP CLIPBOARDS                                         Steve Knight, Oct 93
+                                                        SIREN Project
+    lib clipboards
+
+This library provides a set of functions for creating, adding, and
+deleting elements from clipboards.  Clipboards are an imperative
+implementation of bags (i.e. mappings from items to the natural
+numbers).
+
+add_clipboard( ITEM, CB )
+        Adds ITEM to clipboard CB.  This has the effect of incrementing
+        the count of ITEM by 1.
+
+
+app_clipboard( CB, PROC )
+        Applies PROC to all the items and their counts on the clipboard
+        in turn.  PROC must have the form
+            PROC( ITEM, N )
+        It is free to consume or return values to the stack.
+
+
+del_clipboard( ITEM, CB )
+        Deletes one copy of item ITEM from clipboard CB.  This
+         has the effect of decrementing the count of ITEM by 1.
+
+
+is_clipboard( ITEM ) -> BOOL
+        Returns <true> if ITEM is a clipboard, otherwise <false>.
+
+
+new_clipboard( ASSOC_LIST, EQUALITY )
+        Creates a new clipboard whose initial contents is determined
+        by the association list ASSOC_LIST.
+
+
+on_clipboard( ITEM, CB ) -> NAT
+NAT -> on_clipboard( ITEM, CB )
+        Returns (or updates) the number of copies of ITEM on
+        clipboard CB.
+
+
+length_clipboard( CB ) -> NAT
+        Returns the total number of items on the clipboard.

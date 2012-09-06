@@ -1,0 +1,8 @@
+HELP LIBSRC              Fri Feb  2, 1990            Steve Knight
+
+libsrc <filename>;
+
+This command works identically to "lib" except that files on the -vedsrclist-
+are searched, rather than -popuseslist-.  This is useful when using
+* LOAD_PACKAGE for loading files from the "src" directory.  Files loaded in
+this way can be viewed later, using the -ved_src- command.

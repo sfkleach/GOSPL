@@ -1,0 +1,11 @@
+HELP XT_PREPROCESS_F                                    Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_preprocess_f(
+        PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED],
+        STRING, ITEM_LIST
+    ) -> PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED]
+
+This procedure is used to perform the preprocessing of the arguments
+to implement the xt_new_<name>_f constructors.  It is not intended for
+general use.

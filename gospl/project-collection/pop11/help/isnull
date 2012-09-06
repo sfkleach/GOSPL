@@ -1,0 +1,6 @@
+HELP ISNULL                                        Steve Knight, Jun 98
+
+	isnull( item ) -> boolean
+
+-isnull- is intended to be an all-purpose test for empty.  At the moment
+it correctly deals with lists, vectorclass objects, and properties.

@@ -1,0 +1,12 @@
+HELP CONSREPEATER                               Steve Knight, Oct 91
+
+    consrepeater( i1, ..., iN, N ) -> R
+
+This procedure constructs a repeater from the top N items of the stack.
+It is mainly useful for constructing repeaters from unusual sources.
+
+e.g. converting a vector into a repeater
+
+    lvars R = {a b c d}.destvector.consrepeater;
+    repeat 5 times R() endrepeat =>
+    ** a b c d <termin>

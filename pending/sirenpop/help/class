@@ -1,0 +1,7 @@
+HELP CLASS                                              Steve Knight, Feb 94
+                                                        SIREN Project
+class <name>
+
+This macro is a conveient way of referring to keys or mixins; it also
+future-proofs your code against possible changes in naming conventions.
+At the time of writing, it simply suffixes "_key" onto the name.

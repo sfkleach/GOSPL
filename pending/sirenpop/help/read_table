@@ -1,0 +1,22 @@
+HELP READ_TABLE                                         Steve Knight, Feb 94
+                                                        SIREN Project
+read_table(
+    FILE or CHARACTER_RPTR,
+    [ WIDTH ],
+    [ SEPARATOR_CHAR, QUOTE_FLAG ]
+) -> LIST
+
+This procedure reads from a file or character repeater that represents a
+table.  The file is typically a tab-separated database dump.
+
+    FILE            A filename reprsented as a string.
+    WIDTH           The number of fields per line required.
+    SEPARATOR_CHAR  The character used to separate fields in the database.
+    QUOTE_FLAG:     <true> to use double quotes for strings
+                    <false> to use single quotes for strings
+
+It returns a dynamic list of table lines, each line being parsed into a
+vector of fields.  Fields are parsed according to roughly the same
+itemisation rules as Pop11 with one exception: tabs are treated as
+separators.  Blank lines are ignored; this makes it possible to insert
+comments into the data.

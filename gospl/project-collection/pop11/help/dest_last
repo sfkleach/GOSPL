@@ -1,0 +1,8 @@
+HELP dest_last                                  Steve Leach, Nov 99
+
+    dest_last( list ) -> ( last_item, all_but_first_item )
+
+This procedure works like -dest- except it acts on the final element
+of the list.  Because lists are implemented in suh a way as to make
+access to the front fast, this requires creating a copy of all but
+the last element.

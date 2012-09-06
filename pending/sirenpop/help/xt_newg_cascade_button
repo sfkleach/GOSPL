@@ -1,0 +1,8 @@
+HELP XT_NEWG_CASCADE_BUTTON                             Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_newg_cascade_button( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> GADGET
+
+This procedure creates a Motif cascade button gadget.  The arguments are
+processed using *XT_NEW_ARGS.

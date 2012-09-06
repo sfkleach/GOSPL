@@ -1,0 +1,58 @@
+HELP PROJECTS                                        Steve Leach, Feb 05
+
+A project is GOSPLs basic building block.  It is a standard directory
+format for code development and contains the following top-level files
+and directories.   All of these files and directories are optional.
+
+    init.p      Initialization file, loaded immediately the project is
+                loaded.  In general, you should aim to keep this
+                lightweight in consideration of users who are only
+                trying to learn the project or refer to its documentation.
+
+    auto        Autoloadable directory which is put onto the search path
+                -popautolist- when the project is loaded.
+
+    doc         Documentation directory put onto the search path
+                -veddoclist- when the project is loaded.  Not used a
+                great deal these days, conceived of as being useful for
+                long documents that were too unwieldy to read on the
+                screen.
+
+    help        Directory of user guide files put onto the search
+                path -vedhelplist- when the project is loaded.  See
+                HELP *STANDARDS for the official format.
+
+    include     Directory of include files, put onto the search
+                path -popincludelist- when the project is loaded.
+
+    lib         Directory of optional libraries that have to be
+                explicitly loaded with the -lib- or -uses- commands.
+                It is put onto the search path -popuseslist- when
+                the project is loaded.
+
+    ref         Directory of reference files put onto the search
+                path -vedreflist- when the project is loaded.  See
+                HELP *STANDARDS for the official format.
+
+    src         Source code directory, typically used for the core
+                of the project, perhaps loaded by the init.p file.
+                This directory is put onto the -vedsrclist- and
+                the files can be loaded with the GOSPL commands
+                -libsrc- and -usessrc-.  They can be browsed in
+                Ved via ENTER showlib <name> RETURN.
+
+    teach       Directory of tutorial files put onto the search
+                path -vedteachlist- when the project is loaded.
+
+GOSPL also supports project collections which are directories containing
+project subdirectories.  See *PROJECT_COLLECTIONS
+
+Note that there is an alternative project tool in Poplog, the
+pop_ui_projecttool.  This tool relies on an explicit manifest file
+(extension *.prj) rather than conventional subdirectories to categorize
+files.  At the moment, GOSPL and the POP_UI_PROJECTTOOL are
+independent alternatives with quite distinct motivations.
+
+See also:
+    HELP *PROJECT_COLLECTIONS
+    HELP *POP_UI_PROJECTTOOL

@@ -1,0 +1,43 @@
+@                       infix function call syntax
+<# ... #>               compile-time expr bracket (get-one)
+<## ... ##>             compile-time statement bracket (get-many)
+<#| ... |#>             compile-time count bracket
+<<| ... |>>             procedure variable composition brackets
+<| ... |>               short procedure brackets
+*_n.p                   multiplies top N items on stack
++_n.p                   adds top N items on stack
+app_n.p                 iterate over a counted group
+apprepeater.p           iterate over a repeater
+pr_num_bin.p            print numbers as binary, hex, octal, and decimal
+chain_repeaters         compose a list of repeaters into a single repeater
+const.p                 useful combinator, const( x )( y ) => x
+datainout.p             more sophisticated version of datafile
+daytimediff.p           differences in time in friendly format
+destrepeater.p          explode elements of repeater + count
+discinline.p            like discin <> incharline but more efficient
+discoutline.p           like discout but works on lines
+files_in_directory.p    gets all files in a directory
+files_matching.p        all files matching wildcard specification
+filecomplete.p          completes filenames (used by lib vedfnc)
+forall_match.p          all matches
+gensymbefore.p          comparison predicate for gensym'd words
+in_directory.p          for-extension for iterating over directories
+in_items.p              for-extension for iterating over the stack
+incharline.p            character repeater to line repeater
+library.p               a simple module control facility for code development
+libsrc.p                like -lib- but uses -vedsrclist-
+listreadline.p          like readline, but gets nested lists
+listtopd.p              convert list to item repeater
+maprepeater             like maplist, for repeaters
+module.p                enhanced syntax for section/endsection
+newpushable.p           makes repeaters with updaters
+plant_in_line           modifies routines to generate in-line code
+pop11_comp_section.p    service function for module/endmodule syntax
+print_file.p            print a file to cucharout
+restack                 syntax word for manipulating top items of stack
+rev_n.p                 reverses order of top N items of the stack
+SPACE.p                 measure heap space consumed -- used at PLUG92
+sys_file_exists.p       returns true if file exists, otherwise false
+sysplant                plants code from list of tokens
+TIME.p                  facility for timing commands  -- used at PLUG92
+usessrc                 like -uses- but uses -vedsrclist-

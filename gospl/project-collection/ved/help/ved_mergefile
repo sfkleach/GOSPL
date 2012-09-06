@@ -1,0 +1,14 @@
+HELP VED_MERGEFILE                                  Aaron Sloman, 1991
+
+ENTER mergefile
+
+This command merges the current file in VED with the previous one you were
+looking at, including deleting the former from the disc, if necessary.
+
+Invoke this as
+
+    ENTER mergefile
+
+The file you are in will be appended to the previous file, leaving the
+VED cursor at the junction point. The original file is deleted from VED
+and (if necessary) from the disc.

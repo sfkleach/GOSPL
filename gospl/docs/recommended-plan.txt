@@ -1,0 +1,242 @@
+My Recommendation for Installing Poplog (and GOSPL) on UNIX
+===========================================================
+
+Poplog does not come with a particularly well-defined installation plan.
+Although this is very flexible, it can easily be confusing.  This note 
+explains my own installation plan which I recommend as a good starting
+point. It is UNIX specific because that's what I know (and if any
+Windows folk want to help out, please do!)
+
+There are two parts to the plan: the generic installation and your
+personal customisations.  Even if you are only intending to be the
+only Poplog user on your machine, it's still a good idea to keep the
+two parts separate. 
+
+If you follow this plan and things go wrong, please feel free to
+contact me - details at the end of the file.
+
+
+[1] Choose a Central Location
+
+You should select a standard location for installing Poplog.  I like
+    /opt/poplog
+and I will assume that for the rest of this note.  But this is a
+relatively arbitrary decision and I used to use /usr/local/poplog
+
+
+[2] Chose an Administrative Account
+
+It is a good idea to protect your installation from accidents and,
+under UNIX, the best way to do this is by installing software
+as a different user from the one you normally work in.  I recommend
+that you create a non-root user for this role.
+
+(If you prefer to install the software using your normal account,
+remember to write protect the installation afterwards.)
+
+In these notes I will assume that you will create a suitable
+administrative user called "poplog".
+
+
+[3] Create the Admin Account and Central Location
+
+Under Linux you can do both of these in one elegant step from
+the command line.
+
+    % sudo useradd -c 'Poplog Admin' -d /opt/poplog -m poplog
+
+But if you prefer to use a GUI tool, please do. Under Ubuntu,
+for example, I would use
+
+    System > Administration > Users and Groups
+
+[4] Login as the Admin User
+
+Now login as the poplog-admin user via the command line or
+via the GUI.
+
+    % su - poplog
+
+Until stated otherwise, I will assume you are working in
+the admin account whose home directory is /opt/poplog
+
+
+[5] Create the directory skeleton
+
+I recommend cleanly separating the three different installation
+elements: the main distribution ($usepop/pop), the local system
+enhancements ($poplocal/local), and GOSPL ($poplocal/gospl).  To
+do this, you should create the following subdirectories:
+
+    % cd
+    % mkdir usepop
+    % mkdir local
+    % mkdir local/auto
+    % mkdir local/lib
+    % mkdir local/help
+    % mkdir downloads
+
+[6] Obtain the Poplog Distribution
+
+At the time of writing, I recommend using Aaron Sloman's distribution
+from Birmingham University because this has the most attention
+lavished on it.  If you go to
+
+    http://www.cs.bham.ac.uk/research/poplog/freepoplog.html
+
+You'll see the list of distributions.  For the purposes of these notes
+I assume that you have selected one of the PC Linux distributions
+such as
+
+    http://www.cs.bham.ac.uk/research/poplog/new/linux-pc-1553.tar.gz
+
+
+    % cd ~/downloads
+    % wget http://www.cs.bham.ac.uk/research/poplog/new/linux-pc-1553.tar.gz
+
+
+[7] Unpack the main distribution
+
+Now unpack the main distribution tarball into the previously created
+directory "~/usepop". Note that the tarball doesn't unpack into a single
+directory, which is why we created "~/usepop", so as to hold the
+contents.
+
+    % cd ~/usepop
+    % tar zxf ~/downloads/linux-pc-1553.tar.gz
+
+
+[8] Obtain, Unpack and Install the GOSPL distribution
+
+    % cd ~/downloads
+    % wget http://www.poplog.org/download/gospl.tar.gz
+    % cd
+    % tar zxf ~/downloads/gospl.tar.gz
+    % cd ~/local/lib
+    % ln -s ~/gospl/install/lib/popgospl.p .
+    % cd ~/local/help
+    % ln -s ~/gospl/install/help/popgospl
+
+What the above steps should accomplish is a top level
+directory that has three folders
+
+    /opt/poplog/gospl     <- GOSPL files
+    /opt/poplog/local     <- customisations for this computer
+    /opt/poplog/usepop    <- main system 
+
+The links from the local/lib and local/help are there to 
+provide seamless integration of GOSPL into the local extensions
+while keeping it separate for administration.
+
+
+[9] Logout from Admin Account
+
+You have now finished the shared installation.  You may wish to clean up
+the "~/downloads" folder before logging out.  If you have plenty of disk
+space just leave it alone.
+
+    % rm ~/downloads/*.tar.gz
+
+Finally log out of the poplog-admin account and return to your usual
+account.
+
+    % exit
+
+
+[10] Create Personal Customisation Folder
+
+At this point you should be logged in on the account you intend to 
+use Poplog from. I recommend creating a "hidden" top-level directory to 
+hold all of the Poplog customisations.
+
+    % cd
+    % mkdir ~/.poplog
+    % mkdir ~/.poplog/auto
+    % mkdir ~/.poplog/lib
+    % mkdir ~/.poplog/help
+
+
+[11] Create Personal Login Script
+
+The most important step is to create the login script.  Poplog depends
+on a large number of environment variables to be set up.  The easiest
+way to do this is to use the provided scripts.  Unfortunately the
+scripts are have a "flaw" - they output a friendly message saying they
+have run.  This is good for debugging but triggers a horrible bug in
+most X-windows start up scripts.
+
+Obviously the details of the script depend on which login shell you
+use.  These days, most people are using "bash" and that's what I'll
+assume here.  If you are using something else, it should be easy
+enough to translate.
+
+Create a file called "setup.sh".
+
+    % cd ~/.poplog
+    % touch setup.sh
+
+Add the following lines to "setup.sh" using your favourite editor
+
+    export poplib=~/.poplog
+    export poplocal=/opt/poplog
+    export usepop=/opt/poplog/usepop
+    . $usepop/pop/com/poplog.sh > /dev/null
+
+Now you must ensure this script gets used when you login.  Assuming
+you use "bash", add the following line at a suitable point (e.g. the
+end) in your "~/.bash_profile"
+
+    . ~/.poplog/setup.sh
+
+
+[12] Verify Your Setup Works
+
+You can either logout and login again or simply include the setup
+script.
+
+    % . ~/.poplog/setup.sh
+
+Try invoking "pop11".  If all goes well you should see something like
+this.
+
+    % pop11
+    Sussex Poplog (Version 15.53 Tue Aug  6 18:10:53 BST 2002)
+    Copyright (c) 1982-1999 University of Sussex. All rights reserved.
+
+    Setpop
+    :
+
+Exit with ^D (control-D)
+
+
+[13] Add GOSPL to Your Custom Setup
+
+Previously we configured GOSPL so that it was available to all users on
+the system.  However, each user has to elect to utilize the GOSPL.  When
+Poplog starts up it automatically looks for a start-up file called 
+"$poplib/init.p".  This is the right place for users to select the GOSPL.
+
+Create your "init.p" file and add the line "uses popgospl".  You can
+do this from the command line as follows:
+
+    % echo "uses popgospl" > ~/.poplog/init.p
+
+
+[14] Verify the GOSPL setup
+
+    % pop11 ":sysinitcomp(); popgospl_version=>"
+    ** GOSPL Version 1.2.2
+
+You should see a message that shows you have GOSPL Version 1.2.2 or
+higher.
+
+
+[15] Enjoy!
+
+
+-----------------------------------------------------------------------
+Stephen Leach   10th Dec 2004
+Modified        29th Mar 2010
+Email/MSN:      steve@watchfield.com
+AIM/iChat:      sfkleach@mac.com
+-----------------------------------------------------------------------

@@ -1,0 +1,7 @@
+HELP PROPSHEET_WH                                       Steve Knight, Jun 94
+                                                        SIREN Project
+
+propsheet_wh( sheet ) -> ( width, height )
+width, height -> propsheet_wh( sheet )
+
+Returns and sets the width and height of a propsheet.

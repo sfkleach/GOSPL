@@ -1,0 +1,8 @@
+HELP XT_NEW_DIALOG_SHELL                                Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_new_dialog_shell( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a new Motif dialog shell using -XmCreateDialog-.
+The arguments are processed using *XT_NEW_ARGS.

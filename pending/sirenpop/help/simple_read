@@ -1,0 +1,17 @@
+HELP SIMPLE_READ                                        Steve Knight, Nov 93
+                                                        SIREN Project
+lib simple_read
+
+This library provides a collection of procedures for reading items from
+*PROGLIST.
+
+    read_token() -> ITEM
+    read_word() -> WORD
+    read_number() -> ITEM
+    drop_token()
+    peek_token() -> ITEM
+    can_read( ITEM | ITEMLIST ) -> ITEM | FALSE
+    must_read( ITEM | ITEMLIST ) -> ITEM
+
+
+TO BE COMPLETED

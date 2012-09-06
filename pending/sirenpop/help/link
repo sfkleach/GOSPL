@@ -1,0 +1,28 @@
+HELP LINK
+
+make_link( ________leftitem, _________rightitem )
+    Establishes a link between a "left" and "right" pair of items.
+    Any item can have one left-linked value and one right-linked
+    value, the latest link taking precedence.
+
+
+break_link( ________leftitem, _________rightitem )
+    Breaks an established link between a "left" and "right" pair
+    of items.  The two items must be already linked.
+
+
+leftlink( ____item ) -> _____item'
+_____item' -> leftlink( ____item )
+    A property that, given the right item of a linked pair, returns
+    the left item.
+
+
+rightlink( ____item ) -> _____item'
+_____item' -> rightlink( ____item )
+    A property that, given the left item of a linked pair, returns
+    the right item.
+
+
+link_undef
+    The value returned by default by leftlink and rightlink.  Can
+    be used for breaking individual links.

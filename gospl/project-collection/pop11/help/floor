@@ -1,0 +1,8 @@
+HELP FLOOR                                              Steve Knight, Jul 89
+
+floor( number ) -> integer
+
+A mathematical function for rounding down numbers.  
+
+See also:
+    * CEILING

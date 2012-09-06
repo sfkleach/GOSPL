@@ -1,0 +1,585 @@
+REF MENUPANE             -DRAFT-                Jonathan Meyer, Jun 1993
+
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Introduction
+ --  Rationale
+ --  Limitations
+ --  Menu specification
+ --  . Popup actions
+ --  . Help menus
+ --  . Menu items
+ --  . . Options
+ --  . . . Actions
+ --  Parameters to menu actions
+ --  Creating menubars
+ --  Operations on menubars
+ --  Operations on menu options
+ --  Example
+
+Introduction
+------------
+MENUPANE is a library for creating and managing Motif menus and  options
+in Pop-11.  It allows  you to  specify simple  menus, along  with  their
+keyboard shortcuts.
+
+MENUPANE provides utility procedures to alter the label, sensitivity and
+'toggle state' of menu options.
+
+Rationale
+---------
+Most applications  specify a  menubar which  appears on  each top  level
+window of the application.
+
+It is good design to make these menubars static. i.e. to always show all
+menus and options, and not to dynamically add or remove menus or options
+to the  menubar structure  (if  some options  are not  applicable  under
+particular circumstances, they  should be made  insensitive, or  'greyed
+out', so that users cannot select them).
+
+Menubar structures can grow quite large,  so it is important to  provide
+mechanisms for creating complex menu structures as quickly as possible.
+
+LIB *MENUPANE provides a mechanism for 'compiling' a menu  specification
+into a  static internal  datastructure  which can  then be  passed  to a
+creation routine  to  construct  the  menubar  on  a  window.  The  menu
+specification included information  about what procedures  to call  when
+menu options are activated.
+
+Limitations
+-----------
+MENUPANE currently only constructs simple menubars. It does not support
+popup menus. Nor does it allow you to construct cascading hierarchical
+'walking' menus. It only works under Motif (it does not support OLIT).
+
+MENUPANE does not allow you to create dynamic menu structures, where new
+menus and options are added or removed.
+
+Menu specification
+------------------
+The command -menupane_compile- takes a menu specification as a vector of
+vectors and returns an  opaque representation of the  menu which can  be
+passed to menupane_new_menubar:
+
+    constant my_menu = menupane_compile {
+        { <title>
+            <item>
+            <item>
+            <item> ...
+        }
+        ...
+      };
+
+Each <title> corrosponds to a top level menu item on the menubar. It  is
+either a word or a string. If it is a string, it can also be a  dstring,
+in which case the first  character specifying an underline attribute  is
+used as the mnemonic for the menu option. For example the dstring:
+
+    'S\[u]tyle'
+
+shows as S_tyle and <Alt> t activates the Style menu.
+
+. Popup actions
+---------------
+Immediately following a <title> of a menu you can specify an action that
+is called just before that menu is posted on the screen. This action may
+be a word, ident  or procedure, and  is called in  a similar fashion  to
+menu option actions (see below), except that the option name argument to
+the action is always be -undef-.
+
+. Help menus
+------------
+Note that MENUPANE sets the first menu whose title is 'Help' as the
+XmNhelpMenuWidget of the menubar. This makes the menu appear on the
+far right of the menubar structure, as specified by the Motif style
+guide.
+
+. Menu items
+------------
+Each <item> in a menu specification is either:
+
+    a vector specifying a menu option - see below
+
+    a string - the string is placed as an inactive label in the menu
+
+    the word "space" - a separator is placed in the menu
+
+. . Options
+-----------
+A menu option is a vector in one of three forms:
+
+    {NAME ACTION}
+
+or:
+
+    {NAME MODIFIER_NAME KEYSYM_NAME ACTION}
+or:
+    {NAME ACCELERATOR ACCELERATOR_TEXT ACTION}
+
+NAME is a word or a string. It can also be a dstring with an underline
+attribute specifying the character to use as the mnemonic for the menu
+option (see the description of <title> above). e.g. the dstring:
+
+    'Save \[u]As'
+
+is shown as 'Save _As', with the A character underlined to indicate  that
+pressing 'a' will activate the menu button.
+
+Two element  vectors  specify  simple  menu options  that  do  not  have
+accelerators (keyboard shortcuts) to activate them.
+
+On the other hand, you use the 4 element vector to specify menu  options
+which also have accelerators. There are two forms:
+
+    {NAME MODIFIER_NAME KEYSYM_NAME ACTION}
+
+where MODIFIER_NAME and KEYSYM_NAME are both words, and
+
+    {NAME ACCELERATOR ACCELERATOR_TEXT ACTION}
+
+where ACCELERATOR and ACCELERATOR_TEXT are both strings.
+
+The first form is  a convenience for specifying  a common occurrance  of
+the second form - it is converted to the second form using the mapping:
+
+    (MODIFIER_NAME >< '<Key>' >< KEYSYM_NAME) -> ACCELERATOR
+
+    (MODIFIER_NAME >< '+' >< KEYSYM_NAME) -> ACCELERATOR_TEXT
+
+e.g. writing:
+
+    {'Open' Alt F4 ^Open_file}
+
+is the same as writing:
+
+    {'Open' 'Alt<Key>F4' 'Alt+F4' ^Open_file}
+
+. . . Actions
+-------------
+For each  menu  option,  ACTION  is  either  a  word,  an  identifier, a
+procedure or a vector.
+
+If ACTION is a word, menupane_compile uses -sys_current_ident- to obtain
+the ident of the word and uses the same rules that identifier uses  (see
+below).
+
+If ACTION is an identifier, then the idval of the identifier is used  to
+obtain the procedure  to call  when the  menu option  is activated  (see
+below for a description of arguments passed to the procedure).
+
+If ACTION is  a procedure, the  procedure is called  when the option  is
+activated (see below for a description of the arguments the procedure is
+passed).
+
+If ACTION is a vector, then the option is created as a 'toggle'  option,
+which is toggled on  and off when  the user activates  it. In this  case
+ACTION is a vector of the form:
+
+    { ON_ACTION OFF_ACTION }
+
+where ON_ACTION  and  OFF_ACTION  can be  either  words,  procedures  or
+identifiers, and are treated the same as if they were used as the ACTION
+specification except that ON_ACTION  is called when  the menu option  is
+turned on and OFF_ACTION is called when the menu option is turned off.
+
+ACTION can also be a more basic vector of the form:
+
+    { TOGGLE_IDENT }
+
+In this case  TOGGLE_IDENT is either  a word or  an ident specifying  an
+identifier whose -idval-  is set to  either -true- or  -false- when  the
+toggle is turned on  and off respectively.  This is particularly  useful
+when combined with *ACTIVE variables.
+
+Finally, with toggle actions, you can place the special item "<>" at the
+end of  the vector  to indicate  that a  diamond shaped  'radio'  toggle
+indicator should be used instead of the square 'option' indicator. For
+example:
+
+    { TOGGLE_IDENT <> }
+
+You can ommit  the ACTION part  of a menu  specification altogether.  In
+this circumstance menupane does not call any option-specific  procedure,
+and handling  of the  menu option  must be  dealt with  by the  callback
+procedure passed to -menupane_new_menubar- (see below)
+
+Parameters to menu actions
+--------------------------
+MENUPANE looks at the *PDNARGS of an action procedure to determine  what
+arguments it  expects.  The table  below  indicates what  arguments  are
+passed. In all cases, menu names  and option names are passed as  words,
+regardless of  whether the  application  used words  or strings  in  the
+original menu specification.
+
+    pdnargs     Parameters
+    -------     ----------
+      0         None.
+
+      1         The menubar widget.
+
+      2         The menubar widget and the name of the menu option.
+
+      3         The menubar widget, the name  of the menu, and the  name
+                of the menu option.
+
+      4         The menubar widget, the name  of the menu, and the  name
+                of the menu option, and the state of the option:  -true-
+                if it is a toggle option being turned on), -false- if it
+                is  a  toggle  option  being  turned  off,  and  -undef-
+                otherwise.
+
+
+Creating menubars
+-----------------
+menupane_new_menubar(WIDGET, POPUP_ACTION, MENU_ACTION,      [procedure]
+                CLIENT_DATA, MENU_SPEC) -> MENU_EIFHRY
+        This   procedure   takes    a   MENU_SPEC    as   returned    by
+        menupane_compile, and builds the menubar for that  specification
+        on the Motif MainWindow WIDGET.  It returns the Motif  RowColumn
+        widget MENU_WIDGET that is created.
+
+        MENU_ACTION is a procedure identifying an action that is  called
+        when a menu option is activated, and just before any menu option
+        specific action  is  taken.  It  can be  used  to  performs  any
+        operations needed to make the window associated with the menubar
+        'current'.
+
+        MENU_ACTION is passed parameters using  the same rules as  apply
+        for menu option actions (see 'Parameters to menu actions' above).
+
+        MENU_ACTION may be false if no global menu action is required.
+
+        POPUP_ACTION is a procedure identifying an action that is called
+        just before a menu  is posted on the  screen. This is useful  if
+        you want to update the contents of the menu before displaying it
+        to the user,  e.g. to make  items sensitive/insensitive,  change
+        labels and set toggle values according to a global state.
+
+        POPUP_ACTION is passed parameters using the same rules as  apply
+        for menu option actions (see 'Parameters to menu actions' above)
+        except that the menu option  and state arguments will always  be
+        -undef-.
+
+        POPUP_ACTION may be -false- to  indicate that no popup  callback
+        is required.
+
+        CLIENT_DATA can be any Poplog item. The data is associated  with
+        the MENU_WIDGET  that is  returned and  can be  retrieved  using
+        menupane_client_data (see below).
+
+Operations on menubars
+----------------------
+The MENU_WIDGET returned by menupane_new_menubar will be destroyed  when
+its parent Motif main window widget is destroyed. Alternatively you  can
+call XtDestroyWidget passing MENU_WIDGET as the argument to destroy only
+the menubar of a WIDGET:
+
+    XtDestroyWidget(MENU_WIDGET)
+
+To hide the entire menubar, you can use:
+
+    XtUnmanageChild(MENU_WIDGET)
+
+and to show the menubar you can use:
+
+    XtManageChild(MENU_WIDGET)
+
+
+menupane_client_data(MENU_WIDGET) -> ITEM                    [procedure]
+ITEM -> menupane_client_data(MENU_WIDGET)
+        Sets or retrieves an arbritrary piece of Poplog data associated
+        with a menu widget returned by menupane_new_menubar.
+
+
+Operations on menu options
+--------------------------
+Once a menubar is created, you can use the following procedures to alter
+the label, sensitivity and toggle button state of menu options.
+
+Each procedure accepts a 'BUTTON_SPEC' which indicates which menu option
+button you are referring to. A BUTTON_SPEC is three arguments:
+
+    <MENU_WIDGET>, <MENU>, <OPTION>
+
+where <MENU_WIDGET>  is  the widget  returned  by  menupane_new_menubar,
+<MENU> is a name of a menu on that menubar, and <OPTION> is the name  of
+an option on that menu. <MENU> and <OPTION> can be words or strings.
+
+
+menupane_sensitive(BUTTON_SPEC) -> BOOL                      [procedure]
+BOOL -> menupane_sensitive(BUTTON_SPEC)
+        Sets or retrieves the sensitivity of a menu option. If you  make
+        a menu option  insensitive then  the button's  label is  'greyed
+        out' to indicate that the option is not available.
+
+        If BUTTON_SPEC does not  specify a valid  menu option, the  base
+        procedure returns -undef- and the updater does nothing.
+
+
+menupane_label(BUTTON_SPEC) -> STRING                        [procedure]
+DSTRING -> menupane_label(BUTTON_SPEC)
+        Sets  or  retrieves  the  label  shown  on  a  menu  option.
+
+        If BUTTON_SPEC does not  specify a valid  menu option, the  base
+        procedure returns -undef- and the updater does nothing.
+
+        The updater  accepts strings,  dstrings  or words.  If  passed a
+        dstring, the  first  character  of  the  dstring  specifying  an
+        underline attribute is used as the mnemonic for the menu option.
+        Note that changing an options label does NOT alter the name used
+        to refer option within the menupane library, it only alters  the
+        label shown to the user on the button.
+
+        This function  should be  used  with care;  users can  get  very
+        confused if menu options are renamed. In general you should only
+        use the  updater  of this  procedure  to assign  a  label  which
+        conveys extra information  to the  user, and not  assign a
+        completely different label to a menu option.
+
+        For example, you should use this facility to append  information
+        about whether undo is available, or what kind of object  'Paste'
+        will paste, or whether a save is needed or not.
+
+
+menupane_value(BUTTON_SPEC) -> BOOL                          [procedure]
+BOOL -> menupane_value(BUTTON_SPEC)
+        For menu options which are created as toggle options, this  sets
+        or retrieves the state of the toggle indicator.
+
+        If BUTTON_SPEC does not specify a valid menu option, or the menu
+        option is  not  a  toggle option,  the  base  procedure  returns
+        -undef- and the updater does nothing.
+
+
+
+Example
+-------
+
+/*
+Compile the following code.
+*/
+
+
+/* The 'File' menu */
+
+;;; 'Open' on the 'File' menu
+;;; illustrates a menu action with no arguments.
+define do_file_open();
+    "Open" =>
+enddefine;
+
+;;; 'New' and 'Save' on the 'File' menu.
+;;; menu actions can take arguments as well (see above). This is called by
+;;; the 'New' option and the 'Save' option - the arg is the option name
+define do_option(menubar, arg); lvars menubar, arg;
+    [^arg] =>
+enddefine;
+
+/* The 'Edit' menu */
+
+;;; 'Copy' on the 'Edit' menu
+define cut(menubar); lvars menubar;
+    ;;; now there is something to paste
+    true -> menupane_sensitive(menubar, "Edit", "Paste");
+enddefine;
+define paste(menubar); lvars menubar;
+    ;;; make myself insensitive
+    false -> menupane_sensitive(menubar, "Edit", "Paste");
+enddefine;
+
+;;; 'Edit On' on the 'Edit' menu
+;;; chosing 'Edit On' turns the menu option to 'Edit Off', and visa-versa
+vars edit = false;
+define switch_edit(menubar, menu, option);
+    lvars menubar, menu, option;
+    not(edit) -> edit;
+    if edit then
+        [editing enabled] =>
+        'Edit Off'
+    else
+        [editing disabled] =>
+        'Edit On'
+    endif -> menupane_label(menubar, menu, option);
+enddefine;
+
+/* The 'Settings' menu */
+
+;;; 'Magnifier' toggle on the 'Settings' menu.
+;;; this is an active variable whose value is toggled
+;;; by the 'Magnifier' menu option
+vars mag;
+define active magnifier;
+    mag;
+enddefine;
+define updaterof active magnifier(val); lvars val;
+    val -> mag;
+    [magnifier is ^val] =>
+enddefine;
+
+;;; 'Filled' toggle on the 'Settings' menu.
+;;; this is a variable whose value is toggled by the 'Filled' option
+vars filled;
+
+;;; 'Grid' toggle on the 'Settings' menu.
+;;; these two actions are called when the grid toggle is turned on/off
+vars grid;
+define grid_on;
+    true -> grid;
+    [grid on] =>
+enddefine;
+define grid_off;
+    false -> grid;
+    [grid off] =>
+enddefine;
+
+;;; 'Show' on the 'Settings' menu.
+;;; this shows the current settings
+define show;
+    [magnifier ^mag grid ^grid filled ^filled] =>
+enddefine;
+
+;;; 'Reset' on the 'Settings' menu.
+;;; this resets the settings to their defaults.
+define reset(menubar); lvars menubar;
+    false -> mag; false -> grid; false -> filled;
+    mag -> menupane_value(menubar, "Settings", "Magnifier");
+    grid -> menupane_value(menubar, "Settings", "Grid");
+    filled -> menupane_value(menubar, "Settings", "Filled");
+enddefine;
+
+;;; this is an example of specifying popup actions for menus. See the
+;;; specification for the help menu below
+define popup_help_action;
+    [help menu posted]=>
+enddefine;
+
+constant my_menubar = menupane_compile {
+    {'\[u]File'
+        {'\[u]New'        do_option}
+        {'\[u]Open...'    do_file_open}
+        {'\[u]Save'       do_option}
+        {'Save \[u]As...' }
+        {'\[u]Print...'   }
+        {'\[u]Close'      }
+        {'\[u]Exit'       }
+    }
+    {'\[u]Edit'
+        {'\[u]Undo'  Alt BackSpace }
+        space
+        {'Cu\[u]t'   Shift Del     cut}
+        {'\[u]Copy'  Ctrl Ins      cut}
+        {'\[u]Paste' Shift Ins     paste}
+        {'\[u]Delete'              }
+        space
+        {'Edit On'   switch_edit   }
+
+    }
+    {'\[u]Settings'
+        {Magnifier  Ctrl F1 {magnifier}}
+        {Grid       Ctrl F2 {grid_on grid_off}}
+        {Filled     Ctrl F3 {filled}}
+        {Show               show}
+        {'\[u]Reset'        reset}
+    }
+    {'\[u]Help'
+        popup_help_action
+        {'On \[u]Context...'     }
+        {'On \[u]Window...'      }
+        {'On \[u]Help...'        }
+        {'On \[u]Keys...'        }
+        space
+        {'C\[u]ontents...'       }
+        {'\[u]Tutorial...'       }
+        {'\[u]Support...'        }
+        space
+        {'On \[u]Version...'     }
+    }
+};
+
+
+;;; This illustrates the MENU_ACTION argument to the menupane_new_menubar
+;;; function. This is called before doing any menu action.
+define menu_action(menubar, menu, option, state);
+    lvars menubar, menu, option, state;
+    [^menu : ^option (state = ^state) ] =>
+enddefine;
+
+;;; This illustrates the POPUP_ACTION argument to menupane_new_menubar
+;;; called when a menu is posted
+define popup_action(menubar, menu, option); lvars menubar, menu, option;
+    [popping up ^menu] =>
+    if menu == "Edit" then
+        ;;; make the 'Delete' option on the 'File' menu insensitive
+        false -> menupane_sensitive(menubar, "Edit", "Delete");
+    endif;
+enddefine;
+
+;;; This makes the menubar
+vars shell = XtAppCreateShell('menupane', 'Menupane',
+                XptWidgetSet("Toolkit")("ApplicationShellWidget"),
+                XptDefaultDisplay,
+                []);
+
+vars main_w = XtCreateManagedWidget('main_window',
+        XptWidgetSet("Motif")("MainWindowWidget"),
+        shell, []);
+
+vars menubar = menupane_new_menubar(main_w,
+                popup_action, menu_action, false, my_menubar);
+
+XtRealizeWidget(shell);
+
+false -> menupane_sensitive(menubar, "Edit", "Paste");
+
+
+/*
+Now try the following:
+
+Simple menu actions:
+
+    Choose 'Open' on the 'File' menu
+
+    Choose 'New' or 'Save' on the 'File' menu.
+
+Menu actions that change menu sensitivity:
+
+    Choose 'Cut' or 'Copy' on the 'Edit' menu.
+        The 'Paste' option becomes sensitive.
+
+    Choose 'Paste' on the 'Edit' menu.
+        The 'Paste' option becomes insensitive again.
+
+Menu actions that change labels:
+
+    Choose 'Edit On' on the edit menu.
+        toggles the edit state and changes the label to 'Edit Off'
+
+Toggle menu actions:
+
+    Choose 'Magnifier', 'Grid' or 'Filled' on the 'Settings' menu.
+        This toggles the magnifier, grid or filled variables.
+
+    Choose 'Show' on the 'Settings' menu.
+        This prints out the current values of the variables.
+
+Actions that set the toggle state of menu options:
+
+    Choose 'Reset' on the 'Settings' menu.
+        This resets all the toggle options ('Magnifier', 'Grid' and
+        'Filled') to off.
+
+Keyboard driven menu actions:
+
+    Press Ctrl and F1 together.
+        This is the same as choosing 'Magnifier' on the 'Settings' menu.
+
+    Press Ctrl and F2 together.
+        This is the same as choosing 'Grid' on the 'Settings' menu.
+
+    Press Ctrl and F3 together.
+        This is the same as choosing 'Filled' on the 'Settings' menu.
+
+    Press <Alt> and S together.
+    Press 'R'.
+        This is the same as choosing 'Reset' on the 'Setting' menu.

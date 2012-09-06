@@ -1,0 +1,7 @@
+HELP MAX_N                                              Steve Knight, Jul 94
+                                                        SIREN Project
+max_n( __a1, __a2, ..., __aN, _N ) -> _A
+
+Returns the maximum of _N numbers.  If _N is zero then a number
+representing -infinity is returned (a very large, negative floating
+point number).

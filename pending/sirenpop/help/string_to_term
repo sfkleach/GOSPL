@@ -1,0 +1,11 @@
+HELP STRING_TO_TERM                                     Steve Knight, Oct 93
+                                                        SIREN Project
+    lib string_to_term
+
+    string_to_term( STRING ) -> PROLOG_TERM or FALSE
+    string_to_term_error -> STRING
+
+This library makes available the procedure -string_to_term- which parses
+a string and returns a Prolog term.  If the string is not readable as a
+Prolog term then it returns <false> and the (active) variable
+-string_to_term_error- is set to an appropriate error message.

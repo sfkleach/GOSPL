@@ -1,0 +1,10 @@
+HELP IS_STRFLOAT                                        Steve Knight, Oct 93
+                                                        SIREN Project
+is_strfloat( STRING ) -> BOOL
+
+This procedure returns true if its argument is a string representing
+a decimal or ddecimal number.
+
+See also:
+    HELP *IS_STRINTEGER
+    HELP *IS_STRDATE

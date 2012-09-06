@@ -1,0 +1,16 @@
+HELP SYSSORT_BY                                     Steve Knight, Nov 93
+                                                    SIREN Project
+
+syssort_by( LIST, [BOOL], ACCESS_PROC, CMP_PROC ) -> LIST
+
+This procedure sorts a list of items LIST according to the access
+procedure ACCESS_PROC and the comparison procedure CMP_PROC.  The
+boolean flag BOOL, if <false>, indicates that the sort should be
+non-copying.
+
+The comparison of items in the list is performed according to
+the predicate
+
+    CMP_PROC( ACCESS_PROC( ITEM1 ), ACCESS_PROC( ITEM2 ) )
+
+This function simplifies many of the uses of *SYSSORT.

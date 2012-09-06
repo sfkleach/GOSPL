@@ -1,0 +1,9 @@
+HELP TO_STRING                                      Steve Knight, Oct 93
+                                                    SIREN Project
+to_string( ITEM ) -> STRING
+
+Converts any item into a string, the string used being its printing
+representation.  If ITEM is already a string then it is simply returned.
+
+See also:
+    HELP *INTO_STRING   always returns a copy, even for strings

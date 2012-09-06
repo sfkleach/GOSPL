@@ -1,0 +1,6 @@
+HELP XT_DELETE_SHELL                                    Steve Knight, Oct 93
+                                                        SIREN Project
+xt_delete_shell( WIDGET )
+
+This procedure destroys the highest widget in the ancestor chain of
+WIDGET.

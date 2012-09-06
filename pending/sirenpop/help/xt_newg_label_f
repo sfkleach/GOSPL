@@ -1,0 +1,17 @@
+HELP XT_NEWG_LABEL_F                                    Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_newg_label_f(
+        PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED],
+        STRING, ITEM_LIST
+    ) -> GADGET
+
+This procedure creates a Motif label gadget.  The topmost arguments are
+used to prepare the XmNlabelString resource via *SPRINTF and obey the
+(moderately complex) argument rules for -sprintf-.  The remaining arguments
+are processed using *XT_NEW_ARGS.
+
+See also:
+    HELP *SPRINTF
+    HELP *PRINTF
+    HELP *XT_NEW_ARGS

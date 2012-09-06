@@ -1,0 +1,14 @@
+HELP XT_NEW_MENU_BAR                                    Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_menu_bar( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a new Motif menubar widget using -XmCreateMenuBar-.
+The arguments are processed using *XT_NEW_ARGS.
+
+The menu bar widget returned by this function is not managed.  I think
+this is the right thing to do but iot may need review.
+
+See also:
+    HELP *XT_NEW_ARGS

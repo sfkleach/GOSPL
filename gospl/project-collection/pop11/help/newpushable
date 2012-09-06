@@ -1,0 +1,56 @@
+HELP NEWPUSHABLE                                Steve Knight, Dec 86
+
+    newpushable( repeater ) -> pr   ;;; yields a pushable repeater
+
+The purpose of this routine is to allow you to "promote" an ordinary Pop11
+repeater to one that has an updater.  The meaning of the updater is that you
+may "pushback" elements onto the repeater.  This is typically useful when you
+want to peek ahead along the stream to see what is there.
+
+Normally this is done in Pop11 by converting the stream into a dynamic list
+using * PDTOLIST. However, there are (rare) occasions on which it might either
+be wasteful or inappropriate to use a list & this library covers those cases.
+
+For example, here is a way of generating a number repeater.  (Note how the
+lvars indefinite extent is used as a way of secretly grabbing store!  This is
+an idiom of languages like Pop11 & Common Lisp that are fully lexically scoped
+& support first-class procedures.)
+
+    define from_n( n ); lvars n;
+        procedure(); n + 1 ->> n endprocedure
+    enddefine;
+
+And here is it in use in a real session.
+
+Setpop
+: from_n( 99 ) -> nnn;
+;;; DECLARING VARIABLE nnn
+:
+: nnn() =>
+** 100
+: nnn() =>
+** 101
+: nnn() =>
+** 102
+:
+: newpushable( nnn ) -> pnnn;       ;;; now make it pushable
+;;; DECLARING VARIABLE pnnn
+:
+:
+: pnnn() =>
+** 103
+:
+: 72 -> pnnn();
+: "foobar" -> pnnn();
+:
+: pnnn() =>
+** foobar
+: pnnn() =>
+** 72
+: pnnn() =>
+** 104
+: pnnn() =>
+** 105
+:
+
+See also HELP * REPEATERS

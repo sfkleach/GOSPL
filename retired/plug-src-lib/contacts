@@ -1,0 +1,97 @@
+                        Pop Contacts
+
+If you have a copy of Poplog, you can try HELP * POPCONTACTS for more
+information.
+
+-- PLUG, the Poplog and Pop Languages User Group ----------------------
+
+PLUG supports a electronic mailing list and software archive, currently hosted
+at Hewlett-Packard Laboratories in the United Kingdom, maintained by Steve
+Knight.  Questions about these services can be send to
+    sfk@hplb.hpl.hp.com
+Please don't expect an immediate answer (except at weekends, bank holidays, or
+after midnight.)
+
+The PLUG archive is currently available via anonymous ftp at
+    hplose.hpl.hp.com
+in directory
+    pub/plug
+If you would like to send a contribution or make a comment about the PLUG
+archive then send a message to
+
+    Steve Knight,
+    Hewlett-Packard Labs,
+    Filton Rd,
+    Stoke Gifford,
+    Bristol,
+    BS16 6QZ
+    United Kingdom
+
+    email: sfk@hplb.hpl.hp.com
+    Tel (UK) 0272-228061
+
+To find out more about PLUG, try HELP * PLUG if you have access to a copy of
+Poplog.  Alternatively, write to or telephone PLUG c/o Integral Solutions Ltd
+(see below for address), or e-mail plug@isl.uucp .
+
+
+-- Poplog -------------------------------------------------------------
+
+British Educational customers may obtain Poplog from Sussex University.
+Orders and enquiries to
+    Ms Alison Mudd
+    POPLOG Sales
+    School of Cognitive and Computing Sciences
+    University of Sussex
+    Brighton
+    BN1 9QN
+    ENGLAND     Phone 0273 606755  (Ask for the POPLOG Manager)
+
+Academic sales in USA and Canada are organised by:
+    Prof Robin Popplestone
+    Computable Functions Inc.,
+    35 South Orchard Drive,
+    Amherst, MA 01002, USA
+    Tel (413) 253-7637
+
+All other sales and  enquiries are handled by:
+    Integral Solutions Ltd
+    Unit 3, Campbell Court
+    Bramley,
+    Basingstoke,
+    Hampshire,
+    RG26 5EG
+    Phone   +44 (0)256 882028     Fax +44 (0)256 882182
+
+    Email isl@integ.uucp
+
+-- AlphaPop -----------------------------------------------------------
+
+AlphaPOP, a version of Pop11 is available for the Macintosh is available from
+Cognitive Applications.  It's not as extensive or powerful as the Poplog
+implementation but it is very Mac-like and comfortable to drive.
+
+    Cognitive Applications Ltd,
+    4 Sillwood Terrace,
+    Brighton,
+    BN1 2LR,
+    United Kingdom
+
+    Tel (UK) 0273-821600
+
+-- Poptalk ------------------------------------------------------------
+
+Poptalk is an object-oriented variant of Pop11 developed by Cambridge
+Consultants Ltd.  It is a portable but relatively efficient implementation
+that's geared up for real-time knowledge-based programming.  The AI toolkit
+Muse runs on top of it.
+
+    Rob Zancanato,
+    Cambridge Consultants Ltd.,
+    The Science Park,
+    Milton Road,
+    Cambridge CB4 4DW
+
+    Tel (UK) 0223-358855
+
+-----------------------------------------------------------------------

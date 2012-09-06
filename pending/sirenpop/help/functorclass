@@ -1,0 +1,18 @@
+HELP FUNCTORCLASS                                   Steve Knight, Nov 93
+                                                    SIREN Project
+
+    functorclass <NAME> [ as <NAME> ] <FIELD1> ... <FIELDn> ;
+
+This syntax word is a convenient way of defining procedures for
+manipulating prolog terms of a particular functor/arity.
+
+e.g.
+
+    functorclass , as comma
+        comma_lhs
+        comma_rhs;
+
+NOTE:
+    This should be improved to handle "lconstant" and other declaration
+    modifiers.  At the moment all the variables are declared as
+    permanent procedure globals.

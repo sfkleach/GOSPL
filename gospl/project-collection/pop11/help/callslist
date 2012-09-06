@@ -1,0 +1,16 @@
+HELP CALLSLIST                               Chris Thornton  August 1984
+
+
+CALLSLIST  is a procedure which returns a list of sublists representing the
+'call' structure of a POP11 program. The procedure assumes that the program to
+be analysed is in the current VED buffer.
+
+The list returned contains sublists of the form
+
+      [<caller procedure>  {<called procedure>} ]
+
+The HD of the sublist contains the name of the caller procedure and the TL of
+the sublist contains the names of all called procedures (if there are any).
+
+
+see *SHOWNET *CLIQUENET *PROCNET *CLIQUES

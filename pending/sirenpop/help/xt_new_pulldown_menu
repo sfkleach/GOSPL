@@ -1,0 +1,14 @@
+HELP XT_NEW_PULLDOWN_MENU                               Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_pulldown_menu( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a Motif pulldown menu widget.  The arguments are
+processed using *XT_NEW_ARGS.
+
+The created widget is not automatically managed -- since management and
+pulldown visibility are conflated in the toolkit.
+
+See also:
+    HELP *XT_NEW_ARGS

@@ -1,0 +1,14 @@
+HELP LABEL                                              Steve Knight, Oct 93
+                                                        SIREN Project
+    label WORD:
+
+This syntax word is used to sets labels that are targets of "goto" and
+"go_on" statements.  It is an alternative to the standard syntax for
+labels.
+
+The advantage of writing
+    label foo:
+rather simply
+    foo:
+is that autoloading is inhibited in the former but, unfortunately,
+triggered in the latter.

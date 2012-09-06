@@ -1,0 +1,8 @@
+HELP USES_PROJECT_COLLECTION                        Steve Leach, Jan 05
+
+    uses_project_collection ___dir
+
+This command extends the search list pop_project_search_list with
+directory ___dir.  The subdirectories of ___dir are assumed to be projects
+and can be loaded by name using commands such as uses_project and
+lib_project.

@@ -1,0 +1,21 @@
+HELP XT_BE_AWARE                                    Steve Knight, Oct 93
+                                                    SIREN Project
+
+xt_be_aware( SHELL_WIDGET )
+
+This procedure makes shell widgets behave in a way that is typically
+useful in the POPLOG environment.  Because these behaviours can only
+be applied when the shell is realized, it will apply XtRealize if
+necessary.
+
+    -   Sensitive to busy states (see REF *XptBusyCursorOn)
+
+    -   Protected against garbage collection, regardless of whether
+        it is held in any variables. (See HELP *XT_GC_PROTECT)
+
+    -   Smart about window manager deletion requests.  The natural
+        response should be to delete a single window not (as seems
+        common) to crash the application.
+
+A shell that does all these things is ``aware'' and is, as a result,
+much more useful than your average shell.

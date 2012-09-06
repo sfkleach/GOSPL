@@ -1,0 +1,5 @@
+HELP TALLTREE                                          JL Cunningham, Oct 1984
+
+This library provides an example of using LIB SHOWTREE to plan the layout
+of a tree, but using user-defined procedures to draw tree nodes. See
+HELP NEWSHOWTREE.

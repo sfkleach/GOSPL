@@ -1,0 +1,15 @@
+HELP FOR_LVARS                                      Steve Leach, Jun 98
+
+    for lvars ...
+
+This is an extension of the "for" syntax that makes it compatible
+with the new "lfor" syntax.  For example, instead of writing
+
+    lfor i in list [ a b c ] do ....
+
+one could write
+
+    for lvars i in list [ a b c ] do ...
+
+It is provided to allow people to use the more familiar "for"
+keyword while being 100% backward compatible with existing code.

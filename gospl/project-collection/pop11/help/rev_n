@@ -1,0 +1,13 @@
+HELP REV_N                                      Steve Knight, 20 Oct 91
+
+    rev_n( ITEM1, ..., ITEMn, n ) -> ( ITEMn, ..., ITEM1, n )
+
+This procedure reverses the order of the top n items of the stack.  It is
+usually used used in the following way
+
+    rev_n(#| EXPR |#)
+
+For example,
+
+    rev_n(#| 1, 2, 3, 4 |#) =>
+    ** 4 3 2 1 4

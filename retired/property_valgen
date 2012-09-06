@@ -1,0 +1,25 @@
+HELP PROPERTY_VALGEN                                    Steve Leach, Dec 04
+
+    ___________V:procedure -> property_valgen( __________P:property )
+    property_valgen( __________P:property ) -> ________V:valgen
+
+This is a convenience procedure used to assign the active value of a
+property using a "value-generator".
+
+A value generator is the name given to a function that generates a value
+from a key.
+
+    procedure( key );
+        ___... ________computes _____value ___...
+    endprocedure -> property_valgen( P )
+
+The intended use for property_valgen is to act as a selector for
+optional arguments with new_property (see HELP *NEW_PROPERTY).
+
+    ;;; Maps an object into its print-string
+    new_property(
+        [], "==", false,
+        optarg property_valgen( key );
+            key >< ''
+        endoptarg
+    )

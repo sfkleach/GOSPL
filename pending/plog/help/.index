@@ -1,0 +1,23 @@
+Plug Archive Index: send poplog/prolog/help/.index
+==================================================
+
+This file lists all of the files in this terminal directory. It
+also lists the files you will need to provide the documented
+facilities.
+
+The numbers to the left of the file names are their sizes in K
+Bytes. These numbers, and comments beginning with "#", will be
+stripped out by the archive server, so you needn't remove them,
+unless you want to.
+
+#  total 15 K Bytes
+   1 poplog/prolog/help/.index
+
+# Un-tested Prolog Object-oriented Manager (POEM)
+  14 poplog/prolog/help/poem
+     poplog/prolog/lib/poem.pl
+
+# Un-tested example of poem.
+# Depends on poem.
+   1 poplog/prolog/help/shapes
+     poplog/prolog/lib/shapes.pl

@@ -1,0 +1,144 @@
+HELP SECTION_PUBLISH                                    Jon Meyer 1992
+                                                        Steve Knight 1994
+
+  1   Publishing and Subscribing Section Identifiers
+  2   Procedures
+  3   Declaring Variables
+  4   The Toplevel Section
+  5   Autoloading
+  6   Global, Imported or Exported Variables
+  7   See Also
+
+-----------------------------------------------------------------------
+1  Publishing and Subscribing Section Identifiers
+-----------------------------------------------------------------------
+
+A section ____SECT can "publish" the names of identifiers which it wishes to
+make available to other sections.  These other sections need not be
+subsections, or indeed related in any way to ____SECT.  By subscribing to
+____SECT, other sections will have available to them all the identifiers
+published by ____SECT.  In this document, this process is described as
+"transporting" variables from the ____SECT into the section that subscribes
+to ____SECT.  Thus "publishers" act as providers of identifiers, whereas
+"subscribers" are users of those identifiers.
+
+Using publish and subscribe, it is very easy for sections to access and
+share identifiers without also making those identifiers top-level global
+variables.
+
+When a section subscribes to ____SECT, it can specify a way to map between
+the names of identifiers published by ____SECT and the local names that are
+to be used.  Thus each user of ____SECT can use its own naming conventions
+for naming identifiers published by ____SECT.
+
+Generally speaking, the section that publishes an identifier name is
+also the section that declares it and defines its value, although this
+need not be the case.
+
+
+-----------------------------------------------------------------------
+2  Procedures
+-----------------------------------------------------------------------
+
+The programming interface to publishing and subscribing for sections is
+described below:
+
+section_publish( ____word )                                      [_________procedure]
+        Marks ____word as the name of an identifier in the current section
+        which will be made available to other sections that subsequently
+        subscribe to the current section (see below).
+
+
+is_section_published( ____sect, ____word ) -> ____bool                   [_________procedure]
+        Returns ____true if ____word has been marked as published in section
+        ____sect.
+
+
+app_section_published( ____sect, ____proc )                          [_________procedure]
+        Applies ____proc to each word in section ____sect that has been
+        marked as published.
+
+
+section_subscribe( ____sect, ______prefix )                            [_________procedure]
+        For each word published by ____sect, transports the identifier that
+        is associated with the word in ____sect into the current section,
+        under a name which is determined by ______prefix; if ______prefix is
+        _____false, the identifiers are made available using the same names
+        that are published by ____sect; if ______prefix is a word, the new name is
+        formed by concatenating ______prefix onto the front of the published
+        name; if ______prefix is a procedure, it is passed each published name
+        in turn and should return the new name.
+
+        Any previous identifiers associated with subscribed words will
+        be cancelled.
+
+
+-----------------------------------------------------------------------
+3  Declaring Variables
+-----------------------------------------------------------------------
+
+If an identifier name is published by SECT, but it is not declared when
+another section subscribes to SECT, the section mechanism will first
+attempt to autoload the identifier.  If this fails, a warning message is
+printed, and the identifier is automatically declared (using
+-sysdeclare-).
+
+
+-----------------------------------------------------------------------
+4  The Toplevel Section
+-----------------------------------------------------------------------
+
+You cannot subscribe to the top-level section (attempting to do so
+generates a mishap).  Likewise, you cannot publish things from the
+top-level section.
+
+The top-level section can, however, subscribe to other sections - that
+is, it is possible to transport published variables from nested sections
+into the top-level section.  This is useful when you wish to try out a
+section interactively.
+
+
+-----------------------------------------------------------------------
+5  Autoloading
+-----------------------------------------------------------------------
+
+If you subscribe to a section which does not publish anything, the
+section mechanism first attempts to autoload the file with the same name
+as the section you subscribe to.  If, after autoloading, there is still
+nothing to subscribe to, you will get a warning message.  (Usually, if
+you subscribe to a section that doesn't publish anything it is because
+(a) you are trying to subscribe to a section which doesn't partake of
+the publish/subscibe mechanism, or (b) the code for the section is not
+loaded, or (c) because you incorrectly typed the section name).
+
+
+-----------------------------------------------------------------------
+6  Global, Imported or Exported Variables
+-----------------------------------------------------------------------
+
+The section publish/subscribe mechanism is separate from the *GLOBAL
+attributes of section identifiers.  That is, if SECT defines a nonglobal
+variable -foo- and publishes that variable, subscribers to SECT will
+also access the same (and hence nonglobal) variable -foo- (so
+subsections of those subscribers will not have access to -foo-).
+Conversely, if -baz- is a global variable published by SECT, the
+variable -bza- that is seen by subscribers to SECT will also be global
+(and therefore inherited by subsctions of those other sections).
+
+A section SECT may also publish a variable which is imported from the
+parent of the section, rather than defined locally in the SECT.  In this
+case, the publish/subscribe mechanism works just as if it was the parent
+section that published that variable, and subscribers had subscribed to
+the parent section for just that variable.
+
+
+-----------------------------------------------------------------------
+7  See Also
+-----------------------------------------------------------------------
+
+HELP * MODULE           module/endmodule is an alternative syntax for
+                        sections that permits publishing and
+                        subscribing.
+
+HELP * EXTEND_SECTION   This library modifies the section/endsection
+                        syntax to work the same way as module/endmodule.

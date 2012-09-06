@@ -1,0 +1,16 @@
+HELP XT_NEW_LABEL_F                                     Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_new_label_f(
+    PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED],
+    STRING, ITEM_LIST
+)-> WIDGET
+
+This procedure creates a Motif label widget.  The last two arguments are
+used to prepare the XmNlabelString resource via *SPRINTF.  The remaining
+arguments are processed using *XT_NEW_ARGS.
+
+See also:
+    HELP *SPRINTF
+    HELP *PRINTF
+    HELP *XT_NEW_ARGS

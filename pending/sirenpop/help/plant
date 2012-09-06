@@ -1,0 +1,15 @@
+HELP PLANT                                              Steve Knight, Nov 93
+                                                        SIREN Project
+plant( LIST )
+
+This procedure is a convenient way of planting code.  It takes
+an instruction in the form of
+
+    INSTRUCTION ::= [ KEY ARG INSTRUCTION* ]
+                ::= [ KEY ]
+
+The key may be any of
+    pop, push, pushq, pushs, call, callq, calls, ifnot, ifso, erase
+and these are translated into the corresponding VM instruction.
+
+TO BE COMPLETED

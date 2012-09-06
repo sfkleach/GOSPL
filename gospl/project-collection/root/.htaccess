@@ -1,0 +1,3 @@
+AddDescription "syntax for loading a project from a directory." "load_project.p"
+AddDescription "vectorclass object describing GOSPL version." "popgospl_internal_version.p"
+AddDescription "human readable string describing GOSPL version." "popgospl_version.p"

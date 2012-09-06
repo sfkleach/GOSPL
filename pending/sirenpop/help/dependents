@@ -1,0 +1,33 @@
+HELP DEPENDENTS                                     Steve Knight, Oct 93
+                                                    SIREN Project
+    lib dependents
+
+This library makes available a simple model for implementing change
+dependencies.  The idea is that you are able to add procedures (or
+items with a suitable class_apply) to the list of dependencies of an
+item.  When that item is changed -notify_dependents- is called to
+apply the dependents are apply'd in order.
+
+
+add_dependent( PROC, ITEM )
+        Adds the procedure PROC to the list of dependents of ITEM.
+
+
+del_dependent( PROC, ITEM )
+        Removes the procedure PROC to the list of dependents of ITEM.
+
+
+is_dependent( PROC, ITEM ) -> BOOL
+BOOL -> is_dependent( PROC, ITEM )
+        Tests whether PROC is a dependent of ITEM.  (The test used is
+        -==-.)  In update mode, it adds PROC or deletes PROC according
+        to whether BOOL is <true> or <false>.
+
+
+app_dependents( ITEM, PROC )
+        Apply PROC to each of the dependents of ITEM.  The order of
+        application is not defined.
+
+
+notify_dependents( ITEM )
+        Sequentially applies the dependents of ITEM in any order.

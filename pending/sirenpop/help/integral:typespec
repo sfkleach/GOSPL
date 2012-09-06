@@ -1,0 +1,8 @@
+HELP INTEGRAL:TYPESPEC                              Steve Knight, Oct 93
+                                                    SIREN Project
+    defclass NAME {
+        NAME : integral
+    }
+
+This typespec is useful for restricting fields of a class to have
+integral-valued entries.  This includes both integers and bigintegers.

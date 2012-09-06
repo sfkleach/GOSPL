@@ -1,0 +1,13 @@
+HELP SYS_USES_PROJECT_COLLECTION                         Steve Leach, Jan 05
+
+    sys_uses_project_collection( ___dir )
+
+This procedure extends the search list pop_project_search_list with the
+directory ___dir.  If ___dir does not exist, it issues a warning.  The
+subdirectories of ___dir are assumed to be project directories.
+
+See also:
+    HELP *LIB_PROJECT
+    HELP *POP_PROJECT_SEARCH_LIST
+    HELP *SYS_USES_PROJECT
+    HELP *USES_PROJECT

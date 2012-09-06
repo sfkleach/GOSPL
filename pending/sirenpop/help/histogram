@@ -1,0 +1,34 @@
+HELP HISTOGRAM
+
+new_histogram( __________population, a________ttribute ) -> _________histogram
+
+subscrv_histogram( _n, _________histogram ) -> ______bucket
+______bucket -> subscrv_histogram( _n, _________histogram )
+_________histogram( _n ) -> ______bucket
+______bucket -> _________histogram( _n )
+
+histogram_population( _________histogram ) -> __________population
+
+histogram_population_size( _________histogram ) -> _n
+
+histogram_attribute( _________histogram ) -> a________ttribute
+
+histogram_limits( _________histogram ) -> ( ___min, ___max )
+
+histogram_length( _________histogram ) -> _n
+
+make_bucket( ______string|_____false, ___min, ___max ) -> ______bucket
+
+bucket_limits( ______bucket ) -> ( ___min, ___max )
+
+bucket_name( ______bucket ) -> ______string
+
+bucket_members( ______bucket ) -> ___________item_vector
+
+filter_histogram( _________histogram, ____pred ) -> _________histogram
+
+histogram_bucket_sizes( _________histogram ) -> __s1, __s2, ..., __sN
+
+histogram_max_bucket_size( _________histogram ) -> ___int
+
+histogram_pick_bucket( _n, _________histogram ) -> ______bucket

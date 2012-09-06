@@ -1,0 +1,16 @@
+HELP CLIQUES   -- Jon Cunningham  84 (modified slightly by Chris Thornton)
+
+
+CLIQUES(network, level) -> clique_network;
+
+Returns a 'clique-analysis' of the network.
+
+<network> should be of the form:  [<node> <relatives>]
+
+<level> should be an integer between 1 and 4
+
+Higher <level> args obtain more restrained clique-analysis although
+(at present) 3 and 4 obtain exactly the same analysis.
+
+
+see *CROSSREF *CLIQUENET

@@ -1,0 +1,13 @@
+#!/bin/sh
+# This a simple script for creating the compressed tar archive of the
+# PLUG source archive.  It also clears out the *- files that VED leaves
+# around and recreates the contents file.  You don't need this file.
+
+pop11 mkcontents.p
+
+find . -type f -name '*-' | xargs /bin/rm
+chmod -R a+r .
+find . -type d | xargs chmod a+x 
+cd ..
+tar zcf plug.tgz plug
+chmod a+r plug.tar.Z

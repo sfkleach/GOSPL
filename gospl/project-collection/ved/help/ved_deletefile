@@ -1,0 +1,7 @@
+HELP VED_DELETEFILE                             Aaron Sloman, 1991
+
+ENTER deletefile
+
+This VED command deletes the current file from the VED buffer AND from the
+disc.  It doesn't delete backup versions, in case you need to recover from a
+mistake.

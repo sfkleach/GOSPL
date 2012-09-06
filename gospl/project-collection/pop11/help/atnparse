@@ -1,0 +1,129 @@
+
+ATN Demonstration                               Allan Ramsay, 11 January 1984
+
+This program enables you to watch a piece of text being parsed in terms of an
+ATN grammar. It provides a display showing the arcs which have been traversed
+and the parse tree which has been built, and enables you either to single-step
+your way through the parsing process, or to skip over the bits you're not
+interested in. It also allows you to inspect the values of the registers
+whenever you want.
+
+The program is quite efficient, as backtracking ATN parsers go, and can
+reasonably be used as a library program. If you want to use it as part of
+another program, and you have debugged your grammar so that you no longer need
+the display, you should assign "false" to "displaying". You will then have a
+parser which is about as fast as you can get for a given ATN grammar.
+
+Your grammar may include code for interacting with semantic routines, either
+to help choose between possibly ambiguous readings of a piece of text as early
+as possible, or so that you can start building interpretations of the text as
+you go. This may be done by including explicit directions in the code
+which specifies, for each arc of the network, the actions to be taken when
+that arc is successfully traversed (these directions are made up of arbitrary
+POP-11 - see LIB ATNGRAMM for examples). Alternatively you may assign to the
+variable "user_fun", which is called every time any arc is successfully
+traversed (it is initialised as "identfn").
+
+When the display is being used, the program will ONLY run on VISUAL-200
+terminals, and it cannot be run through VED or with "record" switched on. It
+makes use of the fact that VISUAL-200's have two levels of display, background
+and foreground, and it displays the path that is currently being investigated
+in the foreground and the rest of the network in the background. The relative
+brightness of these two fields is controlled by a pair of sliding switches
+underneath the rear lefthand corner of the terminal; if you find when you run
+the program that the distinction between bright and dim is inadequate, slide
+these switches around. Remember to leave the foreground as bright as possible
+for the next person who wants to use the terminal.
+
+To run the program, type
+
+    lib atnparse;
+
+This will load the parser and the display routines. You then have a choice
+between using the standard grammar and dictionary, or using your own. To use
+the standard grammar, type
+
+    lib atngramm;
+
+and to use the standard dictionary, type
+
+    lib atndict;
+
+To make up your own grammar and dictionary, do
+
+    showlib atngramm;
+
+or
+
+    showlib atndict;
+
+to see what they should look like, and then either use them as the basis for
+your own files or write your own starting from scratch but using the same
+conventions. The system's grammar is based fairly loosely on the grammar in
+Appendix D of Winograd's "Language As A Cognitive Process" - try to see how
+the tests and actions in the program correspond to the conditions and actions
+in Winograd's grammar before you make any radical changes. The standard
+dictionary loads a file called "atnends.p", which provides a simple but fairly
+effective mechanism for removing suffixes such as "ing", "s", and "es" from
+the ends of words. When you've got files that you are satisfied with, just
+load them.
+
+Once you've got the system set up, you can parse things by typing, e.g.
+
+    parse([the old man with the big nose is a downright nuisance],"S") -> x;
+
+parse takes a piece of text (i.e. a list of words) and the name of a syntactic
+category. It draws the network for the category, the text, and the partial
+parse tree on the screen, and highlights the arc it is proposing to traverse
+and the portion of the text which it has not yet looked at. It then waits for
+you to type something. If you type <esc> (i.e. press the key marked "esc" or
+"escape"), it moves on to the next stage in its analysis, which may involve
+going down into a lower level network, or may involve backtracking if it finds
+it cannot traverse the current arc. Typing "skip;" has much the same effect as
+<esc>, except that the system does not show you any of its workings at lower
+levels than the one it is currently at - this is particularly useful when the
+parser is proposing to cross a NP arc, and you can see how it is going to do
+it, and you don't want to watch it in all its gory detail. Anything else you
+type is taken to be POP11 code, and is evaluated as normal. In particular, you
+can inspect the values of a register simply by typing e.g.
+
+    Cat =>
+
+and you can interfere with the parser by assigning to registers on the fly,
+e.g
+
+    "passive" -> Voice;
+
+would lead the system to suppose that it had set the register "Voice" to be
+"passive", so that arcs which required passive sentences would be taken and
+ones which required active ones would not.
+
+You may find the display gets corrupted, either by messages from outside or
+because you have produced so much output that the display has been shifted up
+the screen. To get it back, type
+
+    reshow;
+
+The system's grammar contains a number of registers, some of which are used
+for its own internal bookkeeping and some of which have syntactic
+significance. The following registers may be worth inspecting to see what's
+happening (note that all their names begin with Capital letters - this is a
+useful convention to help you see what is what, rather than a requirement);
+
+Aux - list of auxiliaries
+Mood - whether a sentence is active or passive ("voice" in Winograd)
+Rel - whether a NP is relative
+Trans - how many objects a verb takes
+MV - main verb of a sentence
+Subj - subject of a sentence
+DO - direct object of a sentence
+IO - indirect object
+Mods - prepositional phrases attached to the end of a sentence or clause
+Det - determiner of a NP
+Num - is structure singular or plural
+Yesno - is sentence a "yes-no" question
+Ques - is sentence a question
+Text - remaining text
+Cat - category of structure being buil
+Tree - parse tree for current nextwork
+Hold - things that are being "held" for later

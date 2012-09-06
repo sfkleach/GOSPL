@@ -1,0 +1,34 @@
+HELP EXTEND_SECTION                                   Jon Meyer 1992
+
+lib extend_section
+
+This library modifies the section/endsection syntax to act in the same
+way as module/endmodule.  This provides an enhancement to section that
+allows names to be shared between sections without them being visible in
+any other sections.  This syntax is backward compatible with the old
+section/endsection syntax.
+
+With this syntax you can write
+
+    section $-hip
+        import:
+            import_name1
+        export:
+            export_name1
+            export_name2
+        subscribe:
+            $-propsheet with_prefix ps_
+            $-xlib
+            $-myutils
+        publish:
+            setup
+            quit
+        ;
+
+    endsection;
+
+
+For more details see also
+    HELP *MODULE            Describes the new syntax.
+    HELP *SECTION_PUBLISH   Describes the underlying publish & subscribe
+                            interface for sections.

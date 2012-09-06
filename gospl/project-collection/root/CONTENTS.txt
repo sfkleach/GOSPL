@@ -1,0 +1,13 @@
+auto/lib_project.p      
+auto/lib_project_warning.p    
+auto/load_package.p     
+auto/load_project.p     syntax for loading a project from a directory.
+auto/load_project_warning.p    
+auto/popgospl_internal_version.p    vectorclass object describing GOSPL version.
+auto/popgospl_version.p    human readable string describing GOSPL version.
+auto/sys_lib_project_warning.p    
+auto/sys_load_package.p    
+auto/sys_load_project_warning.p    
+auto/sys_uses_package.p    
+auto/uses_package.p     
+auto/uses_project_collection.p    

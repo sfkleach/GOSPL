@@ -1,0 +1,94 @@
+HELP HIP_LISTBOX                                    Jon Meyer, Steve Knight
+                                                    ISL        SIREN Project
+
+lib hip_listbox
+
+This library makes building scrolling lists in HiP much easier.  A
+listbox is a composite of 3 hip objects
+
+    #   A drawing in which the elements of the list will be displayed.
+        This drawing is treated as the "key" object of the composite
+        (e.g. the names of the other objects are derived from the
+        name of the drawing.)
+
+    #   A button (type label) that acts as an opaque backdrop for the
+        drawing.
+
+    #   A slider (default scrollbar) that controls which part of the
+        list is displayed.
+
+The easiest way to create a listbox composite is to type
+    ENTER listbox <name> RETURN
+from inside VED.  This creates a new listbox composite.  The drawing of
+the listbox has the name you specified, the button is named
+<name>_button, and the slider is named <name>_slider.  The names are
+important because the scripts use them to bind the elements together.
+
+To reposition a listbox, reposition the drawing of the listbox and then
+type
+    ENTER listbox RETURN
+This command "reglues" all the listbox composites together, based on the
+position of their drawings.
+
+A listbox responds in the following ways.  When you click on an element
+in the listbox it is highlighted.  You can find out what element is
+selected using listBoxValue.  When you double-click on an element, it is
+highlighted and a *hipActivate message is generated.  When you click or
+drag on the slider, the listbox contents respond in the obvious fashion.
+
+
+
+-----------------------------------------------------------------------
+
+In all the following entries, a ________list_box can be either a list_box object
+or, more usefully, the name of the listbox.
+
+
+new_list_box(____name) -> _______________list_box_object
+    Creates a new listbox object based on the given ____name which must
+    be a word.
+
+is_list_box(____item) -> ____bool
+    Returns ____true if item is a listbox, otherwise _____false.
+
+kill_list_box(________list_box)
+    Destroys a listbox and removes all the components from the
+    current production.
+
+listBoxItems(________list_box) -> ___vec
+___vec -> listBoxItems(________list_box)
+    ___vec is a vector of list items, which are either strings, dstrings
+    or vectors. If they are vectors, then the item can contain strings,
+    font names or color names. For example:
+
+        {'A' 'B' 'C'} -> list_box.listBoxItems;
+
+        {'A' {'A' _helvetica_14_b 'B'} 'C'} -> list_box.listBoxItems;
+
+        {'A' '\{b}B\{i}C' 'D'} -> list_box.listBoxItems;
+
+    ___vec can also be a list, or an integer specifying a number of items
+    on the stack.
+
+
+listBoxValue(________list_box) -> _n
+_n -> listBoxValue(________list_box)
+    The index for the currently selected item, or _____false if nothing
+    is selected.
+
+listBoxVisibleItemCount(________list_box) -> _n
+    How many things are visible in the list.
+
+listBoxTop(________list_box) -> _n
+_n -> listBoxTop(________list_box)
+    The index of the item that is shown at the top of the list box.
+
+listBoxFont(________list_box) -> ____font
+____font -> listBoxFont(________list_box)
+    The font for items in the list.
+
+ENTER listbox [____name]
+    Recallibrates all list boxes on the current scene.  If given a name
+    argument, this creates a new list box called ____name.
+
+-----------------------------------------------------------------------

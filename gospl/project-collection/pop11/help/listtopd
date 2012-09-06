@@ -1,0 +1,21 @@
+HELP LISTTOPD                                   Steve Knight, Oct 91
+
+    listtopd( L ) -> R
+
+Given a list L, the procedure listtopd returns a repeater R.  This repeater
+returns each element of the list in turn.
+
+e.g.
+    lvars R = listtopd( [1 2 3] );
+    repeat 4 times R() endrepeat =>
+    ** 1 2 3 <termin>
+
+The repeater returned by listtopd is pushable -- meaning that it has got an
+updater that can push items back onto the repeater's internal buffer.
+
+    lvars R = listtopd( [1 2 3] );
+    "fred" -> R();
+    repeat 5 times R() endrepeat =>
+    ** fred 1 2 3 <termin>
+
+See also HELP * REPEATERS

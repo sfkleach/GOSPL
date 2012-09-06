@@ -1,0 +1,18 @@
+GOSPL:  Quick Installation Instructions
+        For Experienced Poplog Users
+
+1.  Download the gospl.tar.gz tarball.
+
+2.  Unpack it into a convenient directory, we recommend $poplib for
+    a personal installation.
+
+3.  Edit your $poplib/init.p and add these lines
+
+        load $poplib/gospl/project-collection/init.p
+        uses_project pop11      ;;; optional
+        uses_project ved        ;;; optional
+
+4.  Browse $poplib/gospl/project-collection/ with your web browser to
+    get an overview of the contents of these projects.
+
+5.  Enjoy! 

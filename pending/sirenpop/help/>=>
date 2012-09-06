@@ -1,0 +1,6 @@
+HELP >=>                                                Steve Knight, Feb 94
+                                                        SIREN Project
+ARG >=> EXPR
+
+This syntax is a convenient shorthand for writing procedures with one
+argument.

@@ -1,0 +1,12 @@
+HELP &_until                                        Steve Leach, Nov 99
+
+    repeat
+        ...
+    &_until <expr> do
+        ...
+    endrepeat
+
+This is syntactic sugar for -quitif-.
+
+See also
+    HELP * &_while

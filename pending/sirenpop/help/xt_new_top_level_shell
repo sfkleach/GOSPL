@@ -1,0 +1,22 @@
+HELP XT_NEW_TOP_LEVEL_SHELL                             Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_new_top_level_shell( NAME, [DISPLAY], BINDING1, ..., BINDINGn )
+
+-- Description ------------------------------------------------------------
+
+This convenience function creates Motif top level shells.
+
+    NAME    widget name string, the class is automatically derived
+            by converting the first letter into upper case.
+
+    DISPLAY an optional XDisplay, by default -XptDefaultDisplay-
+
+    BINDING see *XT_NEW_ARGLIST.  Typically omitted.
+
+
+-- See Also ---------------------------------------------------------------
+
+HELP *XT_BE_AWARE
+
+---------------------------------------------------------------------------

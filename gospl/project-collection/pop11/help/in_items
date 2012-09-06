@@ -1,0 +1,27 @@
+HELP IN_ITEMS              26th Feb 1990                Steve Knight x 24061
+
+for i, j, k in_items EXPR, EXPR, EXPR do
+    ACTIONS
+endfor
+
+This for loop extension is suitable for iterating over expressions which dump
+their results onto the stack.  Roughly speaking the construct is equivalent to
+
+fast_for i, j, k in [% EXPR %], [% EXPR %], [% EXPR %] do
+    ACTIONS
+endfor
+
+except that the lists are reclaimed during the execution of the loop.  The
+loop quits as soon as any of the expressions are exhausted.
+
+e.g. Here's one way to interleave two strings
+
+    consstring(#|
+        lvars i, j;
+        for i, j in_items 'cat'.explode, 'dog'.explode do
+            i, j
+        endfor;
+    |#) =>
+    ** cdaotg
+
+There is no fast version of this loop.

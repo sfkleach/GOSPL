@@ -1,0 +1,7 @@
+HELP SPLIT_WITH                                     Steve Leach, Jun 98
+
+    split_with( string, separators ) -> ( s1, ..., sN )
+
+This procedure splits a string into substrings at separator
+character boundaries.  The separator characters are specified
+as a string.

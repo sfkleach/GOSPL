@@ -1,0 +1,5 @@
+HELP POPGOSPL_VERSION                               Steve Leach, Dec 04
+
+    popgospl_version
+
+A string which describes the version of the GOSPL library.

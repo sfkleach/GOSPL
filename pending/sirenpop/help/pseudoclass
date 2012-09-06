@@ -1,0 +1,5 @@
+HELP PSEUDOCLASS                                        Steve Knight, Nov 93
+                                                        SIREN Project
+pseudoclass <CLASS_NAME> <FIELD_NAME>* ;
+
+TO BE COMPLETED.

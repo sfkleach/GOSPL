@@ -1,0 +1,93 @@
+HELP NEW_PROPERTY                                   Steve Leach, 13th Dec 04
+
+    new_property( initial, gcflag, default, [optargs] ) -> prop
+
+This function is intended to provide a compact and simple way of
+creating properties.  The need for such a function arises from the fact
+that newproperty is too simple and newanyproperty is too complicated.
+
+The initial argument is a list of initial values in the usual format
+of a list of key-value lists.
+    [ [ key1 value2 ] [ key2 value2 ] ... ]
+
+The gcflag is the crucial parameter and represents the hash-function,
+the equality-function and the garbage-collect flag.  It can be a
+vector of three procedures or a single word.  Words are used to
+compactly represent the common cases.
+
+      --------------------------------------------------
+      | gcflag    || hash      | equality  | gc        |
+      |-----------++-----------+-----------+-----------|
+      | "==" or   ||           |           |           |
+      | "perm"    || false     | ==        | "perm"    |
+      |-----------++-----------+-----------+-----------|
+      | "tmparg"  || false     | ==        | "tmparg"  |
+      |-----------++-----------+-----------+-----------|
+      | "tmpboth" || false     | ==        | "tmpboth" |
+      |-----------++-----------+-----------+-----------|
+      | "="       || syshash   | =         | "perm"    |
+      |-----------++-----------+-----------+-----------|
+      | "==#"     || syshash   | ==#       | "perm"    |
+      |-----------++-----------+-----------+-----------|
+      | v:vector  || v(1)      | v(2)      | v(3)      |
+      --------------------------------------------------
+
+The third parameter is the default value for the property.  The
+importance of the default is that this the value used for removing
+entries from a property.
+
+It is also possible to specify further optional parameters in the "optarg"
+format (see HELP *OPTARGS for details).  These are supplied using the -&-
+syntax.  The optional arguments are
+
+      -------------------------------------------------------------
+      | keyword   | description               | default           |
+      |-----------+---------------------------+-------------------|
+      | active    | the active default        | false             |
+      |           |                           |                   |
+      | equal     | the equality function     | uses eqflag value |
+      |           |                           |                   |
+      | gcflag    | "perm", "tmparg", "tmparg"| uses eqflag value |
+      |           | "tmpclr", "tmpboth"       |                   |
+      |           |                           |                   |
+      | hash      | the hashing function      | uses eqflag value |
+      |           |                           |                   |
+      | valgen    | convenience value for     | false             |
+      |           | specifying the active     |                   |
+      |           | default                   |                   |
+      -------------------------------------------------------------
+
+It is useful to note that the optional parameters specifying
+the hash function, the equality function and the garbage collection
+flag take precedence over the values specified by the eqflag
+parameter.
+
+For example, to create property that can garbage collect on the
+key or value you might write this:
+
+    ;;; Override the gc flag only
+    new_property( [], "==", false -&- gc = "tmpboth" )
+
+Or to create one that allocates names for objects you might write this:
+
+    new_property(
+        [], "==", false -&-
+        active = (
+            procedure( object, self );
+                gensym( "object" ) ->> self( object )
+            endprocedure
+        )
+    )
+
+The valgen keyword, which is short for value generation, is provided for
+convenience.  It reflects the common situation when the active default
+always adds a newly computed result into the hash table.  Using this,
+the above example can be written more simply like this:
+
+    new_property(
+        [], "==", false -&-
+        valgen = erase <> gensym(% "object" %)
+    )
+
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------

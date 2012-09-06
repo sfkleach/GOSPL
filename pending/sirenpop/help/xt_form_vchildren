@@ -1,0 +1,8 @@
+HELP XT_FORM_VCHILDREN                                  Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_form_vchildren(#| WIDGET, ... |#)
+
+This procedure takes a counted group of widgets and attaches them vertically
+together as children of a form widget.  The top widget comes first (i.e. is
+deepest on the stack.

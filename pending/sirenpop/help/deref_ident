@@ -1,0 +1,5 @@
+HELP DEREF_IDENT                                        Steve Knight, Nov 93
+                                                        SIREN Project
+deref_ident( IDENT ) -> ITEM
+
+This procedure takes chains of ident records and dereferences them.

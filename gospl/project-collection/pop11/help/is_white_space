@@ -1,0 +1,7 @@
+HELP IS_WHITE_SPACE                                 Steve Knight, Feb 97
+
+    is_white_space( _______integer ) -> _______boolean
+
+This function returns ____true if the argument is a character code that
+represents a white-space such as a space, tab, newline, or carriage
+return.

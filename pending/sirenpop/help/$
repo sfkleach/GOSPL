@@ -1,0 +1,7 @@
+HELP $                                                  Steve Knight, Nov 93
+                                                        SIREN Project
+$ <NAME>
+-> $ <NAME>
+
+The syntax word $ is a convenient for a call to *SYSTRANSLATE.  It can
+also be used to update the value of environment variables in update mode.

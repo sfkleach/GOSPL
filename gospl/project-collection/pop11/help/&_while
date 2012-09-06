@@ -1,0 +1,12 @@
+HELP &_while                                        Steve Leach, Nov 99
+
+    repeat
+        ...
+    &_while <expr> do
+        ...
+    endrepeat
+
+This is syntactic sugar for -quitunless-.
+
+See also
+    HELP * &_until

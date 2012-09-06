@@ -1,0 +1,372 @@
+======================== Important disclaimer ===============================
+| The material in this archive is freely contributed and must be used on    |
+| an "as is" basis.  In particular, no guarantee or warranty concerning     |
+| this software is made by the contributors, the user group, the archive    |
+| administrator, or the site of distribution.  There is no formal           |
+| maintenance or support for any of the software in this archive.           |
+=============================================================================
+
+README
+    Each directory has its own README file detailing the contents of
+    the directory.
+
+READMETOO
+    How to add the archive to your local Poplog setup.
+
+intro
+    An introduction to this archive.
+
+contacts
+    Contact information on the PLUG archive and mailing-list, the
+    user-group itself, and other Pop-related organisations.
+
+contents
+    All the README files spliced together.
+
+news
+    News on what has been recently added to the archive.
+
+pop/
+    The source code archives.
+
+tidyup
+    An shell script for creating the plug.tar.Z file and keeping things
+    nice and tidy.
+
+
+-- poplog/pop ---------------------------------------------------------
+
+pop/help/
+    Help files specific to the PLUG Source Code Archive, typically that
+    describe the layout or contents of the files.
+
+pop/itemtool/
+    Interactive tool for designing PWM (Poplog Window Manager) windows.
+    Loaded by "lib itemtool".
+
+pop/lisp/
+    Libraries for use with Poplog Common Lisp.
+
+pop/obsolete/
+    Contributions which have become obselete -- usually by the introduction
+    of a generalised facility into the Poplog system.
+
+pop/plog/
+    Libraries for use with Poplog Prolog.
+
+pop/pop11/
+    Libraries for use with Poplog Pop11.
+
+pop/pwm/
+    Libraries for use with the Poplog Window Manager.
+    Loaded with "lib pwm".
+
+pop/ved/
+    Libraries for use with Poplog VED.  These files were separated
+    because of their variable quality and considerable quantity.  I
+    am in the process of weeding out the good from the bad here.
+
+
+-- poplog/pop/lisp ----------------------------------------------------
+
+pop/lisp/ops5/
+    The Poplog Common Lisp distribution of the public domain OPS5
+    package.
+
+
+-- pop/lisp/ops5 ------------------------------------------------------
+
+HELP OPS5_README                                            Tom Khabaza,
+                                                            12th June 1989.
+
+This is the README file for the Poplog Common Lisp distribution of the
+public domain OPS5 package.
+
+This OPS5 distribution contains the following files:
+
+com/mkops5
+    Command file for creating the OPS5 saved image.
+    Install as $poplocal/local/com/mkops5
+
+help/ops5
+    Help file for OPS5.
+    Install as $poplocal/local/lisp/help/ops5
+
+modules/ops5.lsp
+    OPS5 library - contains local additions and patches.
+    Install as $poplocal/local/lisp/modules/ops5.lsp
+
+Directory modules/ops5
+    Install as $poplocal/local/lisp/modules/ops5
+    Contains:
+
+    modules/ops5/vps2.lsp
+        The main OPS5 code - loaded by modules/ops5.lsp
+
+    modules/ops5/fac-demo.lsp
+        Factorial demo program.
+
+    modules/ops5/mab-demo.lsp
+        Monkey and bananas demo program.
+
+    modules/ops5/test-ops5.lsp
+        Test program, used by mkops5.
+
+
+-- pop/obsolete/auto --------------------------------------------------
+
+unxfileparse.p          parses UNIX path name -- see sys_fname
+ved_brackets.p          matches brackets in VED -- see ved_mp, ved_wiggle
+whereis.p               finds where people are in building -- needs database
+
+
+-- pop/obsolete/lib ---------------------------------------------------
+
+loadline.p          loads current line -- see * VEDLOADLINE
+
+
+-- pop/pop11 ----------------------------------------------------------
+
+auto
+    Autoloadable files.
+
+help
+    Help files documenting autoloadable functions and libraries.
+
+lib
+    Library files.  Each library loads up a collection of files.
+
+
+-- pop/pop11/auto -----------------------------------------------------
+
+<# ... #>               compile-time expr bracket (get-one)
+<## ... ##>             compile-time statement bracket (get-many)
+<#| ... |#>             compile-time count bracket
+<<| ... |>>             procedure variable composition brackets
+<| ... |>               short procedure brackets
+*_n.p                   multiplies top N items on stack
++_n.p                   adds top N items on stack
+app_n.p                 iterate over a counted group
+apprepeater.p           iterate over a repeater
+bin.p                   print numbers in a variety of formats
+const.p                 useful combinator, const( x )( y ) => x
+datainout.p             more sophisticated version of datafile
+daytimediff.p           differences in time in friendly format
+destrepeater.p          explode elements of repeater + count
+discinline.p            like discin <> incharline but more efficient
+discoutline.p           line discout but works on whole strings
+files_in_directory.p    gets all files in a directory
+files_matching.p        all files matching wildcard specification
+filecomplete.p          completes filenames (used by lib vedfnc)
+forall_match.p          all matches
+gensymbefore.p          comparison predicate gensym'd words
+in_directory.p          for-extension for iterating over directories
+in_items.p              for-extension for iterating over the stack
+incharline.p            character repeater to line repeater
+library.p               a simple module control facility for code development
+libsrc.p                like -lib- but uses -vedsrclist-
+listreadline.p          like readline, but gets nested lists
+listtopd.p              convert list to item repeater
+load_package.p          neat way of loading large packages
+lsq.p                   produces directory (listing no files => quickly)
+maprepeater             like maplist, for repeaters
+newpushable.p           makes repeaters with updaters
+print_file.p            print a file to cucharout
+rectype.p               a "recordclass" variant
+rev_n.p                 reverses order of top N items of the stack
+savelist.p              write a quoted list to a file
+SPACE.p                 measure heap space consumed -- used at PLUG92
+sys_file_exists.p       returns true if file exists, otherwise false
+TIME.p                  facility for timing commands  -- used at PLUG92
+usessrc                 like -uses- but uses -vedsrclist-
+
+
+-- pop/pop11/lib ------------------------------------------------------
+
+alxample.p              example for use with lib eprospect
+atndict.p
+atndraw.p
+atnends.p
+atngramm.p
+atnparse.p
+callslist.p
+chart.p
+cliques.p
+context.p               save/restore collections of globals
+ctbrackets.p            compile-time brackets <# & #>, <## & ##>, <#| & |#>
+dollar_dollar.p         syntax for quasi-quoting prolog terms elegantly
+epson_fx_1000.p         library supporting the EPSON FX 1000 printer
+modtransfms.p           affine transformations in any whole-numbered dimension
+newobj.p                a simple object-oriented programming library
+profiler.p              John Meyer's alpha release of a code profiler
+publish_and_subscribe.p library extending sections in powerul ways
+sublists.p              returns the list of all sublists of a list
+tinyglobe.p             amusing example teaching the use of flavours
+trap.p                  early debug package - now use pop debugger
+
+
+Original by Steve Knight
+Modified A.Sloman Sat Apr 11 16:26:30 BST 1992
+
+LIB OBJECTCLASS
+---------------
+The objectclass package is an object-oriented programming extension to Pop11.
+It is integrated with the Pop11 type system, provides multiple inheritance
+and CLOS-like multi-methods, and is implemented in a compact and efficient
+fashion.  It is distributed freely for education and evaluation.
+
+
+Files in this directory
+-----------------------
+
+README              This file
+ToDo                The file I use for jotting notes about ObjectClass
+attic               A dump for obsolete files (you shouldn't have this)
+auto                Autoloadable library
+help                Help files
+lib                 Library files
+objectclass.p       Startup script
+ref                 Reference files
+review.p            Test program
+src                 Source files
+teach               Tutorial files
+
+
+Making OBJECTCLASS available
+----------------------------
+To make use the objectclass package, you need to add it to your local
+library.  To do this, in the objectclass directory created by the
+unpacking the tar archive (e.g. $poplocal/local/objectclass)
+run the shell script
+
+    install.objectclass
+
+This will
+        Copy objectclass.p to $poplocal/local/lib
+        Copy objectclass to $poplocal/local/help
+        Make a symbolic link from $poplocal/local/lib/objectclass
+            to this directory
+        Update */obj_index files.
+
+To get on-line help on the package, you can now type the command
+    help objectclass
+This describes how to make the package available. The objectclass.p
+file (LIB OBJECTCLASS) extends poplog's search lists so that the
+documentation and library files can be browsed.  (It takes between ten to
+twenty seconds to load on Steve Knight's machine.)
+
+
+Reconfiguring LIB OBJECTCLASS
+-----------------------------
+Since the objectclass package has a sizeable collection of help files and
+autoloadable files, it needs to know where the files exists.  Because the
+Poplog library mechanism provides no help for this, it is necessary for
+all packages to provide their own ad-hoc solutions.
+
+The ObjectClass package guesses it position by looking for
+    $popobjectclass
+and if that doesn't exist it uses
+    $poplocal
+and assumes it has been positioned as per the instructions.
+
+
+IMPORTANT DISCLAIMER CONCERNING LIB OBJECTCLASS
+-----------------------------------------------
+This library is experimental and under development.  Although I have made a
+serious effort to remove faults in both the documentation and the source code,
+it is far from being product quality.  As such, you must treat it as untested
+and potentially faulty and take appropriate precautions.
+
+This library is freely distributed for evaluation purposes.  Please ensure
+that any modifications are clearly marked before passing copies to any third
+parties.  Such notes should appear both as a general disclaimer in the copy of
+this notice and in a more detailed form in the modified files.
+
+If you have any suggestions or modifications that you would like included,
+I would be delighted to hear from you.
+
+Stephen F. Knight                                   Sunday 27th Sept 1992
+e-mail:     sfk@hplb.hpl.hp.com
+tel:        (0272)-799910 x 24061
+
+                        Hewlett-Packard Laboratories,
+                        Filton Road,
+                        Stoke Gifford,
+                        Bristol     BS12 6QZ
+                        United Kingdom
+
+-----------------------------------------------------------------------------
+
+
+-- pop/pwm ------------------------------------------------------------
+
+pop/pwm/auto
+    Autoloadable files.
+
+pop/pwm/bin
+    Pwmtool executables suitable for sun2 and sun3 only.
+
+pop/pwm/help
+    Help files documenting the functions supplied by the autoloadable
+    files and library files.
+
+pop/pwm/lib
+    Library files.
+
+pop/pwm/obj
+    Object code suitable for sun2 and sun3.
+
+pop/pwm/src
+    Source code.
+
+
+-- pop/ved/auto -------------------------------------------------------
+
+pteach.p                macro for looking at prolog teach files
+start_vturtle.p         run vturtle from outside ved
+ved_cliquenet.p         visualise call structure of a program
+ved_ctlog.p             logging routine for Computers & Thought students
+ved_ctplay.p            playback of a log file
+ved_deletefile          deletes current file from disc and ved
+ved_gcprint.p           EPSON FX-100 printing (condensed)
+ved_gprint.p            EPSON FX-100 printing
+ved_incsearch.p         incremental search in VED, similar to emacs ^S
+ved_man.p               gets unix manual entires inside VED
+ved_mergefile           merge current & previous then delete current file
+ved_nograph.p           make the current buffer printable by any printer
+ved_noul.p              no underlines - strip nroff underlines out of text
+ved_pcomp.p             force popcompiler to be POP-11 compiler
+ved_preserve.p          copy current window to preserve.tmp & then edit it
+ved_procnet.p           show call structure of a program
+ved_pteach.p            access prolog teach files
+ved_pvar.p
+ved_query.p
+ved_see.p
+ved_shcol.p
+ved_show_keys.p         show all keys bindings in a ved buffer
+ved_sla.p
+ved_slb.p
+ved_ul.p                underline in marked range
+ved_v200keys.p
+ved_wmod.p
+
+
+-- pop/ved/lib --------------------------------------------------------
+
+autoindent.p            automatic indentation in ved
+bbcvt100.p              bbc micro as terminal setup
+chunks.p                operates on "chunks" (regions) in VED
+latex.p                 latex mode for VED
+helplog.p               logs all help requests to a file
+minicifer.p             cifer terminal setup
+regexp.p                regular expression matching for VED
+shownet.p               displays networks using VED
+talltree.p              changes showtree to make tall trees
+ved_clock.p             VED based alarm clock (!)
+vedabbprops.p           abbreviation expansion table
+vedabbs.p               abbreviation expansion facility
+vedendabbs.p            example of abbreviation facility
+vedfnc.p                alternative VED file name completion library
+vednkothe.p             backspace key makes next key work in other file
+
+

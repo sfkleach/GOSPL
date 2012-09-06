@@ -1,0 +1,21 @@
+HELP VED_CLOCK                                      Roger Evans & Steve Knight
+
+    lib ved_clock
+
+This library provides two ved commands ENTER CLOCK and ENTER SECS. ENTER CLOCK
+switches the clock on and off alternately, while ENTER SECS switches between
+displaying or not displaying seconds.
+
+ENTER ALARM allows you to set a time for an alarm to go off. eg
+    <enter> alarm 12:02
+NB: alarm string must match time string exactly for alarm to ring.
+
+The clock appears on the status line on the right hand side
+
+Note: if you go out of VED the clock is stopped - you may get a double prompt
+from POP11 (ignore it).
+
+To get the clock on whenever you are in ved, add
+    uses ved_clock
+    $-clock$-startclock -> vedinitfile;
+to your $poplib/vedinit.p file.

@@ -1,0 +1,31 @@
+-- poplog/pop ---------------------------------------------------------
+
+pop/help/
+    Help files specific to the PLUG Source Code Archive, typically that
+    describe the layout or contents of the files.
+
+pop/itemtool/
+    Interactive tool for designing PWM (Poplog Window Manager) windows.
+    Loaded by "lib itemtool".
+
+pop/lisp/
+    Libraries for use with Poplog Common Lisp.
+
+pop/obsolete/
+    Contributions which have become obselete -- usually by the introduction
+    of a generalised facility into the Poplog system.
+
+pop/plog/
+    Libraries for use with Poplog Prolog.
+
+pop/pop11/
+    Libraries for use with Poplog Pop11.
+
+pop/pwm/
+    Libraries for use with the Poplog Window Manager.
+    Loaded with "lib pwm".
+
+pop/ved/
+    Libraries for use with Poplog VED.  These files were separated
+    because of their variable quality and considerable quantity.  I
+    am in the process of weeding out the good from the bad here.

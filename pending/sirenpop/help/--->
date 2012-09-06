@@ -1,0 +1,6 @@
+HELP --->                                               Steve Knight, Jul 94
+                                                        SIREN Project
+
+list ---> pattern [where condition]
+
+The same as --> but uses fmatches instead of matches.

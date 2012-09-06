@@ -1,0 +1,10 @@
+HELP USER_PREFERENCE                                    Steve Knight, Feb 94
+                                                        SIREN Project
+
+user_preference( FILE ) -> PROP
+
+This function takes the name of a preferences-file and returns an
+access/update procedure.  The returned procedure works rather like a
+Pop11 property (see REF * DBM for details) with a default of <false>.
+
+If the preferences file does not exist then it is automatically created.

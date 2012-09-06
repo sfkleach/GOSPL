@@ -1,0 +1,144 @@
+\documentstyle[11pt]{article}
+
+\title{\bf The Grobbit (or ``Whiffle while you work'')}
+
+\author{\bf Chris Price}
+
+\parskip=6pt plus 2pt minus 3pt
+\parindent=0pt
+\topsep=0pt
+
+\hyphenpenalty=8000
+\doublehyphendemerits=10000
+\finalhyphendemerits=10000
+\begin{document}
+\maketitle
+
+\section{Your task}
+
+You are in charge of a family of grobbits --- grobbits are small, harmless,
+furry creatures living in the land of Tinyglobe. Tinyglobe looks quite
+similar to an N by N grid where the edges of the grid wrap around.
+
+The task before you is to evolve a strategy to keep your grobbits safe
+and well fed in a world that is fairly hostile. You are provided with a
+default strategy where your grobbit will give you a report on what is
+happening and prompt you to make a decision each turn. You can use this
+to try out being a grobbit. However, your task is to specify a strategy
+for the grobbits which will allow them to stand on their own two feet
+(metaphorically speaking --- grobbits actually walk on all fours).
+
+\section{Implementation Details}
+
+Both the grobbit and the other creatures are implemented as "objects"
+in Tinyglobe, where each object is at a particular square on the N by N
+grid. Each object takes it in turn to do what it wants, so after the grobbit
+has moved then all its enemies get a turn. If during an enemy's turn
+it manages to occupy the same square, it can choose to interact
+(i.e. to eat you).
+
+Other items in the world are: trees that can be climbed; holes that can
+be hidden in; wiffle flowers that grow in random locations and are a
+grobbit's favourite food.
+
+Grobbits have certain abilities that you are not allowed to change ---
+the speed at which they can move, the distance that they can see, the
+frequency with which they need food. Neither are you allowed to change
+the properties of other items in the world apart from grobbits. What
+you are allowed to change is the cunning with which grobbits survive
+in their world.
+
+How do you do that? You implement a better version of the method
+"next\_turn". It can be as big as you like (although it might be
+better to do your implementation as a series of procedure calls rather
+than one great big method). It will need to invoke other methods, and the
+following section gives details of what you are allowed to change ---
+anything else is cheating and will be frowned upon.
+
+\section{Practical Details}
+
+There are three types of routines implemented in the file {\em world.p} that
+you are allowed to call from your version of next\_turn:
+
+\begin{description}
+
+\item [Grobbit methods and ivars.]
+
+\begin{enumerate}
+
+\item  \verb+^+move( position ). This will move you to the new position
+(expressed as a list with two elements), assuming that the new position is
+within your range. You can make more than one move per turn, but only for
+\verb+^+speed squares.
+
+\item \verb+^+speed. This returns the number of squares that you can move per
+turn (not necessarily in a straight line, but a diagonal move counts as two
+squares).
+
+\item \verb+^+look. This returns a list containing references to all the
+objects within your visibility range. You can then send messages to those
+enemies to find out about them.
+
+\item \verb+^+up\_a\_tree, \verb+^+down\_a\_hole. True if you are in that
+particular position. In either case, you need to get out of it before you
+move.
+
+\item \verb+^+climb\_a\_tree, hide\_in\_hole, ground\_level. Get in a tree or a
+hole, or get out of it again. To climb a tree or go down a hole, you must be
+on the same square as it.
+
+\item \verb+^+eat\_food( object). Object should be something edible at the
+same location (e.g. a wiffle flower). If not, then you can't eat it. 
+
+\item \verb+^+nourishment. How many turns you can survive without finding
+something else edible. 
+
+\item \verb+^+position. Your current location.
+
+\end{enumerate}
+
+\item  [Other object methods and ivars.]
+
+\begin{enumerate}
+
+\item  creature\_object \verb+<-+ speed. Returns how many squares enemy can move
+next turn. 
+
+\item tree\_object \verb+<-+ are\_you\_empty. Can only climb an empty one.
+
+\item hole\_object \verb+<-+ are\_you\_empty. Can only go down an empty one.
+
+\item creature\_object \verb+<-+ get\_name. Returns the name of the class that the
+creature belongs to. 
+
+\item creature\_object \verb+<-+ potential\_food. Returns a list of the objects that
+the creature likes to eat. If member( ``grobbit'', creature\_object \verb+<-+
+potential\_food), then the creature might want to eat you.
+
+\item any\_object \verb+<-+ position. Returns where exactly on the board the
+creature is. 
+
+\end{enumerate}
+
+\item [Simple routines.]
+
+\begin{enumerate}
+
+\item lpr, nlpr, nls. Simple routines for printing lists and blank lines. 
+
+\item distance\_away( position1, position2 ). Returns how many
+squares apart the two positions are (useful when calculating threats - how
+far away and how fast is that guy?).
+
+\end{enumerate}
+
+\end{description}
+
+
+A basic template for you to start altering is provided in {\em grobbit.p}.
+{\em world.p} and {\em test1.datafile} are the rest of the Tinyglobe
+code and a test run respectively.
+
+Type {\bf tryout} to the Pop interpreter in order to run the grobbit world.
+
+\end{document}

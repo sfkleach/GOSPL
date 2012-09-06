@@ -1,0 +1,8 @@
+HELP revdl( L )                                 Steve Leach, Nov 99
+
+    revdl( x ) -> ( xN, .., x1 )
+
+This procedure has the same effect as calling -rev- and then -dl- i.e.
+it puts the elements of the list onto the stack in reverse order.
+However, it is implemented so that it does not generate any garbage
+and is (typically) much more efficient.

@@ -1,0 +1,215 @@
+Instructions for Installing GOSPL
+=================================
+
+-- Introduction -------------------------------------------------------
+
+GOSPL is an add-on library for the Poplog system.  This file provides
+detailed installation instructions.  If you are an experienced user
+you will probably find the quick-installation instructions in
+    docs/quick-install.txt
+to be sufficient.
+
+If you have not made up your mind about how Poplog should be
+installed, you might like to follow my recommended installation
+plan in
+    docs/recommended-plan.txt
+
+
+-- Requirements -------------------------------------------------------
+
+First you need to get the tarball.  A good place to find this is
+
+    http://www.poplog.org/download/gospl.tar.gz  (~350Kb)
+
+Download this.  You will find that it unpacks into a single directory
+called "gospl" in the current directory.  The best place to unpack
+it depends on your type of installation.
+
+Because GOSPL is location independent you can actually put the "gospl"
+directory anywhere!  However, there are conventional homes for GOSPL
+depending whether you want to make the installation available for just
+your user or all users on the system.
+
+Two standard installation scenarios, "personal" and "shared", are
+detailed below.  This is followed by instructions on how to make a
+custom installation.
+
+(You'll also need a copy of Poplog 15.53 or later but I'm assuming
+you've already got that.)
+
+
+-- Personal Installation under UNIX -----------------------------------
+
+For a personal installation, I recommended putting the "gospl"
+directory in your $poplib directory.  If you have already done
+this, go directly to step [2].  If you aren't sure whether or not
+$poplib is setup, read step [1] anyway.
+
+
+Step [1]: Set up $poplib
+
+The $poplib area is set aside for making personal additions to the
+Poplog system.  At the shell prompt, check whether or not the $poplib
+variable is set up (note that the '%' is meant to indicate the shell
+prompt - it will probably be different on your system.)
+
+    % echo $poplib
+
+This command will print out the value of the shell variable $poplib.
+If it is blank or your home directory, it means you haven't got it
+set up properly.
+
+Although $poplib can be set to any directory, I recommend creating
+a hidden ".poplog" directory in your home directory.
+
+    % cd
+    % mkdir .poplog
+
+Edit your login script, typically ".bash_profile", and ensure that
+the $poplib shell variable is assigned to the chosen directory.
+e.g. by adding the line
+
+    export poplib=~/.poplog
+
+Test these changes by logging out then logging in again and checking
+the $poplib variable again.
+
+
+Step [2]: Integrate GOSPL with $poplib
+
+Unpack (or move) the GOSPL tarball into $poplib.
+
+    % cd $poplib
+    % tar zxf gospl.tar.gz
+
+This will create a directory called "gospl" in $poplib.  Once you have
+unpacked the archive you have no further need of it.
+
+To make use of the GOSPL, you need to load its init.p file which lives
+in the top-level directory.  A good place to put this command would
+be your $poplib/init.p.  For example, you could add a line
+
+    ;;; Add this line to your "$poplib/init.p".  You may have to
+    ;;; create that file if you haven't got one already.
+    load $poplib/gospl/init.p
+
+However, this does not do much by itself.  It merely adds a new feature
+called "projects" to Poplog.  You need to make some projects available
+which you can do with the uses_project syntax (which is defined in the
+init.p).  To list the projects simply list the project-collection
+directory. Under UNIX you would type:
+
+    % ls -al $poplib/gospl/project-collection
+
+To inspect the contents of each project, browse the CONTENTS.html files
+that are present in the top-level directory of each project.  The main
+projects at the moment are "pop11" and "ved".  The "pop11" project adds
+a lot of handy capabilities to Pop-11.  The "ved" project defines
+commands that enhance your use of Ved.  Not everyone is using Ved these
+days so I have tried to keep these separate.
+
+The easiest way to make use of these projects is to add these extra
+lines to your "$poplib/init.p" file.
+
+    uses_project pop11
+    uses_project ved
+
+These commands extend the Poplog searchlists so that the new capabilities
+are available.
+
+
+-- Shared Installation ------------------------------------------------
+
+For a shared installation, I recommend integrating GOSPL into the
+$poplocal folder.  You may or may not have the $poplocal folder properly
+set up.  If you haven't (or aren't sure) then follow the instructions
+in Step [1].  If you have got it set up correctly, go directly to
+Step[3].
+
+
+Step [1]: Check whether $poplocal is set up
+
+The $poplocal shell variable is used to hold the name of the directory
+where a local administrator can extend the Poplog system.  To find out
+if $poplocal is set up properly, check whether $poplocal is defined and
+the following directories exist, $poplocal/local/lib,
+$poplocal/local/help.
+
+    % if [ -e $poplocal/local/auto ]; then echo yes; fi
+    % if [ -e $poplocal/local/lib ]; then echo yes; fi
+    % if [ -e $poplocal/local/help ]; then echo yes; fi
+
+If all is well, all of these commands should print "yes".  If they
+do not, you'll need to set up $poplocal as described in Step [2].
+
+
+Step [2]: Set up $poplocal folder
+
+The $poplocal folder can be anywhere.  My recommendation is that you
+make it the same directory as the one you unpacked Poplog into but it is
+not an important decision.  For example, I like to install Poplog into
+/opt/poplog and, for the sake of simplicity, I'll assume that
+choice here.
+
+The first thing to do is to make sure that $poplocal will be setup
+correctly when you login.  In your login script (typically .bash_profile
+these days) add the following assignment immediately before the
+place you execute the Poplog startup script.
+
+    export poplocal=/opt/poplog    # or whatever you choose
+
+Logout and login again to verify that assigment works.  Then, using the
+appropriate user (probably root), create a minimal $poplocal/local
+directory hierarchy
+
+    % mkdir $poplocal/local
+    % mkdir $poplocal/local/auto
+    % mkdir $poplocal/local/lib
+    % mkdir $poplocal/local/help
+
+And that's it.
+
+
+Step [3]: Integrate GOSPL into $poplocal
+
+Unpack (or move) the GOSPL archive into $poplocal.  This will mean that
+the subdirectories "gospl" and "local" are sitting side by side.  Now
+link a couple of files as follows:
+
+    % cd $poplocal/local/lib
+    % ln -s ../../gospl/install/lib/popgospl.p .
+    % cd $poplocal/local/help
+    % ln -s ../../gospl/install/help/popgospl .
+
+Once that's done, all that is needed to activate GOSPL is to
+execute the statement at the Pop11 prompt
+
+    : uses popgospl
+
+To make use of the main "pop11" and "ved" projects execute
+
+    : uses_project pop11
+    : uses_project ved
+
+Typically you would add those 3 lines to your $poplib/init.p
+
+
+-- Custom Installation ------------------------------------------------
+
+You may choose to implement a custom installation plan.  The only
+requirement that GOSPL has is that you compile the Pop11 file
+
+    <GOSPL directory>/gospl/init.p
+
+Where <GOSPL directory> is the location you unpacked the GOSPL
+archive into.  When this file executes, it automatically detects
+its location and from that infers the path names it requires.
+
+
+-----------------------------------------------------------------------
+Stephen Leach
+Email/MSN:      steve@watchfield.com
+AIM/iChat:      sfkleach@mac.com
+2nd Dec 1999
+modified 19th Sept 2003, 9th Dec 2004
+-----------------------------------------------------------------------

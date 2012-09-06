@@ -1,0 +1,60 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; doc improvements            Steve Knight            Thu Nov 27 1986 ;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+4.  Compiling user procedures in system mode should be possible
+
+7.  Append nodes as alternative implementation of lists
+
+10. Ensure that procedures get printed out correctly.
+
+12. Introduce character types.
+
+13. applypop11  -- syntax form in Scheme
+
+14. applyscheme -- syntax word in Pop11
+
+20. add interface to updaters
+
+21. turn everything into lconstants & sectionalise the whole lot
+
+22. add Chris's lexer
+
+23. correct transcript-on & off
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+1.  Extra context to inform planters whether or not results are needed
+
+2.  Cope with updates to top level identifiers like "+".  Note
+    that this involves modifying the "optimization" table.
+
+3.  Interface to VED & LIB SUBSYSTEM.  In particular VED_WIGGLE.
+
+5.  Protection against redefinition of system constants should
+    be flag controlled.
+
+6.  Immediate scheme shell.
+
+8.  Pragmas for controlling compilation inside Scheme
+
+9.  Improve the code for rationalize using continued fractions
+    algorithm
+
+11. Control tail call recursion on a flag.
+
+15. add a routine for attending to src_scheme rather than handling
+    it explicitly.
+
+16. track & control every use of CHAIN on opt_tail_call_scheme
+
+17. add the protect/unprotect pragma
+
+18. add doc pragmas rather than just doc flags
+
+19. add pretty ;;;; header so that indexify does not screw up
+
+24. make use of addpseudosubenv controllable on a flag
+
+25. improve the code for the mapping functions

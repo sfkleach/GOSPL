@@ -1,0 +1,30 @@
+-- pop/ved/auto -------------------------------------------------------
+
+pteach.p                macro for looking at prolog teach files
+start_vturtle.p         run vturtle from outside ved
+ved_cliquenet.p         visualise call structure of a program
+ved_ctlog.p             logging routine for Computers & Thought students
+ved_ctplay.p            playback of a log file
+ved_deletefile          deletes current file from disc and ved
+ved_gcprint.p           EPSON FX-100 printing (condensed)
+ved_gprint.p            EPSON FX-100 printing
+ved_incsearch.p         incremental search in VED, similar to emacs ^S
+ved_man.p               gets unix manual entires inside VED
+ved_mergefile           merge current & previous then delete current file
+ved_nograph.p           make the current buffer printable by any printer
+ved_noul.p              no underlines - strip nroff underlines out of text
+ved_pcomp.p             force popcompiler to be POP-11 compiler
+ved_preserve.p          copy current window to preserve.tmp & then edit it
+ved_procnet.p           show call structure of a program
+ved_pteach.p            access prolog teach files
+ved_pvar.p
+ved_query.p
+ved_see.p
+ved_shcol.p
+ved_show_keys.p         show all keys bindings in a ved buffer
+ved_sla.p
+ved_slb.p
+ved_ul.p                underline in marked range
+ved_v200keys.p
+ved_vlib.p              load a library and show identifiers loaded
+ved_wmod.p

@@ -1,0 +1,14 @@
+HELP +_n                                    Steve Knight, Oct 91
+
+    +_n( <number:x1>, ..., <number:xN>, N ) -> <number>
+
+The procedure +_n sums the first N numbers on the stack.  It is commonly used
+in combination with count brackets.
+
+e.g.
+    +_n(#| 1,2,3,4 |#) =>
+    ** 10
+
+Note that
+    +_n(#| |#) =>
+    ** 0

@@ -1,0 +1,16 @@
+HELP FILECOMPLETE        Steve Knight      2nd March 89
+
+"filecomplete" takes an initial part of a filename and returns all the
+possible completions as a dynamic list.  A completion does NOT include the
+initial segment.  Thus trying to complete '.log' in my home directory does
+this,
+
+    filecomplete( '.log' ).expandlist =>
+    ** [in in-]
+
+showing that I have two files '.login' and '.login-'.
+
+See also:
+    HELP *VEDCOMPLETE
+    HELP *VEDCOMPLETIONS
+    HELP *VEDUSECOMPLETIONS

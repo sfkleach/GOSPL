@@ -1,0 +1,10 @@
+HELP SYS_GRBG_DL                                 Steve Knight, 16 Oct 91
+
+    sys_grbg_dl( <expanded list> ) -> A1, ..., AN
+
+For experts only!
+
+Explodes an expanded list and returns all the pairs of the spine of the 
+list to the pairs-freelist.  
+
+Misuse of this procedure will crash Poplog!

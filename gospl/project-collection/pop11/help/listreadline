@@ -1,0 +1,14 @@
+HELP LISTREADLINE                       Jonathan Laventhol, 13 December 1983.
+
+    A procedure like READLINE, but one which will make nested lists.
+
+    : listreadline() =>
+    ? hello [a b c]
+    ** [hello [a b c]]
+
+    If the nested list doesn't have matching brackets then the result will
+be false:
+
+    : listreadline() =>
+    ? hello there [1 2
+    ** <false>

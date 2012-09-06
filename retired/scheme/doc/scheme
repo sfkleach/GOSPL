@@ -1,0 +1,55 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; doc scheme              Steve Knight        Tue Nov 25, 1986 ;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+         CONTENTS - (Use <ENTER> g to access sections)
+
+ -- Introduction
+ -- The Scheme Subsystem
+ -- Extensions to Scheme
+ -- For more information
+
+
+-- Introduction -------------------------------------------------------
+
+Scheme is a attractively clean version of Lisp invented by Guy Steele and
+Gerald Sussman.  This implementation was written by Steve Knight, contact
+address given below, and is intended for experiment and research.  It
+fully implements the standard described in the
+
+    "Revised(3) Report on the Algorithmic Language Scheme"
+    Editors Rees & Clinger
+
+including all the optional procedures and variations on syntax.  A complete
+description of the status of the implementation can be found in DOC STATUS.
+
+-- The Scheme Subsystem -----------------------------------------------
+
+The file extension associated with the Scheme subsystem is ".s" -- this allows
+"ved_lmr" to detect scheme files & compile them correctly.
+
+-- Extensions to Scheme -----------------------------------------------
+
+These are documented in DOC * PRAGMAS.
+
+
+-- For more information -----------------------------------------------
+
+Contact Steve Knight
+
+Address
+    Hewlett-Packard Labs,
+    Filton Rd.,
+    Stoke Gifford,
+    Bristol,
+    BS12 6QZ
+    (United Kingdom)
+
+Telephone
+    0272-799910 extension 4061
+
+Unix Mail Address
+    sfk@uucp.hplb
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

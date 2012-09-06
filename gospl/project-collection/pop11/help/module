@@ -1,0 +1,306 @@
+HELP MODULE                                           Jon Meyer 1992
+                                                      Steve Knight 1993
+ --  Overview
+ --  Using -module- With Publish and Subscribe
+ --  Example
+ --  Further Examples
+
+Overview
+--------
+This library introduces an alternative syntax for sections that provides
+a new way of controlling the visibility of variables.  It uses the
+publish & subscribe facility described in HELP *SECTION_PUBLISH.
+
+With this syntax, you are able to write code such as this :-
+
+    module $-hip
+        import:
+            import_name1
+        export:
+            export_name1
+            export_name2
+        subscribe:
+            $-propsheet with_prefix ps_
+            $-xlib
+            $-myutils
+        publish:
+            setup
+            quit
+        ;
+
+    endmodule;
+
+As in ordinary sections, imported and exported identifiers are shared
+with the parent section.  However, published identifiers are shared with
+any subscribing section without them being made visible anywhere else.
+
+In addition, anonymous modules can be constructed by specifying the name
+of a module as "_".
+
+
+Using -module- With Publish and Subscribe
+-----------------------------------------
+The full syntax of the -module- command is:
+
+    module [<name>] [<imports>] [=> <exports>] <actions> ;
+        <expression sequence>
+    endmodule;
+
+Where:
+    <actions>        -> [ <action> ... ]
+    <action>         -> subscribe: <subscribes>
+                     -> publish: <publishes>
+                     -> import: <imports>
+                     -> export: <exports>
+    <imports>        -> <word> [ <word> ...]
+    <exports>        -> <word> [ <word> ... ]
+    <publishes>      -> <word> [<word> ...]
+    <subscribes>     -> <sub_spec> [<sub_spec> ...]
+    <sub_spec>       -> <section> [with_prefix <prefix_word>]
+
+There is already an explanation of <exports>, and of <imports>, so these
+are not explained here (see REF *SECTIONS).  However, you should note
+that you can either import/export by using the usual section syntax or
+by using the keywords "import:" and "export:".  Using the keywords is
+preferred for new code but the old-style syntax is provided to make
+converting existing code more straightforward.
+
+The -module- command first 
+   (1) enters the section <name> (creating it if necessary), then 
+   (2) it imports each <word> in the list of <imports>, then
+   (3) it exports each <word> in the list of <exports>, then
+   (4) it subscribes the module to each <section> in the <subscribes> list, 
+       using the <prefix_word> if given, then
+   (5) it publishes each <word> in the <publishes> list, and finally
+   (6) exits the section, deleting it if the module name was "_", denoting 
+       an anonymous module.
+
+
+Example
+-------
+Let's write a simple library for getting the hour, minute and second
+of the current day:
+
+Here we define a module, called timelib, which publishes three
+variables: -hour-, -minute- and -second-:
+
+    module timelib
+        publish: hour minute second
+    ;
+
+    ;;; we use one procedure to calculate the second, hour and minute
+    define Date -> (second, minute, hour);
+        lvars second, minute, hour, u_time;
+        lconstant
+            _1900_1970 = 70 * 365 * 86400 /* 17 leap years */ + (17 * 86400),
+            seconds_per_minute  = 60,
+            minutes_per_hour    = 60,
+            seconds_per_hour    = minutes_per_hour * seconds_per_minute,
+            hours_per_day       = 24,
+            ;
+        sys_real_time() + _1900_1970 -> u_time;
+        u_time // seconds_per_minute  -> u_time -> second;
+        u_time // minutes_per_hour    -> u_time -> minute;
+        u_time // hours_per_day       -> u_time -> hour;
+    enddefine;
+
+    ;;; published active variables which access the current date:
+    define active hour -> h; lvars (,, h) = Date(); enddefine;
+    define active minute -> m; lvars (,m,) = Date(); enddefine;
+    define active second -> s; lvars (s,,) = Date(); enddefine;
+
+    endmodule;
+
+Although the module defines the variables -hour-, -minute-, and
+-second-, they are not declared as top-level global variables:
+
+    hour =>
+    ;;; DECLARING VARIABLE hour
+    ** <undef hour>
+
+Lets write a sample application that uses our time library:
+
+    module sample_app
+            subscribe: timelib      ;;; subscribe to timelib
+    ;
+        define showtime;
+            printf(';;; TIME: %p:%p:%p\n', [% hour, minute, second %]);
+        enddefine;
+    endmodule;
+
+Now run the example:
+
+    $-sample_app$-showtime();
+    ;;; TIME: 13:10:12
+
+Lets write another little application  that uses the time library.  This
+time, we will rename the variables declared by the time library to  give
+them a different prefix. This can be useful if you need to avoid clashes
+between two sections that publish the same identifier name.
+
+    module anapp
+            ;;; subscribe to timelib, specify a prefix of "time_"
+            subscribe: timelib with_prefix time_
+    ;
+
+        vars second = 0;
+
+        define isnewsecond;
+            lvars tmp;
+            (time_second ->> tmp) /== second;
+            tmp -> second;
+        enddefine;
+    endmodule;
+
+This will only return -false- if you recompile it several times in a
+row with less than a second between recompiles:
+
+    $-anapp$-isnewsecond()
+
+Finally, you can transport the variables of the timelib module into the
+top-level section. In this example, we will bring them into the top-level
+section using the prefix "t_" :
+
+    module subscribe: timelib with_prefix t_ ; endmodule;
+
+Further Examples
+----------------
+First, lets make a section $-mylib that "publishes" the variables -cat-,
+-dog-, -rat- and -animal-. To  illustrate what happens when you  publish
+and then  subscribe to  an  undeclared variable,  we will  only  declare
+-cat-, -dot- and -rat-, and leave -animal- undeclared.
+
+    module $-mylib
+        publish: cat dog rat animal  ;;; the list of things that are published
+    ;
+
+    ;;; declare cat, dog, rat but NOT animal
+    vars cat = 'felix', dog = 'fido', rat = 'ratty';
+
+    endmodule;
+
+Now lets create another section that makes use of the variables published
+by $-mylib.
+
+    module $-test1
+        subscribe: $-mylib                     ;;; subscribe to mylib
+    ;
+    cat =>
+
+    endmodule;
+
+You will see the value of cat in $-test printed out:
+
+    ** felix
+
+You will also  notice, when  you compile the  above code  for the  first
+time, that you get a warning message that looks like:
+
+    ;;; WARNING - VARIABLE PUBLISHED BY SECTION mylib NOT DECLARED
+    ;;; DECLARING VARIABLE animal
+
+This is  what we  expected -  we deliberately  left the  declaration  of
+-animal- out from mylib.
+
+Note that in the  top level section, -cat-,  -dog-, and -rat- are  still
+undefined. This is because section $-mylib did not export the  variables
+(it only published them). We can test this by trying -isdefined- on  the
+variables. It returns -false-  to indicate that  the top-level value  of
+the variable is still undefined:
+
+    isdefined("cat") =>
+    ** false
+
+On the other hand, you can access the variable that is shared by $-mylib
+and $-test1. First, assign 'meooww' to the -cat- variable in $-test1 :
+
+    'meooww' -> $-test1$-cat;
+
+Now, print out the value of the -cat- variable in $-mylib :
+
+    $-mylib$-cat =>
+    ** meooww
+
+The two are identical:
+
+    $-mylib$-cat == $-test1$-cat =>
+    ** true
+
+Now lets use the  section $-mylib from a  third section. This time  lets
+first declare a top level global variable:
+
+    global vars dog = "woof";
+
+Then make the section $-test2:
+
+    module $-test2
+        subscribe: $-mylib
+    ;
+
+    dog =>
+
+    endmodule;
+
+Now you get a warning message that looks something like:
+
+    ;;; WARNING - SUBSCRIBING TO SECTION mylib
+    ;;; CANCELS IMPORTED IDENTIFIER dog
+
+Followed by the trusty name:
+
+    ** fido
+
+When section $-test2 was  first created, the  global variable -dog-  was
+imported (all global variables  are imported into a  section when it  is
+first created).
+
+After this, the variables published by $-mylib are transported into  the
+new section. During this process, the section mechanism spots that -dog-
+already has a meaning  in the new  section, and so  warns you before  it
+cancels the meaning of -dog- and replaces  it with the new one (the  one
+specified in $-mylib).
+
+Just to test that things worked:
+
+    ;;; the global value of -dog- is the same:
+    dog =>
+    ** woof
+
+but:
+
+    ;;; $-test2 sees the $-mylib value of -dog-:
+    $-test2$-dog =>
+    ** fido
+
+Also, try changing one  of the variables in  any of the three sections,
+and you will notice that it also changes in the others:
+
+    'pong' -> $-mylib$-cat;
+
+    $-test1$-cat =>
+    ** pong
+
+    $-test2$-cat =>
+    ** pong
+
+Finally, lets subscribe to a section that doesn't publish anything:
+
+    module $-test3
+        subscribe: $-unknown_silly_section
+    ;
+    endmodule;
+
+After a slight pause, this produces a warning message that looks like:
+
+    ;;; WARNING - SUBSCRIBING TO SECTION WHICH PUBLISHES NOTHING
+    ;;; INVOLVING:   <section $-aunknown_silly_section>
+
+
+See Also
+--------
+HELP *SECTION_PUBLISH       For the details on how publish and
+                            subscribe works, how it interacts with
+                            global declarations etc.
+
+HELP *EXTEND_SECTION        For modifying the section/endsection
+                            syntax so it works like module/endmodule.

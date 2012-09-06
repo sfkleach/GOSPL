@@ -1,0 +1,370 @@
+            Global Open Source Poplog Library
+            =================================
+
+-- Version 1.2.2 (23 Mar 2010) -----------------------------------------
+
+    *   Reorganisation and rehosting as part of Assembla.Com.
+
+-- Version 1.2.1 (2nd Feb 2005) ----------------------------------------
+
+    *   Extra documentation added.
+
+    *   Aaron Sloman pointed out that the pop_ui_projecttool happens
+        to use the phrase "project" as well.  I have documented this
+        unfortunate clash of terminology but I am reluctant to give
+        way since the pop_ui_projecttool isn't really a mature piece
+        of work.
+
+
+-- Version 1.2 (13th Jan 2005) -----------------------------------------
+
+    *   Change of terminology from packages to projects - makes a lot
+        more sense.  Introduce idea of project-collections.  Because
+        many of the file names and contents have changed to reflect
+        the new terminology, I've decided to bump the minor version
+        number.
+
+
+-- Version 1.1.1 (13 Dec 04) -------------------------------------------
+
+    *   New, elegant Named Arguments syntax.  See HELP *NAMED_ARGS
+
+    *   new_property, a simple and powerful property constructor that
+        makes use of the named arguments syntax.
+        See HELP *NEW_PROPERTY.
+
+    *   lib server - a basic facility for writing internet servers.
+        See HELP *SERVER
+
+    *   Fixed contact details.
+
+
+-- Version 1.1.0 (12 Dec 04) -------------------------------------------
+
+Modest reorganization to accomodate the additional work for the gStudy
+project.
+
+
+-- Version 1.0 (27 Nov 99) ---------------------------------------------
+
+Massive reorganisation and consolidation of the old PLUG Source Code
+Archives to create the new GOSPL.  All the public library material has
+been pulled together to create this release which, hopefully, is better
+suited to the Open Source environment.
+
+
+-- Version 0.7 ---------------------------------------------------------
+
+NEW floor, ceiling
+    Simple autoloadable maths functions.
+
+
+-- Version 0.6 ---------------------------------------------------------
+
+In this release I have started a long-overdue cleanup process.  I have
+withdrawn quite a few contributions because they were broken or
+undocumented or beyond immediate recall.  I rescued "lib shownet",
+however, as it provides a really excellent capability but was suffering
+from severe software rot.  I rather doubt that anyone was using these.
+(If you were, you'll find backup copies in the obsolete directory.  You
+should take copies and stuff them in your own local library.)
+
+I've unfortunately had to withdraw some facilities contributed by Jon
+Meyer because of inconsistencies that had arisen between different
+versions.  Owing to the limited amount of effort I can put into
+maintaining the PLUG archive, I reluctantly decided to remove them
+rather than risk giving people serious problems later on.
+
+NEW lib psprint
+    Use postscript to print your VED buffers.  This nice facility
+    can deal with the new VED character styles and everything.  A
+    neat contribution by Jon Meyer of ISL.
+
+NEW newtokeniser
+    This library provides a convenient way of writing new itemisers.
+    It is based around the idea of specifying a state
+    transition network.  It's been around for a long time but hasn't
+    been given a public airing before.  See HELP *NEWTOKENISER.
+    Contributed by Steve Knight.
+
+NEW restack
+    This autoloadable syntax word generates efficient code for stack
+    manipulation.  See HELP *RESTACK.
+
+NEW plant_in_line
+    This autoloadable syntax word enables you to plant code in line
+    rather than call procedures.  See HELP *PLANT_IN_LINE.
+
+NEW sysplant
+    A simple autoloadable routine that makes code planting very
+    simple in many cases.  See HELP *SYSPLANT.
+
+NEW IMPROVED module, lib extend_section, section_publish, section_subscribe
+    The entire publish & subscribe model for sections has been revised
+    to good effect.  A new syntax for using publish & subscribe
+    has been introduced, see HELP *MODULE, and the service functions
+    section_publish and section_subscribe have been nicely separated.
+    See HELP *SECTION_PUBLISH.  To extend the section/endsection syntax see
+    HELP *EXTEND_SECTION.
+
+IMPROVED lib shownet
+    A nice VED-based library for drawing general nets rather than just
+    trees.  The previous version introduced many unwelcome variables
+    at top-level and had many obsolete programming constructs.  These
+    problems have been fixed.  See HELP *SHOWNET.
+
+NEW lib chain_repeaters
+    Another repeater oriented procedure.  This one takes a list of
+    repeaters and produces a repeater that uses each in turn.  See
+    HELP *CHAIN_REPEATERS and REF *REPEATERS.  Contributed by Steve Knight.
+
+WITHDRAWN lib objectclass
+    Now available in Poplog 14.5 in the prototype library.
+
+WITHDRAWN lib regexp_compile
+    New available in Poplog 14.5 as part of the system.
+
+WITHDRAWN lib rectype
+    Undocumented.
+
+WITHDRAWN lib savelist
+    Superceded by datafile.
+
+WITHDRAWN lib autoindent
+    As part of the review process, lib autoindent didn't make the
+    grade and was simply too hard to bring up to date with modern
+    programming practices.  There were also several problems with the
+    library.  It is a shame to withdraw it as it is a good idea and
+    much of the implementation was good.
+
+WITHDRAWN lib lsq.p
+    Superceded and undocumented.
+
+WITHDRAWN lib trap.p
+    Superceded by Poplog's lib debugger.
+
+WITHDRAWN lib popdbm
+    Inconsistent with the new HiPWorks dbm.
+
+WITHDRAWN lib datainout
+    Inconsistent with the new HiPWorks datainout.
+
+WITHDRAWN lib Xpi
+    Sadly I had to withdraw this work because of software rot.  It
+    relied on library path names that changed.  Hopefully, it will be
+    published as part of the HiP system.
+
+
+-- Version 0.5 (13/09/93) ----------------------------------------------
+
+A belated release.  The main reason for this release is the inclusion
+of Jon Meyer's Xpi package.  I've not done much to the library this
+year owing to pressure of work.  I've also withdrawn my objectclass
+library on the basis that it will be included in the base release of
+POPLOG in the near future.
+
+lib popxpi
+HELP *Xpi
+    X Portable Image library.  Another whiz piece of software from
+    Jon Meyer.  Does a lot of "xv" things but all inside Pop11.
+    Amazing stuff if you are into image processing.
+
+WITHDRAWN lib objectclass
+    Removed to meet distribution arrangements with ISL.  The objectclass
+    project will be included (we believe) in version 14.5.
+
+
+-- Release 4 (22/11/92) ------------------------------------------------
+
+I am (slowly) continuing to document and review the contents of this
+archive.  I have moved the VED material into its own sub-library simply
+because there is so much that it obscures the other material.  Furthermore,
+the VED routines don't seem to age as well.  So there seem quite good
+reasons for splitting them off.
+
+I have also taken the liberty of "tidying up" some of the source code.
+This mainly consists of introducing section/endsection brackets and
+replacing archaic constructions (e.g. vars fred; true -> fred;) with
+modern ones (e.g vars fred = true;).
+
+pop11/lib/regexp.p
+pop11/ref/regexp
+    Full regular expression matching for VED -- and about time too --
+    submitted by Jon Meyer.  Alpha release -- will be will withdrawn
+    from this archive if/when it enters the main system.
+
+pop11/lib/profiler.p
+pop11/ref/profiler
+    A code profiler submitted by Jonathan Meyer.  Uses showtree to
+    display results.  Alpha release -- will be withdrawn from this
+    archive if/when it enters main system.
+
+pop11/lib/modtransfms.p
+pop11/ref/modtransfms
+    A library for making (and inverting) the affine transformations
+    in any whole-numbered dimension.  This work formed the basis for
+    James Anderson's PhD thesis.  Contributed by Dr. Anderson.
+
+pop11/auto/SPACE.p
+pop11/auto/TIME.p
+pop11/help/SPACE
+pop11/help/TIME
+    A couple of syntax words which are helpful for calculating the time
+    or space used by commands.  These syntax words were introduced at the
+    PLUG92 tutorial on efficient Pop programming.
+
+pop11/help/dollar_dollar
+pop11/lib/dollar_dollar.p
+    A syntax word for putting Prolog terms into Pop11 programs in a neat
+    and convenient fashion.  Submitted by Robin Popplestone.
+
+pop11/ved/help/latex
+pop11/lib/ved/latex.p
+    A latex mode for VED.  Submitted by Robin Popplestone.
+
+pop11/lib/objectclass
+    A new release of the ObjectClas library.  Still going strong!
+    This library is the basis of the course given in the PLUG92
+    tutorial on object-oriented programming.
+
+-- Version 0.3 (22/01/92) ----------------------------------------------
+
+pop11/help/ved_deletefile
+pop11/auto/ved_deletefile.p
+    A utility command that deletes the current buffer from VED and the disc.
+    Contributed by Aaron Sloman.
+
+pop11/help/ved_mergefile
+pop11/auto/ved_mergefile.p
+    A utility command that merges the current buffer into the previous
+    buffer, then deletes the current buffer from VED and the disc.
+    Contributed by Aaron Sloman.
+
+pop11/help/<|
+pop11/auto/<|.p
+    Procedure brackets -- useful when writing very short procedures which
+    take no arguments.  Contributed by Steve Knight.
+
+pop11/help/<<
+pop11/auto/<<|.p
+    Procedure composition brackets -- which are useful when trying to
+    procedurally compose several variables together.  Contributed by
+    Steve Knight.
+
+pop11/help/ctbrackets
+pop11/lib/ctbrackets.p
+pop11/auto/<#.p
+pop11/auto/<##.p
+pop11/auto/<#|.p
+    A collection of handy compile-time evaluation brackets.  Three syntax
+    words that make up for the deficiency of the existing hash-brackets.
+    Contributed by Steve Knight.
+
+-- Version 0.2 (23/10/91) ----------------------------------------------
+
+pop11/help/objectclass
+pop11/lib/objectclass.p
+pop11/lib/objectclass/...
+    An significant object-oriented extension to Pop11.  The features of this
+    library are (a) good performance (b) tight integration with Pop11.
+    Written as an alternative to the existing flavours library.  Contributed
+    by Steve Knight.
+
+
+-- Version 0.1 (14/10/91) ----------------------------------------------
+
+pop11/auto/+_n.p
+pop11/help/+_n
+    Adds the top N items of the stack.
+
+pop11/auto/*_n.p
+pop11/help/*_n
+    Multipies the top N items of the stack.
+
+pop11/auto/apprepeater.p
+pop11/help/apprepeater
+    Added the procedure apprepeater.
+        apprepeater( R, P )
+    The procedure apprepeater iterates over all the elements of a repeater R
+    applying the procedure P to each element in turn.
+
+pop11/auto/discinline.p
+pop11/help/discinline
+    A variant of -discin- that returns a line repeater rather than a character
+    repeater.  Equivalent to
+        discin <> incharline
+    but much more efficient.  Very useful.
+
+pop11/auto/files_matching.p
+pop11/help/files_matching
+    Mades available a filename matching procedure
+        files_matching( <string:file-expression> ) -> files ...
+    Returns all the files matching the file-expression.  May
+    contain wildcards.
+
+pop11/auto/files_in_directory.p
+pop11/help/files_in_directory
+    Added the procedure
+        files_in_directory( dir ) -> files ...
+    Returns all the files in a directory, with the exception of '.' and
+    '..'.
+
+pop11/auto/in_directory.p
+pop11/help/in_directory
+    A syntax word for iterating over the contents of a directory
+        for f in_directory D do
+            ...
+        endfor
+    Only one variable allowed.  The loop-variable is automatically
+    declared.
+
+pop11/auto/in_items.p
+pop11/help/in_items
+    A syntax word for iterating over exploded collections of things.
+    e.g.
+        for i in_items ( 1, 2, 3 ) do
+            i =>
+        endfor;
+        ** 1
+        ** 2
+        ** 3
+    Works with multiple loop variables.  The for-loop variables are
+    automatically declared.
+
+pop11/auto/incharline.p
+pop11/help/incharline
+    An repeater-converter that promotes a character repeater to
+    a line repeater.  Unlike the system version, it returns a fresh string
+    each time.  A very useful utility.
+
+pop11/auto/load_project.p
+pop11/help/load_project
+    A way of neatly making complex Pop11 source code applications available.
+    It is used to structure the PLUG archive itself.  Useful.
+
+pop11/auto/newpushable.p
+pop11/help/newpushable
+    A repeater-converter with a twist.  This function takes a repeater and
+    returns a similar repeater that has an updater!  The updater of a repeater
+    pushes an item onto the front of the stream.  This is an especially useful
+    function when working with processing streams of data.
+
+pop11/auto/print_file.p
+pop11/help/print_file
+    Added the procedure print_file.
+        print_file( F )
+    Prints the file F to cucharout.
+
+pop11/auto/rev_n.p
+pop11/help/rev_n
+    Reverses the top N items of the stack.
+        rev_n(#| 1,2,3,4 |#) =>
+        ** 4 3 2 1
+
+pop11/help/tinyglobe
+pop11/lib/tinyglobe.p
+    An amusing example that illustrates the use of the flavours system.
+    It creates a simple "world" of interacting creatures and invites you
+    to write your own.  (Contributed by Chris Price)
+
+------------------------------------------------------------------------

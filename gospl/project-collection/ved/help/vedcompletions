@@ -1,0 +1,11 @@
+HELP VEDCOMPLETIONS        Steve Knight          2nd March 89
+
+"vedcompletions" displays all the possible completions in a new VED buffer,
+called *COMPLETIONS*. It shows the file name in full and leaves the cursor
+at the first line of the file.  A call to "vedusecompletion" will pick up the
+current line and use that to complete the file name in the other buffer.
+
+See also:
+    HELP *FILECOMPETE
+    HELP *VEDCOMPLETE
+

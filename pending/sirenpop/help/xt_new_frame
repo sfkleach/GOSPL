@@ -1,0 +1,19 @@
+HELP XT_NEW_FRAME                                       Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_frame( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a Motif frame widget.  The arguments are processed
+using *XT_NEW_ARGS.
+
+Examples:
+
+In these one-line examples, -my_parent- is a variable bound to a row
+column widget.
+
+    xt_new_frame( my_parent ) -> w
+    xt_new_frame( my_parent, 'fred' ) -> w
+
+See also:
+    HELP *XT_NEW_ARGS

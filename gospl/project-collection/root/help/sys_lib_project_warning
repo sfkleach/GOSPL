@@ -1,0 +1,11 @@
+HELP SYS_LIB_PROJECT_WARNING                        Steve Leach, Jan 05
+
+    sys_lib_project_warning( ____________project_name )
+
+Uses sysprmessage to print a message of the form
+
+    ;;; LOADING PROJECT ____________project_name
+
+sys_lib_project_warning is the default value of the procedure variable
+lib_project_warning, a call to which is planted by the syntax word
+lib_project.

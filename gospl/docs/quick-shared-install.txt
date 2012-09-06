@@ -1,0 +1,30 @@
+GOSPL: Quick Shared Installation for Poplog Administrators
+
+1.  Download the gospl.tar.gz tarball.
+
+2.  Unpack it into a convenient directory, we recommend $poplocal
+
+3.  Link to the popgospl.p and popgospl files for the neatest
+    integration with $poplocal
+
+        % cd $poplocal/local/lib
+        % ln -s ../../gospl/install/lib/popgospl.p .
+        % cd $poplocal/local/help
+        % ln -s ../../gospl/install/help/popgospl .
+
+4.  Browse $poplocal/gospl/project-collection/ with your web browser to
+    get an overview of the contents of these projects.
+
+5.  In order to make GOSPL available
+
+        : uses popgospl
+
+6.  the standard "pop11" and "ved" projects are loaded this
+    way
+
+        : uses_project pop11
+        : uses_project ved
+
+7.  enjoy!
+
+

@@ -1,0 +1,8 @@
+HELP XMN                                                Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xmn <RES>( WIDGET ) -> ITEM
+    ITEM -> xmn <RES>( WIDGET )
+
+This convenient syntax is a shorthand for XptPopValue with a single
+resource argument.

@@ -1,0 +1,8 @@
+HELP LOAD_PROJECT_WARNING                            Steve Leach, Jan 05
+
+    load_project_warning( ___________project_dir )
+
+A call to this procedure is  planted by the syntax word load_project,  in
+order to inform the user that the project directory ___________project_dir is about to
+be compiled.  The default value of load_project_warning is the procedure
+sys_load_project_warning.

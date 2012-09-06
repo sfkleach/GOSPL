@@ -1,0 +1,35 @@
+REF XML_STREAM                                          Steve Leach, Dec 05
+
+This utility library provides facilities for creating XML streams from
+character streams, manipulating them and accessing their state.  An XML stream
+is responsible for recognizing the special characters "<" and ">", which are
+returned as words, and decoding character sequences starting with "&".  All
+other characters are returned as integers.
+
+
+is_xml_stream( item ) -> bool
+    Returns true if item is an XML stream, otherwise false.
+
+
+new_xml_stream( rep, flags ) -> xmlstrm
+    Returns an XML stream.  It takes two arguments, a character
+    repeater -rep- and a list of flags.  The flags are words and may
+    be either of
+        accept      allow invalid &XXX; entities (default)
+        mishap      forbid invalid &XXX; entities
+
+    Note: this is a bug.  At the time of writing an XML stream has
+    a built-in list of predefined "entities".
+
+
+xml_stream_next_char( xmlstrm ) -> char
+    Returns the next character.
+
+
+xml_stream_line_col( xmlstrm ) -> ( line, posn )
+    The current line number and position within the line.
+
+
+xml_stream_skip_comment( xmlstrm, cons_comment )
+    Reads up a character stream until two dashes in a row are
+    found.

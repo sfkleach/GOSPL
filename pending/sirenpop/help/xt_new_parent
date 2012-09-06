@@ -1,0 +1,8 @@
+HELP XT_NEW_PARENT                                      Steve Knight, Oct 93
+                                                        SIREN Project
+xt_new_parent( PARENT, [ NAME ] ) -> ( NAME, PARENT )
+
+This is a convenience function for processing optional arguments.  It
+is used by many of the xt_new_<widget> routines to get the parent and
+name for a widget without compelling the programmer to specify the name.
+If the name is not specified it defaults to 'widget'.

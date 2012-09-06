@@ -1,0 +1,11 @@
+HELP SYS_LOAD_PROJECT_WARNING                        Steve Leach, Jan 05
+
+    sys_load_project_warning( ___________project_dir )
+
+Uses sysprmessage to print a message of the form
+
+    ;;; LOADING PROJECT ___________project_dir
+
+sys_load_project_warning is the default value of the procedure variable
+load_project_warning, a call to which is planted by the syntax word
+load_project.

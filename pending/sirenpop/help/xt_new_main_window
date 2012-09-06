@@ -1,0 +1,8 @@
+HELP XT_NEW_MAIN_WINDOW                                 Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_main_window( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> WIDGET
+
+This procedure creates a Motif main window widget.  The arguments are
+processed using *XT_NEW_ARGS.

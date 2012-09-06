@@ -1,0 +1,245 @@
+HELP EMBEDDED_XML                                 Steve Leach, Apr '00
+
+lib embedded_xml
+
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+  1   A Simple Example
+
+  2   Detailed Description of the Embedded Syntax
+            ... Overview
+            ... Typenames and Attribute Names
+            ... Attribute Values
+            ... Minimized Attributes (Omitted Values)
+
+  3   Limitations and Future Expansion
+
+  4   Notes for Expert Programmers
+
+
+The embedded XML library allows programmers to employ XML syntax
+inside Pop11 programs for building XML elements.  It relies on
+LIB * XML and this help file assumes that you are familiar with
+that library already, as well as having some knowledge of XML.
+
+
+-----------------------------------------------------------------------
+1  A Simple Example
+-----------------------------------------------------------------------
+
+Let us begin with a simple example - turning a a Pop11 list into
+an ordered HTML list.  Bearing in mind that XML syntax (unlike HTML)
+always requires closing tags we could use lib embedded_xml this
+way :-
+
+    define embed_list( L );
+        <OL>
+            lvars i;
+            for i in L do
+                <LI>i</LI>      ;;; XML requires closing brackets
+            endfor
+        </OL>
+    enddefine;
+
+When this code is run, it returns an XML tree with the list elements
+inserted in the right places.
+
+    : embed_list( [ cat rat mat hat pat gat fat sat tat vat ] ) ==>
+    ** <XmlElement OL []
+                      {<XmlElement LI [] {cat}>
+                       <XmlElement LI [] {rat}>
+                       <XmlElement LI [] {mat}>
+                       <XmlElement LI [] {hat}>
+                       <XmlElement LI [] {pat}>
+                       <XmlElement LI [] {gat}>
+                       <XmlElement LI [] {fat}>
+                       <XmlElement LI [] {sat}>
+                       <XmlElement LI [] {tat}>
+                       <XmlElement LI [] {vat}>}>
+
+It is important to understand that the embedded XML returns results.
+It does not do any printing - although there are useful printing
+routines described in REF * XML.  You can manipulate these data
+structures just as you might expect.
+
+
+-----------------------------------------------------------------------
+2  Detailed Description of the Embedded Syntax
+-----------------------------------------------------------------------
+
+...  Overview
+-------------
+
+This library does exactly one job - it extends the power of the "<"
+symbol to recognise XML elements.  Because it is an embedding of
+XML into a host language, the syntax is not a perfect duplicate of
+XML proper.  (Also, I am still working on how to embed some of the
+more obscure aspects.  Contact me for more info steve@watchfield.com.)
+This section describes how the embedding works.
+
+An XML element is built from a start tag and an end tag.  The start tag
+looks something like this
+    <________typename _____name1 = ______value1 _____name2 = ______value2 ... >
+and the end tag like this
+    </________typename>
+Start and end tags must be matched properly.  For example, it is not
+correct to write
+    <I><B> ... </I></B>
+in either XML or HTML.  Between the start and end tags arbitrary Pop11
+statements can be embedded.
+
+There is a compact form for elements without
+children
+    <________typename _____name1 = ______value1 _____name2 = ______value2 ... />
+which is just the same as writing
+    <________typename _____name1 = ______value1 _____name2 = ______value2 ... ></________typename>
+
+The embedded syntax uses the Pop11 itemiser to read in each component
+of the start and end-tags!  It is an amazing fact that the Pop11
+itemiser is compatible enough with XML to do this.  (The only clash
+is the way the characters <, >, and / stick together so that sequences
+such as <foo></foo> have to be disentangled behind the scenes.)
+
+
+...  Typenames and Attribute Names
+----------------------------------
+
+When reading in the typenames or attribute names, the Pop11 word
+itemisation rules are temporarily adapted to permit colons,
+periods, and hypens.  This conforms to the rules for valid XML names.
+So it is OK to write
+
+    : <foo-long:and.complicated_name/> =>
+    ** <XmlElement foo-long:and.complicated_name [] {}>
+
+Exactly the same adaptation is applied to attribute names, of course.
+
+
+...  Attribute Values
+---------------------
+
+Attribute values are more complex because, very often, you would like
+to be able to compute the value of an attribute.  So the following
+forms are allowed for attribute values: a double quoted string with
+XML syntax rules, a Pop11 single-quoted string, an unquoted Pop11
+word or number, or a general Pop11 expression enclosed in parentheses.
+e.g.
+
+    : <cat name="flossy"/> =>
+    ** <XmlElement cat [<Attribute name flossy>] {}>
+    : <cat name='rascal'/> =>
+    ** <XmlElement cat [<Attribute name rascal>] {}>
+    : <cat name=james/> =>
+    ** <XmlElement cat [<Attribute name james>] {}>
+    : <cat name=("monster"<>"cat")/> =>
+    ** <XmlElement cat [<Attribute name monstercat>] {}>
+
+
+...  Minimized Attributes (Omitted Values)
+------------------------------------------
+
+For the convenience of writing code, I have allowed attribute values
+to be omitted.  This is sometimes called attribute minimization.
+e.g.
+
+    : <img isindex/> =>
+    ** <XmlElement img [<Attribute isindex <false>>] {}>
+
+The default value substituted is -false-, as you can see from
+the above example.
+
+I spent quite a lot of time worrying about this decision.  It is
+technically wrong but I found forbidding minimized attributes too
+inconvenient in practice.  So I have compromised and added a
+user-defineable hook that allows you to raise warnings or mishaps
+when minimization is used.
+
+    embedded_xml_minimization_warning( typename, 1, message )
+
+Initially, this is defined to throw away its arguments.  Simply
+assign -warning- or -mishap- to embedded_xml_minimization_warning
+to change the behaviour.
+
+
+
+-----------------------------------------------------------------------
+3  Limitations and Future Expansion
+-----------------------------------------------------------------------
+
+The most serious limitation at present is the lack of support for
+Unicode.  Please contact me (steve@watchfield.com) if this is an
+issue for you.  I do plan to support this at some point in the
+future but I will bring my plans forward if required.
+
+The inability to substitute Pop11 expression for typenames and
+attribute names is a less irritating limitation.  You can always
+work round this issue by dropping into the interface provided
+by LIB * XML.  In the next revision of this library I will probably
+extend the Pop11 expression syntax used for attribute values for
+these names as well.
+
+Lastly, I would also like a more convenient way of inserting Pop11
+variables rather than general expressions.  It seems a bit clumsy
+to have to write
+    <foo bar=(fred)/>
+I wonder if a shorthand such as
+    <foo bar=^fred/>
+would be a good idea?
+
+
+
+-----------------------------------------------------------------------
+4  Notes for Expert Programmers
+-----------------------------------------------------------------------
+
+In order to extend the meaning of "<" I have had to change the meaning
+of "<" from an operator to a syntax word.  This kind of change is not
+conveniently supported by the Pop11 compiler - which is no criticism
+I hasten to add.  To protect backward compatibility, I have therefore
+had to perform some rather horrible tricks.
+
+Firstly, any program which uses "nonop <" would have been in for a
+nasty surprise.  So lib embedded_xml takes over -nonop- and continues
+the masquerade that "<" remains an operator.  Fortunately, nonop is
+a very simple syntax word and this is unlikely to cause a problem.
+
+Secondly, any program which uses valof( "<" ) is also apparently
+headed for a fall.  And this is a problem that extends to any
+procedure that goes through the identifier record of "<".  Well,
+this is likely to be bad practice but I can report that it occurs
+all over the Poplog development environment.
+
+To fix this second problem is more complicated.  The best that can
+be done is for the syntax word implementing "<" to inspect its
+run-time environment.  It then guesses whether it is being used as
+a syntax word or a procedure and behaves accordingly.  To do this
+it inspects -pop_expr_inst- which is a local of -pop_comp_expr_prec-.
+
+What should be done in the future?  My view is that -nonop-
+has never been correctly defined.  There are a number of infix
+operators that are implemented as syntax words (e.g. -and- and -or-)
+but should have meanings under -nonop-.  Since this has no implications
+for backwards compatibility, the only debate here is what the special
+cases might be and what the interface to them should be.
+
+[One use that becomes immediately available under this proposal is
+inlined function definitions.  For example, it would be simple to
+define an inline version of, say +.  It would allow us to write
+code such as
+    f( 86400 + 1, x )
+safe in the knowledge that there is no efficiency penalty.  This is
+one of the benefits enjoyed by C programmers for instance.]
+
+Accessing variables via -valof- is always going to create problems
+for language evolution.  However, the proposed change to -nonop-
+solves it, at least in principle.  The nonop proposal effectively
+gives a handful of variables two values: a raw value that is a syntax
+word and an ordinary value that is a procedure.  We have to
+decide which one -valof- should supply (the ordinary value, I think)
+and provide a couple of extra procedures, or optional arguments, for
+getting hold of the raw value etc.
+
+I hope these comments have not put you off using lib embedded_xml
+too much.  I've been using it for a while now and had no practical
+problems.

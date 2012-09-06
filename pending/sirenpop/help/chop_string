@@ -1,0 +1,12 @@
+HELP CHOP_STRING                                        Steve Knight, Nov 93
+                                                        SIREN Project
+chop_string( STRING ) -> STRING1, ..., STRINGn
+
+Chops a string into lots of little strings using spaces, tabs, and
+newlines as boundary characters.  If there are adjacent white space
+characters then all but the first is ignored.
+
+NOTE:
+    I plan to extend this procedure to take optional parameters
+    specifying the predicate identifying boundary characters
+    and whether or not to ignore adjacent boundary characters.

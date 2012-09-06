@@ -1,0 +1,888 @@
+REF PROFILER                                  Jonathan Meyer, June 1992
+
+      COPYRIGHT University of Sussex 1992. All Rights Reserved.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<        POP-11 PROFILING     >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Analyses and displays relative information about what a program spends
+its time doing.
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Overview
+ --  Usage
+ --  Example
+ --  Interpreting Tree Profiles
+ --  . Node-Children Semantics
+ --  . Adding Up Percentages (the "self" node)
+ --  . The "other" Node
+ --  . Treat Each Node As Its Own Profile
+ --  . Determine Accuracy Carefully
+ --  What the profiler profiles
+ --  Linear Profiles
+ --  More On Displaying Profiles
+ --  Profiler Procedures
+ --  Miscellaneous
+
+Overview
+--------
+LIB *PROFILER is  a sophisticated  profiler for  analysing the  relative
+speed efficiency  of  Pop-11  code. It  provides  three  algorithms  for
+collecting time  information that  sho you,  in percentage  terms,  what
+actions take longest  for a piece  of Pop-11 code.  This information  is
+very useful  when it  comes  to improving  efficiency of  programs,  and
+evaluating altenrative algorithms.
+
+LIB *PROFILER makes use of LIB *SHOWTREE to show you the profile data.
+
+Usage
+-----
+profiler                                                        [syntax]
+        The syntax for the profiler command is:
+
+            profiler [<name>] [<attributes>];
+                <statements>
+            endprofiler -> <profile_statistics>;
+
+        The  opening  -profiler-  command  instructs  Poplog  to   start
+        collecting profile statistics. The closing profiler command ends
+        the collection of statistics and returns a vector containing the
+        statistics on the  stack. The statistics  data can be  displayed
+        using the procedure -profiler_display-, so the most common usage
+        of the profiler is to do:
+
+            profiler;
+                run_my_code();
+            endprofiler.profiler_display;
+
+        <statements> can be any legal Pop11 code, although it is usually
+        a call to  a procedure.
+
+        It is legal to  use the -profiler-  command inside a  definition
+        for a  procedure to  only get  the profile  on things  that  are
+        called by that  procedure. It  is also possible  to have  nested
+        profilers running at the same time. For example:
+
+            vars test_data, overall_data;
+
+            define test;
+                profiler 'profile of test';
+                    do_my_examples();
+                endprofiler -> test_data;
+            enddefine;
+
+            profiler;
+                <some statements>
+                test();
+                <some more statements>
+            endprofiler -> overall_data;
+
+        For the first invokation  of the profiler  shown above, we  have
+        given a name  'profile of  test' to the  profiler command.  If a
+        <name> component is given to the profiler command, this is shown
+        at the top of the graph for the profile. If no name is given, or
+        the name is -false-, the name 'PROFILE' is used instead.
+
+        The <attributes> is an optional  list of comma separated  words.
+        Currently valid words are "tree", "active", "present" or  "all".
+        If <attributes> is missing,  the profiler does "tree"  profiling
+        by default. See the section of 'Linear Profiles' below for more.
+
+        There is  a  procedural interface  and  a VM  interface  to  the
+        profiler. See the section 'Profiler Procedures' below.
+
+
+
+Example
+-------
+The following example code comes from TEACH *GRAMMAR. You should compile
+it and then read the instructions that follow. See TEACH *GRAMMAR for an
+explanation of what the code is doing.
+
+    lib grammar;
+    vars mygram;
+    [                           ;;; start a list of rules
+        [s [np vp]]             ;;; a sentence is a NP then a VP
+        [np [snp] [snp pp]]     ;;; a NP is either a simple NP
+                                ;;; or a simple NP followed by
+                                ;;; a prepositional phrase PP
+        [snp [det noun]]        ;;; a simple NP is a determiner followed by
+                                ;;; a noun
+        [pp [prep snp]]         ;;; a PP is a preposition
+                                ;;; followed by a simple NP.
+        [vp [verb np]]          ;;; verphrase = verb followed by NP
+    ] -> mygram;
+    ;;; Complete the list of rules and assign it to mygram
+    vars mylex;
+    [       ;;; start a list of lexical categories
+        [noun  man girl number computer cup battle room car]
+        [verb  hated stroked kissed teased married taught added]
+        [prep  in into on above under beside]
+        [det   the a every each one some]
+    ]  -> mylex;
+
+To test the profiler on the LIB *GRAMMAR procedure -generate-, do:
+
+    define test;
+        ;;; call generate lots of times
+        repeat 200 times generate(mygram, mylex) -> endrepeat;
+    enddefine;
+
+    profiler;
+        test();
+    endprofiler.profiler_display;
+
+You will get a tree that looks something like:
+
+                  ----------------------------------------
+                  |PROFILE: 1.06 seconds, 104 interrupts |
+                  ----------------------------------------
+                              ---------------
+                              |TREE-PROFILE:|
+                              ---------------
+                               --------------
+                               |test 100.0 %|
+                               --------------
+                             ------------------
+                             |generate 100.0 %|
+                             ------------------
+                              ---------------
+                              |subgen 97.09%|
+                              ---------------
+      -------------------------------------------------------------
+      |               --------------------               -------------------
+subgen 45.57%         |trygenrules 44.92%|               |getterminal 7.05%|
+                      --------------------               -------------------
+           -------------------------------------------            |
+    ----------------             -------------       |            |
+    |genlist 92.34%|             |oneof 4.74%|  other 1.09%  oneof 55.81%
+    ----------------             -------------
+      -------------             ----------------
+      |           |      ---------------       |
+subgen 91.7 %  <> 7.11%  |length 37.84%|  other 51.35%
+                         ---------------
+                                |
+                        listlength 100.0 %
+
+
+                      Tree 1: Example Tree Profile
+
+
+Lets redo the profile, but this time without collecting data on -oneof-:
+
+    [^oneof] <> profiler_exclude -> profiler_exclude;
+
+    profiler;
+        test();
+    endprofiler.profiler_display;
+
+The result now look like this:
+
+             ---------------------------------------
+             |PROFILE: 1.1 seconds, 113 interrupts |
+             ---------------------------------------
+                         ---------------
+                         |TREE-PROFILE:|
+                         ---------------
+                          --------------
+                          |test 100.0 %|
+                          --------------
+                        -----------------
+                        |generate 97.32%|
+                        -----------------
+                         ----------------
+                         |subgen 100.0 %|
+                         ----------------
+      --------------------------------------------------
+      |        --------------------           -------------------
+subgen 44.61%  |trygenrules 43.86%|           |getterminal 8.83%|
+               --------------------           -------------------
+                 -----------------              ----------------
+          ----------------       |       ---------------       |
+          |genlist 94.2 %|  other 4.78%  |length 25.42%|  other 30.51%
+          ----------------               ---------------
+            -------------                       |
+            |           |                       |
+      subgen 94.57%  <> 4.71%           listlength 100.0 %
+
+
+                      Tree 2: Example Tree Profile
+
+Interpreting Tree Profiles
+--------------------------
+The profiler  tree  is  quite  easy to  interpret,  but  be  careful  to
+understand what the nodes and figures mean. Looking at the above graphs,
+we can see that the tree node for -subgen- in Tree 1 looks like this:
+
+                              ---------------
+                              |subgen 97.09%|
+                              ---------------
+      -------------------------------------------------------
+      |               --------------------         -------------------
+subgen 45.57%         |trygenrules 44.92%|         |getterminal 7.05%|
+                      --------------------         -------------------
+
+This means that, when the profiler looked, -subgen- spent 45.57  percent
+of its time calling  -trygenrules-, 7.05 percent calling  -getterminal-,
+and 44.92 percent of its time calling itself.
+
+. Node-Children Semantics
+-------------------------
+The tree structure shown  in Tree 1 do  not necessarily imply that,  for
+example, subgen directly calls -trygenrules-  46.1% of the time.  Here's
+why: -subgen- may  call an  anonymous (and  hence unprofiled)  procedure
+which then called  -trygenrules-. In this  situation, the profiler  will
+still attribute the time inside -trygenrules- to -subgen-. That is,  the
+profiler attributes time spent  in a procedure  to its nearest  profiled
+ancestor.
+
+. Adding Up Percentages (the "self" node)
+-----------------------------------------
+Readers will have  noticed that, for  the tree nodes  at the same  level
+beneath -subgen-:
+
+      |               --------------------         -------------------
+subgen 45.57%         |trygenrules 44.92%|         |getterminal 7.05%|
+                      --------------------         -------------------
+
+The percentages do not add up. ie.
+
+    45.57 + 44.92 + 7.05 = 97.54
+
+What happened to  the other 2.46  percent? This 2.46%  is the time  that
+subgen spent 'active' on the top of the callstack. That is, during  this
+time, subgen was not calling any other procedures, but was doing its own
+processing.  By  default,  profiler_display  displays  this  information
+implicitly (ie. by the fact that the percentages do not add up to 100%).
+
+See the section 'More On Displaying Profiles' regarding the  "show_self"
+attribute for  examples  of  how  to  make  profiler_display  show  this
+information explicitly using a "self" node.
+
+. The "other" Node
+------------------
+If you look at the Tree 2 example above, you will see some nodes labeled
+"other". For example:
+
+               --------------------
+               |trygenrules 43.86%|
+               --------------------
+                 -----------------
+          ----------------       |
+          |genlist 94.2 %|  other 4.78%
+          ----------------
+
+This "other" node indicates that the profiler noticed that -trygenrules-
+called some procedures that were not profiled. In this instance, we know
+from the first tree  that the procedure is  -oneof-, which we  explicity
+told the profiler  to ignore (using  -profile_exclude-). By default  the
+-other- node of  the tree  is used to  indicate the  percentage of  time
+spent in procedures with no names (procedures which have a -pdprops-  of
+-false-), or procedures that take less than 2% of the total time to run.
+
+. Treat Each Node As Its Own Profile
+------------------------------------
+In the Tree 1 example shown above, the subtree starting at the  -subgen-
+node represents an average  profile of all the  times that -subgen-  was
+called by any procedure  at any time during  the profiling, and not  the
+profile  for  the  specific  instance   of  calling  of  -subgen-   from
+-generate-. This is  why the  tree for  -subgen- is  expanded only  once
+(when it is first met),  and not at every  point where subgen is  called
+(this also neatly stops infinite recursion).
+
+More precisely, the  profiler does NOT  distinguish between the  profile
+for -subgen-  when it  was  called by  -generate-  and the  profile  for
+-subgen- when it was called by  -genlist-. It just averages the  profile
+for all calls to subgen. Thus, although the profile tree for -subgen- is
+only expanded once, you  should view the tree  as being the profile  for
+subgen wherever it is called.
+
+. Determine Accuracy Carefully
+------------------------------
+You should look at two things to determine how accurate profile  figures
+are. Firstly, look at the number of interrupts for the profiler. In  the
+first case, for Tree 1, there were 104 interrupts, as shown by the label
+for the profile:
+
+                  ----------------------------------------
+                  |PROFILE: 1.06 seconds, 104 interrupts |
+                  ----------------------------------------
+
+This means that  profiling statistic  samples were  collected 104  times
+during the run of your  code. This is not  a very significant number  of
+samples, so the figures in the tree not likely to be that accurate.
+
+(the 1.06 seconds is the amount of time that the procedure took, in
+virtual process time, excluding the time it took to collect the profile
+statistics).
+
+The second thing to look at is where in the tree a node is. Remember  to
+divide the  percentages  down the  tree.  For example,  looking  at  the
+-listlength- node of  Tree 1,  the parent nodes  for the  node might  be
+something like (in a bottom-to-top order):
+
+                            ---------------
+                            |length 57.14%|
+                            ---------------
+                             -------------
+                             |oneof 5.8 %|
+                             -------------
+                          --------------------
+                          |trygenrules 46.35%|
+                          --------------------
+                            ----------------
+                            |subgen 100.0 %|
+                            ----------------
+
+This means that -listlength- was running  100% / 46.35% / 5.8% /  57.14%
+of the time, or 0.007%... not a very significant amount of time!
+
+You can ask the profiler to display this calculation for you, using  the
+show_cumulative attribute. See the section 'More On Displaying Profiles'
+below.
+
+[NB: If a node occurs  in several places in  the tree, this approach  of
+dividing percentages won't  be accurate.  In general,  the more  often a
+node occurs in  the tree, the  more significant in  terms of total  time
+that node is. See the section on 'Linear Profiles' below.]
+
+Finally, remember that the output only shows what the profiler saw  when
+it sampled the callstack. If a procedure makes use of fast procedures or
+system procedures (or calls  a procedure that sets  *sys_signals_enabled
+false), these cannot be interrupted during their execution, so they will
+never appear in the profiler output.  (In any case, in the ideal  world,
+system procedures are as  efficient as they can  be, so there is  little
+point profiling them).
+
+What the profiler profiles
+--------------------------
+Profiling basically involves the collection  of a large amount of  data.
+The profiler interrupts your program  at regular intervals and  analyses
+the  contents   of  the   callstack  (SEE   REF  *PROCEDURE/Call   Stack
+Information).
+
+Sometimes this  data  can  become  overwhelming,  especially  for  large
+applications.
+
+To help  cut down  on the  amount of  data profiled,  the profiler  will
+automatically only profiles  procedure that are  called from within  the
+'profile' ... 'endprofile' statements. Anything  that is already on  the
+callstack when the profiler is invoked is ignored (mostly, these  things
+will stay on the  callstack throughout the duration  of the profile,  so
+they are of little interest).
+
+This means if your program uses abnormal flow control (such as  -chain-)
+the profiler will not show  a useful profile. See *PROFILER_START  below
+for information about how to force the profiler to profile the whole  of
+the Poplog callstack.
+
+LIB *PROFILER  also provides  two tailoring  mechanisms for  controlling
+which procedures are profiled and which are not.
+
+For   each   procedure   on   the   callstack,   the   profiler    calls
+-profiler_include- to determine if statistics for that procedure  should
+be collected. By default, profiler_include is defined as:
+
+    define vars profiler_include(p);
+        lvars p;
+        pdprops(p) and not(member(p, profiler_exclude));
+    enddefine;
+
+So if the procedure has a name and the procedure is not mentioned in the
+list -profiler_exclude-, then data on the procedure is collected.
+
+By default, -profiler_exclude- is a list containing the single procedure
+-null-  (which  is  called  very  often,  and  is  therefore  not   very
+interesting to profile)). ie. the definition for -profile_exclude- is:
+
+    vars profile_exclude = [^null];
+
+To control  what is  profiled,  either redefine  the  -profiler_include-
+procedure, or add things to the -profiler_exclude- list. For example, to
+stop the profiler from collecting data on -member-, do:
+
+    member :: profiler_exclude -> profiler_exclude;
+
+Linear Profiles
+---------------
+The tree  profiles that  shown above  indicate what  percentage of  time
+procedure A was doing procedure B. However, it is sometimes also  useful
+to look  at  the overall  percentage  of  time that  each  procedure  is
+"present" on the callstack, as well as which procedure is "active"  (ie.
+the topmost callstack  procedure) longest. This  information can  give a
+clue to any bottlenecks in your code.
+
+Data about  which procedures  are present  on the  callstack (and  which
+procedure is  active)  is  'linear',  since  it  does  not  contain  any
+information about which procedure called what. The profiler can be  used
+to collect this information  instead of, or as  well as, the tree  style
+information. You specify which data the profiler command should  collect
+using an  attribute list  containing the  words "present",  "active"  or
+"tree" in any combintation, separated by  commas. The word "all" can  be
+used to collect all three kinds of statistics.
+
+For example, to display  information about which  procedures are on  the
+callstack longest, use:
+
+    profiler [present];
+        test();
+    endprofiler.profiler_display;
+
+The output looks roughly as follows:
+
+               -------------------------------------
+               |PROFILE: 1 seconds, 106 interrupts |
+               -------------------------------------
+                         ------------------
+                         |PRESENT-PROFILE:|
+                         ------------------
+                           -------------
+                           |test 99.06%|
+                           -------------
+                         -----------------
+                         |generate 97.17%|
+                         -----------------
+                          ---------------
+                          |subgen 97.17%|
+                          ---------------
+                        --------------------
+                        |trygenrules 93.4 %|
+                        --------------------
+                          ----------------
+                          |genlist 92.45%|
+                          ----------------
+                           --------------
+                           |oneof 33.96%|
+                           --------------
+                        --------------------
+                        |getterminal 31.13%|
+                        --------------------
+                            -----------
+                            |<> 17.92%|
+                            -----------
+                        -------------------
+                        |listlength 15.09%|
+                        -------------------
+                          ---------------
+                          |length 15.09%|
+                          ---------------
+
+This means that, for example, -listlength- was present on the  callstack
+approximately 15% of the time that the test was running.
+
+To see  information  on which  procedure  was  active (ie.  top  of  the
+callstack) longest, use:
+
+    profiler [active];
+        test();
+    endprofiler.profiler_display;
+
+This results in an output that looks as follows:
+
+                   ------------------------------------
+                   |PROFILE: 1 seconds, 95 interrupts |
+                   ------------------------------------
+                            -----------------
+                            |ACTIVE-PROFILE:|
+                            -----------------
+                              --------------
+                              |oneof 23.16%|
+                              --------------
+                               -----------
+                               |<> 22.11%|
+                               -----------
+                           --------------------
+                           |getterminal 18.95%|
+                           --------------------
+                           -------------------
+                           |listlength 13.68%|
+                           -------------------
+                              --------------
+                              |subgen 7.37%|
+                              --------------
+                             ---------------
+                             |genlist 6.32%|
+                             ---------------
+                           -------------------
+                           |trygenrules 5.26%|
+                           -------------------
+
+ie. -getterminal- was the  topmost item on the  callstack 18.95% of  the
+time that the profiler was running.
+
+[Historical Note:  There  was an  earlier  Pop11 profiler  library  that
+collects data about the currently 'active' procedure on the callstack].
+
+You can also try combinations:
+
+    profiler [present, active];
+        test();
+    endprofiler.profiler_display;
+
+This produces a graph like:
+
+                  -------------------------------------
+                  |PROFILE: 1 seconds, 101 interrupts |
+                  -------------------------------------
+                         -----------------------
+                 ------------------    -----------------
+                 |PRESENT-PROFILE:|    |ACTIVE-PROFILE:|
+                 ------------------    -----------------
+                   -------------         --------------
+                   |test 99.01%|         |oneof 24.75%|
+                   -------------         --------------
+                  ---------------     --------------------
+                  |subgen 98.02%|     |getterminal 21.78%|
+                  ---------------     --------------------
+                        etc.                  etc.
+
+If you collect active profile information and tree profile  information,
+then the active  profile information will  be annotated on  the tree  as
+well as listed in a separate table. The following shows a small  portion
+of an active/tree profile:
+
+                       --------------------------
+                       |'subgen 100.0% a=18.02%'|
+                       --------------------------
+             ---------------------------------------------------
+             |             -----------------------------       |
+   subgen 45.87% a=18.02%  |'trygenrules 44.4% a=1.74%'|  other 6.68%
+                           -----------------------------
+                                  ----------------------
+                      --------------------------       |
+                      |'genlist 90.49% a=2.91%'|  other 8.85%
+                      --------------------------
+
+The 'a=<number>%' indicates how long each node in the tree was active at
+the top of the callstack.
+
+The default  attribute  is,  as  we have  seen,  just  to  collect  tree
+profiling information.
+
+More On Displaying Profiles
+---------------------------
+Very often you want  to collect some  profile data and  then view it  in
+various ways. For  example, it is  tedious to have  to re-run your  code
+with the profiler  several times  in order to  look at  the output  with
+different values of profiler_include or profiler_exclude.
+
+LIB *PROFILER was intended to be used in this way. Hence the  decoupling
+between collecting  profiler statistics  collected with  the  -profiler-
+command and displaying them using -profiler_display-.
+
+The procedure  -profiler_display-  can  take  a  single  optional  extra
+argument as well as the profiler data. This optional argument is a  list
+of name, value attributes that control what gets displayed.
+
+For example, first collect all the profiler data (after compiling the
+-test- procedure above):
+
+    vars data;
+    profiler [all];
+        test();
+    endprofiler -> data;
+
+Now display the tree profile for the test, showing only things which
+ran for more than 10% of their ancenstors time, do:
+
+    profiler_display(data,
+        [   display = [tree],
+            cutoff = 10,
+        ]);
+
+You will get a tree that looks something like:
+
+     -------------------------------------
+     |PROFILE: 2 seconds, 104 interrupts |
+     -------------------------------------
+                ---------------
+                |TREE-PROFILE:|
+                ---------------
+                 --------------
+                 |test 100.0 %|
+                 --------------
+               -----------------
+               |generate 99.03%|
+               -----------------
+                ----------------
+                |subgen 100.0 %|
+                ----------------
+      -------------------------------------
+      |        --------------------       |
+subgen 46.23%  |trygenrules 45.91%|  other 4.87%
+               --------------------
+                 -----------------
+          ----------------       |
+          |genlist 90.07%|  other 8.22%
+          ----------------
+           ---------------
+           |             |
+     subgen 91.25%  other 6.08%
+
+Use the "show_self"  option to force  profiler_display to include  nodes
+indicating the percentage of time that each procedure was active on  the
+top of the callstack (ie. not calling other procedures) (See the section
+'Adding Up Percentages (the "self" node)' above.
+
+    profiler_display(data,
+        [   display   = [tree],
+            show_self = true,
+        ]);
+
+To  display  the  "active"  profile,   but  using  ratios  rather   than
+percentages for each node, use:
+
+    profiler_display(data,
+        [   display = [active tree],
+            cutoff = 10,
+            show_ratios = true,
+        ]);
+
+The output looks like:
+
+               -------------------------------------
+               |PROFILE: 2 seconds, 104 interrupts |
+               -------------------------------------
+                         -----------------
+                         |ACTIVE-PROFILE:|
+                         -----------------
+                           --------------
+                           |oneof 24/104|
+                           --------------
+                          ---------------
+                          |subgen 19/104|
+                          ---------------
+                            -----------
+                            |<> 16/104|
+                            -----------
+                        -------------------
+                        |listlength 14/104|
+                        -------------------
+                        --------------------
+                        |getterminal 13/104|
+                        --------------------
+
+Another attribute that you  can control is  the display of  'cumulative'
+percentages in tree profiles. A cumulative percentage is the  percentage
+of a node multiplied by the percentage of its parent node. For example:
+
+    profiler_display(data,
+        [   display = [tree],
+            show_cumulative = true,
+        ]);
+
+produces a tree containing cumulative figures. Below is a portion of
+the tree:
+
+                                           ------------------------
+                                           |subgen 100.0% c=99.32%|
+                                           ------------------------
+          ------------------------------------------------------
+          |                      ----------------------------
+subgen 45.64% c=45.33%           |trygenrules 45.2% c=44.89%|
+                                 ----------------------------
+                    --------------------------------------------
+        -------------------------           --------------------
+        |genlist 91.71% c=41.17%|           |oneof 5.12% c=2.3%|
+        -------------------------           --------------------
+
+Here we can see that trygenrules called genlist approx. 92% of the time.
+However, because trygenrules was itself only called by subgen 45% of the
+time, the cumulative  figure for genlist  is (91  * 45) /  100, or  41%.
+ie. subgen spent 41% of its time doing genlist.
+
+The following is a complete description of profiler_display:
+
+profiler_display(PROFILE_DATA)                               [procedure]
+profiler_display(PROFILER_DATA, OPTION_LIST)
+        Displays profiler statistics using -showtree-. OPTION_LIST  is a
+        list of  name=value tuples  separated by  commas. The  list  can
+        contain:
+
+        Name        Description
+        ----------------------------------------------------------------
+                    ATTRIBUTES THAT APPLY TO ALL PROFILE TYPES
+
+        cutoff      integer 0-100, default 0.
+
+                    Specifies percentage point above which items in  the
+                    profile are  shown. For  tree profiles,  nodes  with
+                    below -cutoff-  percent of  the time  are merged  in
+                    with the "other"  node rather  than being  displayed
+                    with their own node.
+
+                    By default, anything with a figure representing less
+                    than 2 percent is not displayed.
+
+        display     list, default [tree, active, present].
+
+                    Controls which of  the three kinds  of profile  data
+                    are displayed in the output if they are  represented
+                    in the  input data.  By  default, all  profile  data
+                    which is collected is displayed.
+
+        exclude     list, default -profiler_exclude-.
+
+                    Specifies the list of procedures to exclude from the
+                    profiler output display.
+
+        include     procedure, default -profiler_include-.
+
+                    Specifies a  procedure which  is called  with  every
+                    node of a profile, and returns -true- or -false-  to
+                    indicate whether that node should be included in the
+                    output graph.
+
+        show_ratios -true- or -false-, default -false-.
+
+                    If this  is -true-,  all  nodes will  display  their
+                    figures as a ratio rather than as a percentage. This
+                    allows you  to  see  more precisely  how  large  the
+                    sample size  for each  node  is, and  therefore  how
+                    accurate the data is.
+
+                    ATTRIBUTES THAT APPLY TO TREE PROFILES ONLY
+
+        show_cumulative
+                    -true- or -false-, default -false-.
+
+                    If true, a 'cumulative' running total percentage  is
+                    displayed on each node, annotated with a 'c='.  This
+                    percentage  is  the  value  of  a  particular   node
+                    multiplied by the parent node's percentage. Thus  if
+                    node -foo- is on the callstack for 80% of the  time,
+                    and it calls -baz-  50% of the  time, then the  tree
+                    will display  40% for  node -baz-.  See the  section
+                    'Cumulative Totals' above.
+
+        show_other  -true- or -false-, default -true-.
+
+                    Controls whether "other" nodes are displayed in  the
+                    output. If  this attribute  is set  to -false-,  the
+                    "other" nodes are hidden.
+
+        show_self   -true- or -false-, default -false-.
+
+                    Controls whether  time spent  by a  procedure  doing
+                    work is displayed explicitly in a "self" node.
+
+
+        root        procedure or -false-, default -false-.
+
+                    Specifies which node to start displaying the profile
+                    from (ie.  which node  is the  topmost node  of  the
+                    profile tree). This  can be any  procedure that  was
+                    profiled, and  that  also called  other  procedures.
+                    This is used  to focus  the output  onto a  specific
+                    procedure when there is too much information in  the
+                    overall profile. It defaults to -false-, which means
+                    start at the highest node in the profile.
+
+        depth       integer > 0 or -false-, default -false-.
+
+                    Specifies a depth  below which a  profile tree  will
+                    not be expanded. If it is -false-, the profile  tree
+                    will be expanded  in full. Useful  for limiting  the
+                    amount of output for complex trees.
+
+
+Profiler Procedures
+-------------------
+In addition to the profiler command, LIB *PROFILER provides a procedural
+and a  VM  interface  to  the profiler.  This  section  describes  these
+procedures.
+
+profiler_start(NAME, ATTRIBS)                                [procedure]
+        Starts the profiler, and collects data on all procedures on  the
+        Poplog callstack. Data collection continues until -profiler_end-
+        is  called  (or  until  the   system  runs  out  of  memory   if
+        profiler_end is not called).
+
+        NAME is a word or string  that is used by -profiler_display-  to
+        label the output profile. If NAME is -false-, the name 'PROFILE'
+        is used.
+
+        ATTRIBS is either  -false- or  a list of  comma separated  words
+        that  controls  what  kind  of  profiling  data  is   collected.
+        Currently valid words are "tree", "active", "present" or  "all".
+        If ATTRIBS is  -false-, the  profiler does  "tree" profiling  by
+        default.
+
+
+profiler_end() -> DATA                                       [procedure]
+        Finishes collection of data  initiated by -profiler_start-,  and
+        returns the profiler data.
+
+
+profiler_apply(NAME, ATTRIBS, P) -> DATA                     [procedure]
+        Calls the procedure P and returns data on its profile.
+
+        NAME is a word or string  that is used by -profiler_display-  to
+        label the output profile. If NAME is -false-, the name 'PROFILE'
+        is used.
+
+        ATTRIBS is either  -false- or  a list of  comma separated  words
+        that  controls  what  kind  of  profiling  data  is   collected.
+        Currently valid words are "tree", "active", "present" or  "all".
+        If ATTRIBS is  -false-, the  profiler does  "tree" profiling  by
+        default.
+
+
+sysPROFILER(NAME, ATTRIBS)                                   [procedure]
+        Plants code to start the profiler profiling at the current point
+        in the  callstack.  All  procedures  called  until  the  closing
+        sysENDPROFILER will be profiled.
+
+
+sysENDPROFILER()                                             [procedure]
+        Plants code to stop the profiler and leave the data collected by
+        the profiler on the stack.
+
+Miscellaneous
+-------------
+
+profiler_interval                                             [variable]
+        This variable specifies, in microseconds, how often the profiler
+        should examine the callstack and collect profile statistics. By
+        default it is 1, ie. the fastest that the system can go.
+
+
+profiler_include(P) -> BOOL                         [procedure variable]
+        Takes a procedure and returns  -true- if profile statistics  for
+        that procedure should be collected. The default definition is:
+
+            define global vars procedure profiler_include(p);
+                lvars p, props = pdprops(p);
+                props and not(fast_lmember(p, profiler_exclude) or
+                        fast_lmember(props, profiler_exclude));
+            enddefine;
+
+        ie. procedures which are mentioned either directly or by name in
+        -profiler_exclude-, or which have a pdprops of -false-, will not
+        be profiled.
+
+
+profiler_exclude -> LIST                                      [variable]
+        A list  of procedures  which are  not profiled  by the  profiler
+        command. The default value is:
+
+            global vars profiler_exclude = [^null]
+
+
+p_profile COMMAND ;                                              [macro]
+a_profile COMMAND ;                                              [macro]
+t_profile COMMAND ;                                              [macro]
+        These convenience macros are the same as typing:
+
+            profiler [<kind>]; COMMAND ; endprofiler.profiler_display;
+
+        where <kind> is "present"  (p_profile), "active" (a_profile)  or
+        "tree" (t_profile).
+
+
+--- C.all/ref/profiler -------------------------------------------------
+--- Copyright University of Sussex 1992. All rights reserved. ----------

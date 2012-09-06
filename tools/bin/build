@@ -1,0 +1,37 @@
+#!/bin/bash
+
+toolshome=${popgospldev?}/tools
+outputhome=${popgospldev?}/output
+
+version=`${toolshome}/bin/gospl-version`
+tarball_name=gospl-${version?}.tar.gz
+tarball=${outputhome}/${tarball_name}
+
+echo "Check the output folder exists: ${outputhome}"
+if [ ! -d ${outputhome} ]
+then
+    echo "Output folder missing"
+    exit 1
+fi
+
+#echo "Check for tarball: ${tarball}"
+#if [ -e ${tarball} ]
+#then
+#    echo "Tarball exists, nothing done"
+#    exit 1
+#fi
+
+# Create the content lists.
+${toolshome}/bin/make-readme
+
+# Now create the tarball in the right location
+echo "Create the tarball in the right location"
+cd ${popgospldev?}
+tar cf - gospl | gzip > ${tarball}
+
+
+# N.B. poplog.org is defunct
+# echo "Copy tarball to www.poplog.org"
+# echo \
+#     scp ${tarball} \
+#     httpd@www.poplog.org:/www/poplog/htdocs/download/gospl.tar.gz

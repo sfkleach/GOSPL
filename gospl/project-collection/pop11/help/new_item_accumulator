@@ -1,0 +1,58 @@
+HELP new_item_accumlator                            Steve Leach, Nov 99
+
+    new_item_accumulator( reusable ) -> <procedure>
+    new_item_accumulator( reusable, constructor ) -> <procedure>
+
+The procedure -new_item_accumulator- is used for generating
+accumulators, a special type of consumer.  An accumulator secretly
+stores all the elements that it is applied to.  Finally, it can be
+persuaded to disgorge a string of all the accumulated items by applying
+it to the special item <termin>.  The results are collected together by
+the optional constructor which should take its inputs in this form.
+
+    constructor( x1, ..., xN, N )
+
+The constructor defaults to -conslist-.
+
+A boolean flag "reusable" is used to indicate whether or not the
+accumulator can be reused after being applied to <termin> more than
+once.   <true> means it is reusable and <false> means it is disposable.
+This defaults to <false> which means the accumulator dies after its
+first result.  When an accumulator "dies" it immediately drops all
+references to its secret store.  This means that these potentially large
+internal objects will be garbage collected at the next opportunity,
+which is a kind thing to do.  So disposable accumulators are more
+efficient than reusable ones.
+
+A good use for an item accumulator is to collect values in a loop.
+Here's an example :-
+
+    : vars words = new_item_accumulator( false );
+    : vars numbers = new_item_accumulator( false );
+    : lvars i;
+    : for i in [ [ a 1 ] [ b 2 ] [ c 3 ] [ d 4 ] ] do
+    :     words( i(1) );
+    :     numbers( i(2) );
+    : endfor;
+    : words( termin ) -> words;
+    : numbers( termin ) -> numbers;
+    : words =>
+    ** [a b c d]
+    : numbers =>
+    ** [1 2 3 4]
+
+The accumulator returned by, say,
+    new_item_accumulator( true, consvector )
+still works, even after it has been applied to <termin>.  You can
+carry on adding in more items and extracting them afterwards.
+
+    : vars acc = new_item_accumulator( true, consvector );
+    : applist( [ alpha beta gamma ], acc );
+    ** {alpha beta gamma}
+    : applist( [ alpha beta gamma ], acc );
+    :  acc( termin ) =>
+    ** {alpha beta gamma alpha beta gamma}
+
+-- See also -----------------------------------------------
+
+HELP * new_char_accumulator,    an accumulator specialised for characters

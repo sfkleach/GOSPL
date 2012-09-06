@@ -1,0 +1,25 @@
+HELP STYLE                                              Steve Knight, Oct 93
+                                                        SIREN Project
+ -- White Space
+ -- Formal Parameter Declarations
+ -- Indentation rules
+ -- Laying out large expressions
+
+These notes outline some programming style guidelines for the SIREN
+work.  The purpose of having a uniform style is to help make code
+written by several people more easily readable.  These notes are
+guidelines rather than instructions -- they should be ignored if other
+factors are more important.
+
+
+-- White Space
+
+-- Formal Parameter Declarations
+
+-- Loop Variables
+
+-- Indentation rules
+
+-- Laying out large expressions
+
+Applies equally well to Pop or Prolog

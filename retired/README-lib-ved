@@ -1,0 +1,17 @@
+-- pop/ved/lib --------------------------------------------------------
+
+autoindent.p            automatic indentation in ved
+bbcvt100.p              bbc micro as terminal setup
+chunks.p                operates on "chunks" (regions) in VED
+latex.p                 latex mode for VED
+helplog.p               logs all help requests to a file
+minicifer.p             cifer terminal setup
+regexp.p                regular expression matching for VED
+shownet.p               displays networks using VED
+talltree.p              changes showtree to make tall trees
+ved_clock.p             VED based alarm clock (!)
+vedabbprops.p           abbreviation expansion table
+vedabbs.p               abbreviation expansion facility
+vedendabbs.p            example of abbreviation facility
+vedfnc.p                alternative VED file name completion library
+vednkothe.p             backspace key makes next key work in other file

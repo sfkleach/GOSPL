@@ -1,0 +1,132 @@
+HELP PLUG_ARCHIVE                                   Steve Knight, Oct 91
+
+This file provides an overview of what's in the PLUG source code archive
+and describes how to go about making the best use of it.  Some of this
+material is also covered in the READMETOO file that comes with the
+archive.  To find out about the latest additions to the archive read
+HELP *PLUG_NEWS.
+
+ -- How The Archive Is Organised
+ -- General Information
+ -- What's On The Menu for Pop11 programmers
+ -- What's On The Menu for Lisp programmers
+ -- What's On The Menu for Prolog programmers
+ -- What's On The Menu for Standard ML programmers
+ -- How To Keep The Archive Up To Date
+
+-- How The Archive Is Organised ---------------------------------------
+
+The archive is a simple file hierarchy (no hard or soft links) in the general
+form of the Poplog file hierarchy itself.  So under the $popplug directory
+you will find something like this
+
+    plug ----- pop --------------- pop11 ------------ help ---....
+           |                   |                  |
+           --- various         |-- lisp ---....   |-- auto ---....
+               documentation   |                  |
+               files           |-- plog ---....   --- lib ---....
+                               |
+                               |-- itemtool ---....
+                               |
+                               |-- pwm ---....
+                               |
+                               --- ved ---....
+
+This hierarchy is added to the main Poplog hierarchy and the $poplocal
+hierarchy.
+
+
+-- General Information ------------------------------------------------
+
+In addition to the collection of useful libraries, the plug archive
+also contains valuable reference information.  The best starting point
+for finding out about these is HELP *GENERAL_INFORMATION.
+
+
+-- Packages For Pop11 programmers -------------------------------------
+
+Pop11 is easily the best served of the Poplog languages.  Furthermore, this
+software is continually revised, so it is the least likely to have dated
+beyond recall.  In particular, there are lot of interesting service functions,
+only a few of the most interesting ones are described here.  See the
+$popplug/plug/pop/pop11/auto/README file for an exhaustive list.
+
+lib module
+    An essential alternative syntax for sections.  The module/endmodule
+    syntax allows you to share identifiers between sections without
+    making them visible to their mutual parents.
+
+lib in_directory
+    A for-extension that allows you to iterate over all the files in a
+    directory.  Contributed by Steve Knight (HP Labs).  See *IN_DIRECTORY,
+    *FILES_IN_DIRECTORY, *FILES_MATCHING.
+
+lib repeaters
+    A variety of procedures for dealing with repeaters Contributed by Steve
+    Knight (HP Labs).  See HELP * REPEATERS.
+
+lib counted_items
+    A variety of procedures for dealing with counted-items i.e. a number of
+    items on the stack topped by the count of the items.  Contributed nu
+    Steve Knight (HP Labs). See HELP * COUNTED_ITEMS
+
+lib tinyglobe
+    A nice teaching example for people learning the Pop11 flavours package.
+    Contributed by Chris Price (U. of Aberystwyth).  See HELP * TINYGLOBE.
+
+lib ved_clock
+    A ved-based alarm clock.  Wins the cuteness prize. Contributed by
+    Roger Evans (U. of Sussex).  See HELP * VED_CLOCK.
+
+lib popxpi
+HELP *Xpi
+    A great package from Jon Meyer (ISL) for image manipulation.
+
+
+-- Packages For Lisp programmers --------------------------------------
+
+OPS5
+    This is a port of the public domain OPS5 implementation.  This port
+    was contributed by Tom Khabaza (ISL).
+
+
+-- Packages For Prolog programmers ------------------------------------
+
+lib dollar_dollar
+    A very useful syntax for contructing Prolog terms from inside
+    Pop11.  Once you've used this you'll not understand why you didn't
+    write one yourself.  (It's difficult to know where to put these
+    mixed language items.)
+
+    Contributed by Robin Popplestone.
+
+POEM
+    A simple object manipulation system for Prolog.  Contributed by
+    Ben Staveley-Taylor (Plessy).
+
+
+-- Packages For Standard ML programmers -------------------------------
+
+Still waiting for contributions.
+
+
+-- How To Keep The Archive Up To Date ---------------------------------
+
+If you have problems in using the archive, find faults in the software, or
+things of that kind, please e-mail the PLUG archive administrator with a
+description of the problem. Currently, the address of the administrator is
+
+    popforum-admin@hplb.hpl.hp.com
+
+This will normally be answered by me (Steve Knight, HP Labs).
+
+Equally, if you have suggestions for things you would like to see in the
+archive, you should mail the administrator with a suggestion.  He/she may then
+try to poll the Poplog User Group membership to see if there is already
+something which fits the bill.
+
+Lastly, you might like to submit a contribution.  Contact the administrator
+EITHER with the software and documentation added to the message OR, if it is
+too big, with a general description.  In the latter case, we will make
+appropriate arrangements.  Contributions in the form of shar-archives or
+or uuencoded &/ compressed &/ tar-archives are easiest for us to deal with.

@@ -1,0 +1,7 @@
+HELP APP_N                                      Steve Knight, 26-03-92
+
+    app_n( ITEM-1, ..., ITEM-N, N, P ) 
+
+This procedure applies the procedure P to the top N items on the stack.  The
+items are removed from the stack before any call to P takes place.  The
+order of application is from 1 to N.

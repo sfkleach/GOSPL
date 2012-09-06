@@ -1,0 +1,11 @@
+HELP PROJECT                                        Steve Leach, Feb 05
+
+A project is GOSPLs basic building block.  It is a standard directory
+format for code development and looks like this
+
+    project-dir/
+        auto/
+        help/
+        lib/
+        ref/
+        teach/

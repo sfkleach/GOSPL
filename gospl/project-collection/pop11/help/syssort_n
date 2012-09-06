@@ -1,0 +1,10 @@
+HELP SYSSORT_N                                      Steve Knight, Oct 91
+
+    syssort_n( N, P ) -> N
+
+This procedure sorts the N items on the stack using a `less-than' predicate P.
+Based on *SYSSORT, this procedure is useful for sorting non-list data
+structures.
+
+    syssort_n( 'fred'.deststring, nonop < ).consstring =>
+    ** defr

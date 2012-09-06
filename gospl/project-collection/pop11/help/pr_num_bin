@@ -1,0 +1,9 @@
+HELP PR_NUM_BIN                                     Steve Knight, Sep 93
+
+pr_num_bin( NUMBER )
+
+This simple routine prints numbers in binary, hex, octal, and decimal.
+For example,
+
+    : pr_num_bin( 99 ) ;
+    0000-0000-0000-0000  0000-0000-0110-0011  63 h  143 o  99 d

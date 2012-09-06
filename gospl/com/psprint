@@ -1,0 +1,26 @@
+#!/bin/bash
+# --- Copyright University of Sussex 1992. All rights reserved. ----------
+# File:             $poplocal/local/com/psprint
+# Purpose:          Print VED file to postscript
+# Author:           Jonathan Meyer, Apr 3 1993
+# Documentation:    REF * PSPRINT
+# Related Files:    LIB * PSPRINT
+
+# Somehow this needs to know where the GOSPL library sits.  For
+# a shortcut -- and until I figure out whether or not psprint has
+# been rolled into the system -- I shall assume $popgospl is
+# defined.  I further assume that it can be made synonymous with
+# $usepop.
+
+if [ -z "${popgospl}" ]
+then
+        # Recursively dereference any symlinks and convert
+        # into absolute path name.
+        dir=`readlink -f $0`
+        # Get the path.
+        dir=`dirname "${dir}"`
+        # Remove the trailing /gospl/com.
+        export popgospl="${dir%/gospl/com}"
+fi
+
+$popsys/pop11 $popgospl/gospl/project-collection/pop11/code/psprint.p $*

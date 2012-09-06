@@ -1,0 +1,19 @@
+HELP XT_NEWG_PUSH_BUTTON                                Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_newg_push_button( PARENT, [NAME], BINDING1, ..., BINDINGn )
+        -> GADGET
+
+This procedure creates a Motif push button gadget.  The arguments are
+processed using *XT_NEW_ARGS.
+
+Examples:
+
+In these one-line examples, -my_parent- is a variable bound to a row
+column widget:
+
+    xt_new_push_button( my_parent ) -> g
+    xt_new_push_button( my_parent, 'fred' ) -> g
+
+See also:
+    HELP *XT_NEW_ARGS

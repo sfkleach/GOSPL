@@ -1,0 +1,1001 @@
+REF MODTRANSFMS                                 James Anderson June 1990
+
+           COPYRIGHT James Anderson 1991. All rights reserved.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<      REF MODTRANSFMS        >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Introduction
+ --  Configuration Space
+ --  Active/Passive Transformations
+ --  Coordinate/Axis Transformations
+ --  Homogeneous Coordinates
+ --  Creating a Modmatrix
+ --  Copying a Modmatrix
+ --  Recognising a Modmatrix
+ --  Trapping a Modmatrix
+ --  Getting the Bounds of a Modmatrix
+ --  Printing a Modmatrix
+ --  Transposing a Modmatrix
+ --  Concatenating Modmatrices
+ --  Inverting a Modmatrix
+ --  Special Kinds of Affine Transformation
+ --  Magnitude
+ --  Handedness
+ --  Shear
+ --  Rotation
+ --  Translation
+ --  General Affine Transformation
+ --  Generating an Affine Transformation from Parameters
+ --  Generating Parameters from an Affine Transformation
+
+
+
+Introduction
+------------
+MODTRANSFMS is  a package  for describing  and carrying  out the  affine
+(general  linear)  transformations  in  any  whole  numbered  dimension.
+However, the recovery of parameters from a transformation is of  limited
+numerical accuracy and may not be useful above five dimensions.
+
+    A transformation is described  by a matrix and  is carried out  by a
+matrix operation, but unlike typical matrix packages MODTRANSFMS imposes
+a meaning on matrices and operations. A *MISHAP will occur if you try to
+create a meaningless object,  or a warning will  be given, by  setting a
+return flag, if an operation cannot  be carried out reliably because  of
+some numerical problem. Thus correct execution indicates that the result
+is probably  meaningful. However,  the MODTRANSFMS  procedures have  not
+been proved formally.
+
+    Typically, you  will  want  to create  a  transformation  from  some
+parameters  and  apply  it  to   some  coordinates.  The  matrix   types
+modtransfm, modparams,  and modcoords  are  provided to  describe  these
+things. Collectively they are of type modmatrix. Essentially a modmatrix
+is an array, but additional information about its type is hidden in  the
+package - SHOWLIB *MODTRANSFMS. This type information is used to  impose
+meaning on the objects and operations - so only arrays that are  created
+by the MODTRANSFMS procedures can be used. Any other type of array  will
+cause a MISHAP.
+
+  The  affine   transformations  can   be  composed   from  five   basic
+transformations:   magnitude,   handedness,    shear,   rotation,    and
+translation. Any  affine  can also  be  decomposed into  the  same  five
+transformations.  So   you  can   both  generate   and  analyse   affine
+transformations.  You  are  guaranteed  that  the  description  used  to
+generate an affine by one  application of the generating procedure  will
+be the  same as  the  description obtained  by  one application  of  the
+analysis procedure - up to some numerical resolution.
+
+    MODTRANSFMS does  not deal  with bi-linear  transformations such  as
+perspective transformation, nor  does it  deal with  projections of  any
+kind.
+
+
+
+Configuration Space
+-------------------
+There are  several ways  of describing  the space  in which  points  are
+described by  coordinates  and  in  which  transformations  take  place.
+MODTRANSFMS imposes one  interpretation of  space. This may  not be  the
+interpretation you  are used  to, but  you can  probably translate  your
+interpretation into the  interpretation used  here. You  might think  it
+peculiar to insist on a  particular interpretation, especially if it  is
+different from the ones you have  learned, but it is the  interpretation
+which defines the meaning of coordinates and transformations. Without an
+agreed interpretation  MODTRANSFMS  cannot  give you  any  guarantee  of
+correctness.
+
+    We assume  that  there  is  an absolute,  fixed  space,  called  the
+'configuration space'. Configuration space has a right-handed coordinate
+frame embedded in  it at  a fixed  origin. Configuration  space and  its
+coordinate frame are never transformed. They always remain fixed.
+
+    Y
+    4 |
+    3 |
+    2 |
+    1 |    . P(2,1)
+      | __ __ __ __
+     0  1  2  3  4  X
+
+FIGURE 1
+
+    Figure 1 shows a two dimensional, right handed coordinate frame. The
+position of the point P is described by the Euclidean coordinates (2,1).
+The point P in configuration space is fixed, it can never move or change
+its coordinates. MODTRANSFMS uses Euclidean coordinates throughout.
+
+    A transformation 'maps'  a point P  in a space  called the  'domain'
+into a  new point  P' in  a space  called the  'range'. A  point can  be
+transformed many times, always starting from the configuration space and
+passing through many successive  domains and ranges.  The points P,  P',
+P'', and so on, are different instantiations of the configuration  point
+P. You can chose to describe the relative positions of points within any
+of these spaces,  but this  is always  related to  an interpretation  in
+configuration space. This is what makes the idea of configuration  space
+so useful - no  matter how, or  how often, you  transform a point,  some
+canonical description of it exists in configuration space.
+
+
+
+Active/Passive Transformations
+------------------------------
+A transformation is said to be 'active' if it maps all of the points and
+the coordinate  frame  in the  range  into the  domain,  by  contrast, a
+'passive' transformation maps only the coordinate frame into the  range.
+The difference  is that  an active  transformation can  map a  point  in
+configuration space to  an instantiation  of that point  at a  different
+location in configuration space, whereas a passive transformation leaves
+all instantiations  of the  point  in the  same place  in  configuration
+space, but moves an instantiation  of the coordinate frame.  MODTRANSFMS
+uses the 'active' interpretation of transformations so that the position
+of a point in configuration space has a single interpretation.
+
+    The practical consequence of  the above is  that the parameters  you
+give to describe a transformation describe motions of points relative to
+a fixed coordinate frame, not motions of a coordinate frame relative  to
+fixed points, which is the inverse. MODTRANSFMS provides a procedure for
+obtaining the inverse of a transformation, but then your description  of
+a  passive  transformation  is  made   up  of  the  parameters  of   the
+transformation and an application of the inverse procedure.
+
+    ACTIVE : parameters <-> transformation
+
+    PASSIVE: parameters <-> transformation <-> inverse transformation
+
+FIGURE 2
+
+    You can obtain the  effect of a passive  transformation, but at  the
+cost of  breaking  the  one-step  relationship  between  parameters  and
+transformations.
+
+    By contrast,  constructing an  inverse of  an active  transformation
+preserves the  one-step relationship  by imposing  the  parameterisation
+regardless of the fact that a transformation may be an inverse.
+
+    ACTIVE INVERSE: parameters <-> transformation <->
+                    inverse transformation <-> inverse parameters
+
+FIGURE 3
+
+    In Figure 3 the active inverse  transformation is known only by  its
+inverse parameters whereas, in Figure  2, the passive transformation  is
+known  by   its  parameters   plus  an   application  of   the   inverse
+transformation procedure  and is  not  known by  the parameters  of  the
+inverse transformation. The type system  in MODTRANSFMS does not  record
+the necessity of  the extra  application of  the inverse  transformation
+procedure  and  so   does  not   preserve  the   semantics  of   passive
+transformations. This is a critical issue. Do not mix active and passive
+interpretations unless you are prepared  to take responsibility for  the
+resulting polymorphic semantics of transformations.
+
+
+
+Coordinate/Axis Transformations
+-------------------------------
+A transformation can be applied to the coordinates of a point or to  the
+coordinate frame axes. These  are transposes of  each other. As  before,
+the transformation  can be  active  or passive.  If active,  the  entire
+embedding space  is carried  with the  point, if  passive the  embedding
+space remains static and the coordinate axes are moved.
+
+    |a b| |x|     |ax+by|     |x'|
+    |c d| |y|  =  |cx+dy|  =  |y'|
+
+FIGURE 4
+
+    In Figure 4  the coordinates of  a point (x,y)  are mapped onto  the
+coordinates (x',y')  by  pre-multiplying them  with  a  transformational
+matrix with elements  (a,b,c,d). Notice that  the elements (a,b)  affect
+the x' coordinate and the elements  (c,d) affect the y' coordinate.  The
+rows of the transformational matrix are  said to make up a  'row-basis'.
+When a  pre-multiplying transformational  matrix is  used the  row-basis
+transforms the coordinates  of a point.  Conversely, the elements  (a,c)
+affect  the  x-component  of  x'  and  the  elements  (b,d)  affect  the
+y-component of y'. The columns of a transformational matrix are said  to
+make up a 'column-basis'. When a pre-multiplying transformational matrix
+is used the column-basis transforms the components of a coordinate, that
+is, it transforms the coordinate frame axes. Notice that the same effect
+can be  obtained  using  post-multiplying matrices  by  transposing  the
+matrix and the coordinates.
+
+          |a c|
+    |x y| |b d|  =  |ax+by cx+dy|  =  |x' y'|
+
+FIGURE 5
+
+    Thus one cannot tell from a transformational matrix whether it  is a
+coordinate transformation  or  axis  transformation until  it  is  known
+whether the matrix is to be  used to pre- or post-multiply  coordinates.
+This syntactic ambiguity is resolved in MODTRANSFMS by interpreting  all
+transformations as coordinate transformations. A pre-multiplying  matrix
+is bound to the  type <row_basis> and a  post-multiplying matrix to  the
+type <not_row_basis>, that  is <column_basis>. Any  attempt to  multiply
+row-basis and column-basis matrices together will cause a MISHAP.  Thus,
+any successful multiplication has the same effect regardless of  whether
+it is performed pre- or post-multiplying.
+
+    The transpose operator toggles the basis type as well as transposing
+the elements, so one can  switch between pre- and post-multiplying  form
+by transposing matrices.
+
+
+
+Homogeneous Coordinates
+-----------------------
+Homogeneous coordinates are obtained by augmenting Euclidean coordinates
+with an extra coordinate.
+
+    EUCLIDEAN  : (x,y)
+    HOMOGENEOUS: (x,y,w)
+
+FIGURE 6
+
+    This form has the  advantage that translation  can be obtained  by a
+matrix multiplication by setting the homogeneous coordinate w to unit.
+
+    |1 0 Tx| |X|     |X+Tx|
+    |0 1 Ty| |Y|  =  |Y+Ty|
+    |0 0 1 | |1|     | 1  |
+
+FIGURE 7
+
+    It is equally useful to set  the homogeneous coordinate to zero,  so
+that the coordinates describe a  direction vector which is not  affected
+by translation.
+
+    |1 0 Tx| |X|     |X|
+    |0 1 Ty| |Y|  =  |Y|
+    |0 0 1 | |0|     |0|
+
+FIGURE 8
+
+    Thus a  zero  homogeneous  coordinate  means  that  the  coordinates
+describe a direction vector and a non-zero homogeneous coordinate  means
+that the coordinates  describe a position  vector. MODTRANSFMS does  not
+impose any other distinction between direction and position vectors.
+
+    An homogeneous vector is projected  back onto a Euclidean vector  by
+dividing every element  by the  w-coordinate, providing  w is  non-zero.
+With w zero this term is simply dropped and is understood to  describe a
+direction vector. This form of projection, or homogeneous division,  can
+be used to describe perspective projection, but this is beyond the scope
+of MODTRANSFMS.
+
+    In mathematics, a homogeneous vector  with all elements zero is  not
+allowed, it  would  describe  a  direction  vector  with  no  direction.
+However, the computational cost of ensuring that zeros are not  assigned
+everywhere in an homogeneous vector would be prohibitive, so MODTRANSFMS
+allows this  vector. No  serious harm  is done;  one simply  notes  that
+certain mathematical operations cannot be performed on this zero vector.
+This is entirely compatible with the special status of zero elsewhere in
+mathematics.
+
+
+
+Creating a Modmatrix
+--------------------
+
+modnewcoords(SIZE, DIMENSION) -> MODCOORDS;                  [procedure]
+modcoords                                                    [procedure]
+    'Modnewcoords'  creates   a   matrix  of   homogeneous   coordinates
+    'modcoords' in a space of  the given 'dimension' arranged in  'size'
+    columns. Thus the bounds of a modcoords matrix are [1  %dimension+1%
+    1 ^size]. The matrix is initialised to zero.
+
+    Example
+    -------
+    vars coords = modnewcoords(1, 3);
+
+    coords =>
+    ** <array [1 4 1 1]>
+
+    modmatrixpr(coords);
+
+         0.000000
+         0.000000
+         0.000000
+         0.000000
+
+
+modnewtransfm(DIMENSION) -> MODTRANSFM;                      [procedure]
+modtransfm                                                   [procedure]
+    'Modnewtransfm'  creates  a   matrix  representing  an   homogeneous
+    transformation 'modtransfm'  of  the  given  'dimension'.  Thus  the
+    bounds of a  modtransfm are [1  %dimension+1% 1 %dimension+1%].  The
+    matrix is initialised to identity.
+
+    Example
+    -------
+    vars transfm = modnewtransfm(3);
+
+    transfm =>
+    ** <array [1 4 1 4]>
+
+    modmatrixpr(transfm);
+
+         1.000000      0.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+
+modnewparams(DIMENSION) -> MODPARAMS;                        [procedure]
+modparams                                                    [procedure]
+    'Modparams' creates  a matrix  of the  parameters of  a  homogeneous
+    transformation of  the  given  'dimension'.  Thus  the  bounds  of a
+    modparams are  [1  %dimension+1%  1 %dimension+1%].  The  matrix  is
+    initialised to identity.
+
+    Example
+    -------
+    vars params = modnewparams(3);
+
+    params =>
+    ** <array [1 4 1 4]>
+
+    modmatrixpr(params);
+
+         1.000000      0.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+
+
+Copying a Modmatrix
+-------------------
+
+modmatrixcopy(MATRIX1) -> MATRIX2;                           [procedure]
+modmatrix                                                    [procedure]
+    Returns 'matrix2' which is a copy of 'matrix1'. 'Matrix1' can be any
+    of the modmatrix types: modcoords, modparams, modtransfm.
+
+    Example
+    -------
+    vars matrix1 matrix2;
+
+    modnewtransfm(3) -> matrix1;
+    modmatrixcopy(matrix1) -> matrix2;
+
+    ;;; Data copied ...
+    matrix1 = matrix2 =>
+    ** <true>
+
+    ;;; ... but into a new area of memory.
+    matrix1 == matrix2 =>
+    ** <false>
+
+
+
+Recognising a Modmatrix
+-----------------------
+
+modismatrix(OBJECT)  -> <TRUE|FALSE>;                        [procedure]
+    Returns <true> if 'object' is a modmatrix, <false> otherwise.
+
+
+modiscoords(OBJECT)  -> <TRUE|FALSE>;                        [procedure]
+    Returns <true> if 'object' is a modcoords, <false> otherwise.
+
+
+modistransfm(OBJECT) -> <TRUE|FALSE>;                        [procedure]
+    Returns <true> if 'object' is a modtransfm, <false> otherwise.
+
+
+modisparams(OBJECT)  -> <TRUE|FALSE>;                        [procedure]
+    Returns <true> if 'object' is a modparams, <false> otherwise.
+
+
+modisrowbasis(OBJECT)  -> <TRUE|FALSE>;                      [procedure]
+    Returns <true> if 'object' is a modmodmatrix organised by
+    row-basis, <false> otherwise.
+
+
+modisaffine(OBJECT)  -> <TRUE|FALSE>;                        [procedure]
+    Returns <true> if 'object' is a modmatrix with identity perspective,
+    <false> otherwise.
+
+
+    Example
+    -------
+    modismatrix(modnewtransfm(3)) =>
+    ** <true>
+
+    modismatrix('Not Likely') =>
+    ** <false>
+
+
+
+Trapping a Modmatrix
+--------------------
+
+modmatrixneeded(OBJECT);                                     [procedure]
+    Mishaps if 'object' is not a modmatrix.
+
+
+modcoordsneeded(OBJECT);                                     [procedure]
+    Mishaps if 'object' is not a modcoords.
+
+
+modtransfmneeded(OBJECT);                                    [procedure]
+    Mishaps if 'object' is not a modtransfm.
+
+
+modparamsneeded(OBJECT);                                     [procedure]
+    Mishaps if 'object' is not a modparams.
+
+
+modrowbasisneeded(OBJECT);                                   [procedure]
+    Mishaps if 'object' is not a modmatrix organised by row-basis.
+
+
+modaffineneeded(OBJECT);                                     [procedure]
+    Mishaps if 'object' is not a modmatrix with identity perspective.
+
+
+    Example
+    -------
+    modmatrixneeded(modnewtransfm(3));
+
+    modmatrixneeded('Not Likely');
+
+    ;;; MISHAP - MODMATRIX NEEDED
+    ;;; INVOLVING:  'Not Likely'
+    ;;; DOING    :  modtypeneeded compile nextitem compile
+
+
+
+Getting the Bounds of a Modmatrix
+---------------------------------
+
+moddimension(MODMATRIX) -> DIMENSION;                        [procedure]
+    Returns the number of spatial dimensions described by a modmatrix.
+    See REF * MODTRANSFMS/Homogeneous Coordinates.
+
+
+modsize(MODMATRIX) -> SIZE;                                  [procedure]
+    Returns the size  of a  modmatrix. The size  of a  modcoords is  the
+    number of coordinate vectors. The size of a modparams or  modtransfm
+    is the upper array bound: dimension+1.
+    See REF * MODTRANSFMS/Homogeneous Coordinates.
+
+
+
+Printing a Modmatrix
+--------------------
+
+modmatrixpr(MODMATRIX);                                      [procedure]
+    Prints a modatrix as a table  of numbers in decimal format. A  blank
+    line is printed at the  beginning and end of  the table and a  space
+    between  each  element.   Numbers  are   printed  in   a  field   of
+    'mod_pr_figs' to the left of  the decimal point and  'mod_pr_places'
+    to the right. The decimal point is not printed if 'mod_pr_places' is
+    zero. 'mod_pr_places' is a synonym for 'pop_pr_places' so they share
+    the  same  value.  The  default  value  of  both  'mod_pr_figs'  and
+    'mod_pr_places' is six.
+
+
+    Example
+    -------
+    modmatrixpr(modnewtransfm(3));
+
+         1.000000      0.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    vars mod_pr_figs = 1, mod_pr_places = 0;
+
+    modmatrixpr(modnewtransfm(3));
+
+    1 0 0 0
+    0 1 0 0
+    0 0 1 0
+    0 0 0 1
+
+
+
+Transposing a Modmatrix
+-----------------------
+
+modtranspose(MODMATRIX1) -> MODMATRIX2;                      [procedure]
+    Returns the transpose of a  modmatrix toggling its row/column  basis
+    type.
+
+
+    Example
+    -------
+
+    vars t = modnewtransfm(3);
+    2 -> t(1,2);
+
+    modmatrixpr(t);
+
+         1.000000      2.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    vars u = modtranspose(t);
+
+    modmatrixpr(u);
+
+         1.000000      0.000000      0.000000      0.000000
+         2.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    modisrowbasis(t) = modisrowbasis(u) =>
+    ** <false>
+
+modsystranspose(MODMATRIX, WORKSPACE);                       [procedure]
+    Transposes any MxN modmatrix in-place, toggling its row/column basis
+    type. 'Workspace'  is  an (M+N)/2  array_of_integer.  See  SHOWLIB *
+    MODTRANSFMS for an example.
+
+        Modsystranspose does full error checking, but churns little heap
+    memory. The  transpose of  a square  matrix is  potentially  garbage
+    free, but the transpose of  a non-square matrix always garbages  the
+    accessing procedure.
+
+
+
+Concatenating Modmatrices
+-------------------------
+The operation  of  combining transformations  with  each other  or  with
+coordinates is called  'concatenation'. The only  concatenation used  in
+MODTRANSFMS is  matrix  multiplication,  so  the  matrix  multiplication
+operators are called concatenation operators.
+
+MODMATRIX1 ##* MODMATRIX2 -> MODMATRIX3;                  [operator 1.5]
+    Post multiplies 'modmatrix1' by 'modmatrix2' returning the result in
+    'modmatrix3'. This is a right acting operator with precedence higher
+    than any arithmetic  operator. The product  of two modtransfms  is a
+    modtransfm and  the product  of a  modtransfm and  a modcoords  is a
+    modcoords.  Both  arguments  must  be  of  the  same  dimension  and
+    row/column basis - these are inherited by the result. In  addition a
+    modcoords must  be of  the  correct row/column  basis for  a  single
+    coordinate vector to  be conformable for  multiplication. It is  not
+    enough that it may be of the correct size.
+
+
+modcat(MODMATRIX1, MODMATRIX2) -> MODMATRIX3;                [procedure]
+    Post multiplies 'modmatrix1' by 'modmatrix2' returning the result in
+    'modmatrix3'. The product of two modtransfms is a modtransfm and the
+    product of  a  modtransfm  and  a modcoords  is  a  modcoords.  Both
+    arguments must be of the same dimension and row/column basis - these
+    are inherited by the result. In addition a modcoords must be of  the
+    correct row/column  basis  for  a single  coordinate  vector  to  be
+    conformable for multiplication. It is not  enough that it may be  of
+    the correct size.
+
+
+modsyscat(MODMATRIX1, MODMATRIX2, MODMATRIX3);               [procedure]
+    Post multiplies 'modmatrix1' by 'modmatrix2' returning the result in
+    'modmatrix3'. Potentially  this procedure  does not  churn any  heap
+    memory. The  product of  two  modtransfms is  a modtransfm  and  the
+    product of  a  modtransfm  and  a modcoords  is  a  modcoords.  Both
+    arguments must be of the same dimension and row/column basis - these
+    are inherited by the result. In addition a modcoords must be of  the
+    correct row/column  basis  for  a single  coordinate  vector  to  be
+    conformable for multiplication. It is not  enough that it may be  of
+    the correct size.
+
+
+    Example
+    -------
+    vars coords = modnewcoords(1, 3);
+
+    1 ->coords(1,1); 2 ->coords(2,1); 3 ->coords(3,1); 1 ->coords(4,1);
+    modmatrixpr(coords);
+
+         1.000000
+         2.000000
+         3.000000
+         1.000000
+
+   vars transfm = modnewtransfm(3);
+
+   1/2 -> transfm(2,2); 1/3 -> transfm(3,3);
+   modmatrixpr(transfm);
+
+         1.000000      0.000000      0.000000      0.000000
+         0.000000      0.500000      0.000000      0.000000
+         0.000000      0.000000      0.333333      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    modmatrixpr(transfm ##* coords);
+
+         1.000000
+         1.000000
+         1.000000
+         1.000000
+
+
+
+Inverting a Modmatrix
+---------------------
+
+modinverse(MODTRANSFM) -> INVERSE -> STATUS;                 [procedure]
+    Returns the matrix inverse of 'modtransfm'. 'Status' is 0 if inverse
+    is reliable, 1 if 'modtransfm' is singular, and 2 if 'modtransfm' is
+    ill conditioned.
+
+
+modsysinverse(MATRIX, INVERSE, DECOMPOSITION, RESIDUAL,      [procedure]
+                    IDENTITY, WORKSPACE);
+    All  of  the  arguments   should  be  modtransfm  matrices,   though
+    'workspace' can be  an array_of_double([1 ^size]),  where 'size'  is
+    the  common  size  of  the  remaining  matrices.  Potentially   this
+    procedure does not churn heap  store. 'Matrix' and 'identity',  must
+    be set on entry and are unchanged on exit; the remaining arrays  are
+    set on exit.
+
+    'matrix'        is the matrix to be inverted,
+    'inverse'       is the resultant inverse,
+    'decomposition' is the LU decomposition of 'matrix' with pivoting,
+    'residual'      is the residual error vectors,
+    'identity'      is the identity transformation.
+
+    In general 'identity' is the right hand side of the linear  equation
+    matrix  ##*  inverse  =  identity.  See  the  NAG  documentation  of
+    subroutine F04AEF for further details.
+
+
+    Example
+    -------
+    vars transfm = modnewtransfm(3);
+    2 -> transfm(1,2);
+
+    modmatrixpr(transfm);
+
+         1.000000      2.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    vars inverse status;
+    modinverse(transfm) ->inverse ->status;
+
+    status =>
+    ** 0
+
+    modmatrixpr(inverse);
+
+         1.000000     -2.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+    modmatrixpr(transfm ##* inverse);
+
+         1.000000      0.000000      0.000000      0.000000
+         0.000000      1.000000      0.000000      0.000000
+         0.000000      0.000000      1.000000      0.000000
+         0.000000      0.000000      0.000000      1.000000
+
+
+
+Special Kinds of Affine Transformation
+--------------------------------------
+The affine, or general linear,  transformations can be described by  the
+concatenation of five kinds of transformation: Magnitude (M), Handedness
+(H), Shear (S), Rotation (R), and Translation (T). In a zero dimensional
+space none of  the transformations  has a degree  of freedom.  In a  one
+dimensional space  Magnitude, Handedness,  and Translation  are free  to
+vary, and in a two or more dimensional space all of the  transformations
+are free to  vary. The form  of the two  dimensional transformations  is
+given below. The superscript denotes the dimensionality of the space.
+
+
+
+Magnitude
+---------
+
+ 2   |M1 0  0|
+M  = |0  M2 0| , M1,M2 > 0.
+     |0  0  1|
+
+Magnitude scales objects  in the  direction of  the configuration  space
+coordinate frame axes. Values of Md greater than unit increase the  size
+of objects in  the direction  of the d'th  axis, values  less than  unit
+decrease the size, and values of unit leave the size unaltered.
+
+
+
+
+Handedness
+----------
+
+ 2  |1  0  0|
+H = |0  Hd 0| , Hd = +/- 1.
+    |0  0  1|
+
+When Hd = -1 Handedness transforms left handed objects into right handed
+objects and  vice  versa.  When  Hd =  +1  objects  are  unchanged.  The
+handedness parameter, Hd,  always transforms the  last dimension of  the
+space, so in a two dimensional space it transforms the second  dimension
+and in a d-dimensional space it transforms the d'th dimension.
+
+
+
+
+Shear
+-----
+
+ 2   |1 S1 0|
+S  = |0 1  0|.
+     |0 0  1|
+
+Shear shears an  object. The shear  parameter in the  i'th row and  j'th
+column, Sij, translates the j'th axis by Sij times the i'th axis at that
+point. This is easier to draw than to describe. The 2x1 rectangle on the
+left is sheared into the 2x1 parallelogram on the right.
+
+    Y                                 Y
+    4 |                               4|
+    3 |                    S1 = 1     3|
+    2 | __ __.(2,1)        ----->     2|  -- -- .(3,1)
+    1 |      |                        1| /     /
+      | __ __|__ __                    |/__ __/__ __
+     0  1  2  3  4  X                 0  1  2  3  4  X
+
+FIGURE 9
+
+In spaces with dimension greater than two the shear parameters are  laid
+out in raster order (left to right and top to bottom). For example:
+
+     |1 S1 S2 0|
+ 3   |0 1  S3 0|
+S  = |0 0  1  0|.
+     |0 0  0  1|
+
+The shear parameter,  Sij, in the  i'th row and  j'th column shears  the
+j'th axis in proportion to the i'th axis. That is, it is a shear in  the
+ij-plane.
+
+
+
+
+Rotation
+--------
+
+ 2   |C -S 0|
+R  = |S  C 0| , C = cos(a), S = sin(a), a = angle of rotation.
+     |0  0 1|
+
+Rotation performs a rotation in the  plane by the angle 'a' in  radians.
+MODTRANSFMS does not allow you to describe angles in any other way, that
+would be  against  the  notion  of  canonical  description.  When  using
+MODTRANSFMS remember to set *POPRADIANS to <true>.
+
+In spaces with dimension  greater than two  the rotation parameters  are
+laid out in inverse raster order (right to left and bottom to top).  For
+example:
+
+     |1  0  0 0|
+ 3   |R3 1  0 0|
+R  = |R2 R1 1 0|
+     |0  0  0 1|
+
+In the case of Shear the parameters were identical to the components  of
+the transformation,  but with  rotation  each parameter  generates  four
+components. The  rotation transformation  is obtained  by  concatenating
+each rotation in order. Remember that transformations are written  right
+to left.
+
+ 3
+R  = R3.R2.R1
+
+     |C3 -S3  0 0| |C2 0 -S2 0| |1 0   0  0|
+     |S3  C3  0 0| |0  1  0  0| |0 C1 -S1 0|
+   = |0   0   1 0| |S2 0  C2 0| |0 S1  C1 0|
+     |0   0   0 1| |0  0  0  1| |0 0   0  1|
+
+     |C2C3 -S1S2C3-C1S3 -C1S2C3+S1S3 0|
+     |C2S3 -S1S2S3+C1C3 -C1S2S3-S1C3 0|
+   = |S2    S1C2         C1C2        0|.
+     |0     0            0           1|
+
+Note that this parameterisation is in  terms of rotations in the  plane,
+not rotations  about  axes.  The  concept  of  rotations  in  the  plane
+generalises easily to dimensions higher than three, rotations about axes
+does not.
+
+There are also constraints on the parameters of rotation.
+
+     |1  0  0 0|
+ 3   |R3 1  0 0|
+R  = |R2 R1 1 0|
+     |0  0  0 1|
+
+The last row (here R1,R2) can take on any value in a whole rotation:
+
+   -pi < R <= pi
+
+but the rows above (here R3) are constrained to a semi-rotation:
+
+            +
+   -pi/2 < R <= pi/2
+
+These constraints  describe  all  possible  rotations,  but  there  is a
+problem. If  any  R  value =  +/-  pi/2  then the  equations  are  under
+determined and must  be constrained by  adding boundary conditions.  The
+constraint used is that if an R value  = +/- pi/2 then all R+ values  in
+the same column are set to +pi/2.
+
+
+
+Translation
+-----------
+
+ 2   |1 0 T1|
+T  = |0 1 T2|.
+     |0 0 1 |
+
+Translation moves an object in the Td'th axis by an amount Td.
+
+
+
+General Affine Transformation
+-----------------------------
+
+When all of the parametric matrices of the affines, A, are overlaid we
+obtain.
+
+ 0
+A  = |1|.
+
+ 1   |MH T|
+A  = |0  1|.
+
+ 2   |M S  T|
+A  = |R MH T|.
+     |0 0  0|
+
+     |M  S S  T|
+ 3   |R+ M S  T|
+A  = |R  R MH T|.
+     |0  0 0  1|
+
+And so on.
+
+
+
+Generating an Affine Transformation from Parameters
+---------------------------------------------------
+
+modtransfm(MODPARAMS) -> MODTRANSFM -> STATUS;               [procedure]
+   Generates the transformation  matrix 'modtranfm'  from the  parameter
+   matrix 'modparams'. If status  is 0 then the  result is reliable.  If
+   status = 1  then the  magnitude or handedness  constraints have  been
+   broken. If status = 2 then the rotation constraints have been broken.
+   If status =  3 then a  non-identity perspective part  has been  used.
+   'Status' must be an *IDENT.
+
+
+   Example
+   -------
+   vars params,
+        transfm,
+        status,
+        h  = -1,
+        m1 =  2,
+        m2 =  3,
+        s1 =  5,
+        r1 = pi,
+        t1 =  7,
+        t2 = 11;
+
+    modnewparams(2) -> params;
+
+    m1   -> params(1,1);
+    m2*h -> params(2,2);
+    s1   -> params(1,2);
+    r1   -> params(2,1);
+    t1   -> params(1,3);
+    t2   -> params(2,3);
+
+    modmatrixpr(params);
+
+         2.000000      5.000000      7.000000
+         3.141590     -3.000000     11.000000
+         0.000000      0.000000      1.000000
+
+    modtransfm(params) -> transfm -> status;
+
+    status =>
+    ** 0
+
+    modmatrixpr(transfm);
+
+        -2.000000     15.000000      7.000000
+        -0.000001      3.000000     11.000000
+         0.000000      0.000000      1.000000
+
+
+modsystransfm(MODPARAMS, MODTRANSFM, DIMENSION,              [procedure]
+                    IDENT STATUS);
+    Generates a modtransfm in-place  from its modparams. 'Dimension'  is
+    the  common  dimensionality  of  the  modparams  and  modtransfm  as
+    returned by moddimension. Potentially garbage free.
+
+
+
+Generating Parameters from an Affine Transformation
+---------------------------------------------------
+
+modparams(MODTRANSFM) -> MODPARAMS -> STATUS;
+    Generates the parameter matrix  'modparams' from the  transformation
+    matrix 'modtransfm'. If status is 0 then the result is reliable.  If
+    status = 1 then  the magnitude or  handedness constraints have  been
+    broken. If  status  = 2  then  the rotation  constraints  have  been
+    broken. If status = 3 then a non-identity perspective part has  been
+    used. 'status' must be an *IDENT.
+
+
+   Example
+   -------
+
+   vars params transfm status h m1 m2 s1 r1 t1 t2;
+
+   modnewtransfm(2) -> transfm;
+
+   -2 -> transfm(1,1);  15 -> transfm(1,2);  7 -> transfm(1,3);
+    0 -> transfm(2,1);   3 -> transfm(2,2); 11 -> transfm(2,3);
+
+   modmatrixpr(transfm);
+
+    -2.000000     15.000000      7.000000
+     0.000000      3.000000     11.000000
+     0.000000      0.000000      1.000000
+
+   modparams(transfm) -> params -> status;
+
+   status =>
+   ** 0
+
+   modmatrixpr(params);
+
+     2.000000      5.000000      7.000000
+     3.141593     -3.000000     11.000000
+     0.000000      0.000000      1.000000
+
+
+   params(1,1) ->> m1 =>
+   ** 2.0
+
+   abs(params(2,2)) ->> m2 =>
+   ** 3.0
+
+   sign(params(2,2)) ->> h =>
+   ** -1.0
+
+   params(1,2) ->> s1 =>
+   ** 5.0
+
+   params(2,1) ->> r1 =>
+   ** 3.141593
+
+   params(1,3) ->> t1 =>
+   ** 7.0
+
+   params(2,3) ->> t2 =>
+   ** 11.0
+
+modsysparams(MODTRANSFM, MODPARAMS, DIMENSION,               [procedure]
+                   IDENT STATUS);
+    Generates a modparams in-place  from its modtransfm. 'Dimension'  is
+    the dimensionality  of  'modtransfm'  and  'modparams'.  Potentially
+    garbage free.
+
+
+
+--- COPYRIGHT James Anderson 1991. All rights reserved. ----------------

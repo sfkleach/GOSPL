@@ -1,0 +1,8 @@
+HELP INFINITY                                           Steve Knight, Nov 93
+                                                        SIREN Project
+infinity
+
+This constant is a very large real number.  It is at least as large as any
+other floating-point number representable in Pop11.  Unfortunately, it is
+not guaranteed to be greater than any other number because of the unlimited
+size of bigintegers.

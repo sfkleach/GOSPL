@@ -1,0 +1,7 @@
+HELP CHECK_NUMBER                                       Steve Knight, Oct 93
+                                                        SIREN Project
+    check_number( ITEM ) -> ITEM
+
+This procedure checks, without modifying, the top of the stack.  If it
+is not a number, as tested by the -isnumber- procedure, a mishap is
+caused.

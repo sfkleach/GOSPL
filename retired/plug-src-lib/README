@@ -1,0 +1,34 @@
+======================== Important disclaimer ===============================
+| The material in this archive is freely contributed and must be used on    |
+| an "as is" basis.  In particular, no guarantee or warranty concerning     |
+| this software is made by the contributors, the user group, the archive    |
+| administrator, or the site of distribution.  There is no formal           |
+| maintenance or support for any of the software in this archive.           |
+=============================================================================
+
+README
+    Each directory has its own README file detailing the contents of
+    the directory.
+
+READMETOO
+    How to add the archive to your local Poplog setup.
+
+intro
+    An introduction to this archive.
+
+contacts
+    Contact information on the PLUG archive and mailing-list, the
+    user-group itself, and other Pop-related organisations.
+
+contents
+    All the README files spliced together.
+
+news
+    News on what has been recently added to the archive.
+
+pop/
+    The source code archives.
+
+tidyup
+    An shell script for creating the plug.tar.Z file and keeping things
+    nice and tidy.

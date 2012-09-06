@@ -1,0 +1,2 @@
+#!/bin/bash
+${popsys?}/basepop11 ":compile('${popgospldev?}/gospl/init.p');nprintf('%p.%p.%p',[%popgospl_internal_version.explode%]);"

@@ -1,0 +1,16 @@
+HELP THERMOMETER                                        Steve Knight, 4/2/94
+                                                        SIREN Project
+
+lib thermometer
+
+new_thermometer( LABEL ) -> THERMOMETER
+thermometer_label( THERMOMETER ) -> LABEL
+LABEL -> thermometer_label( THERMOMETER )
+thermometer_level( THERMOMETER ) -> NUMBER
+NUMBER -> thermometer_level( THERMOMETER )
+show_thermometer( THERMOMETER )
+hide_thermometer( THERMOMETER )
+
+This library makes available a simple package for displaying a
+graphical "wait thermometer".  You can set the label and level of
+the thermometer interactively.

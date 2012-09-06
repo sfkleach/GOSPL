@@ -1,0 +1,35 @@
+REF COUNTED_ITEMS                                   Steve Knight, Oct 91
+
+Counted-items are a sequence of items on the stack, topped by a count.  For
+example, "deststring" returns all the characters in the string plus the length
+of the string.
+
+With the introduction of the count brackets "#|" and "|#" into Pop11, working
+with groups of counted items becomes much easier.  Counted-items are a
+powerful programming idea in Pop11 because they are a natural exchange format
+between different datatypes.  For example, changing a vector into a list is
+easily expressed as
+    V.destvector.conslist
+This expression works because "destvector" changes a vector into a
+counted-item representation of a vector and "conslist" converts from a
+the same representation to a list.
+
+The procedures described in this file make counted-items a more effective way
+of working.  Furthermore, they are often very efficient way of working because
+Pop11 is optimised for stack usage.
+
++_n(#| numbers, ... |#) -> sum
+    Finds the sum of the counted-items.  If the count is zero it returns 0.
+    See HELP * +_N
+
+*_n(#| numbers, ... |#) -> product
+    Finds the product of the counted-items.  If the count is zero it
+    returns 1.  See HELP * *_N
+
+rev_n(#| items |#) -> (#| items' |#)
+    Returns the counted-items in the reverse order.  The result is also a
+    counted-group. See HELP * REV_N
+
+syssort_n(#| items |#) -> (#| items' |#)
+    Returns the counted-items, sorted into order.  The result is also a
+    counted-group.  See HELP * SYSSORT_N

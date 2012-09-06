@@ -1,0 +1,10 @@
+GOSPL Build Directory
+
+--- History
+
+This was resurrected from various old copies of the GOSPL lying around on my hard drives.
+
+The file "mkcontents.p" was responsible for concatenating all the README files from all over the projects. This was evidently discontinued by version 1.2.1. I presume my ideas of structured projects were becoming more regular.
+
+The file "make_readme.p" was responsible for creating the CONTENTS.html & CONTENTS.txt file for each project. This was an evident misnomer and so I have renamed it "make_contents.p". The main thing wrong with it is that it does not create a top-level CONTENTS.html/txt file at the $popgospl level.
+

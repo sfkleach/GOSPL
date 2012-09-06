@@ -1,0 +1,6 @@
+HELP STREQUAL                                           Steve Knight, Oct 93
+                                                        SIREN Project
+strequal( ITEM1, ITEM2 ) -> BOOL
+
+Compares two items and returns <true> if their printing representations
+are equal, otherwise <false>.

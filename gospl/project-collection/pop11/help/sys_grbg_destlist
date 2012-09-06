@@ -1,0 +1,10 @@
+HELP SYS_GRBG_DESTLIST                          Steve Knight, 16 Oct 91
+
+    sys_grbg_destlist( <expanded list> ) -> A1, ..., AN, N
+
+For experts only!
+
+Explodes an expanded list into a counted group and returns all the pairs
+of the spine of the list to the pairs-freelist.  
+
+Misuse of this procedure will crash Poplog!

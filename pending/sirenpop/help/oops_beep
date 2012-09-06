@@ -1,0 +1,6 @@
+HELP OOPS_BEEP                                          Steve Knight, Nov 93
+                                                        SIREN Project
+oops_beep()
+
+A simple sequence of notes that indicates to the user that a mistake
+has been made.

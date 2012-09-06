@@ -1,0 +1,7 @@
+HELP PROPSHEET_XY                                       Steve Knight, Jun 94
+                                                        SIREN Project
+
+propsheet_xy( sheet ) -> ( x, y )
+x, y -> propsheet_xy( sheet )
+
+Returns and sets the x & y coordinates of a propsheet.

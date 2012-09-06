@@ -1,0 +1,21 @@
+HELP SUBSTITUTE_SUBSTRING                           Steve Knight, Nov 93
+                                                    SIREN Project
+substitute_substring( X, Y, STR ) -> STR'
+
+This procedure substitutes occurences of the string X with the string Y
+in STR to produce a new string STR'. Note that if the substitutions are
+"non-overlapping", exactly like the substitutions of a text editor.
+This means that the text of Y is never itself checked for containing
+occurences of X.
+
+Example:
+
+    : ;;; A simple example.
+    : substitute_substring( 'kiss', 'chase', 'dogs like to kiss rats' ) =>
+    ** 'dogs like to chase rats'
+    :
+    : ;;; Shows how the substitutions are non-overlapping.  In other words
+    : ;;; there can be a 'nana' substring left in the result.
+    : substitute_substring( 'nana', 'na', 'bananana' ) =>
+    ** 'banana'
+    :

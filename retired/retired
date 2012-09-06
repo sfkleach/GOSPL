@@ -1,0 +1,5 @@
+HELP SYS_FILE_EXISTS                        Steve Knight, 22/11/92
+
+sys_file_exists( <FILENAME> ) -> <BOOLEAN>
+
+This function returns true if the file FILENAME exists and false otherwise.

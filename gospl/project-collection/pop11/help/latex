@@ -1,0 +1,29 @@
+HELP COMPILE_LATEX                          Robin Popplestone, Oct 1992
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<                                             >>>>>>>>>>>>>>
+<<<<<<<<<<<<<      Presenting various types of file        >>>>>>>>>>>>>
+<<<<<<<<<<<<<                                              >>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+This is a collection of procedures which are entered into -vedfiletypes-
+to provide convenient presentation of certain kinds of files present in a
+Unix system. The author realises that it is somewhat specific to his
+environment.
+
+(1) A file with the extension '.tex' will be "compiled" by enter-l1 using
+latex. If the file contains no errors, the resulting '.dvi' file is
+presented using xdvi. Note that latex errors are reported in the BASE
+window (i.e. the terminal emulator from which POPLOG was called in the
+first place).  If the process apparently hangs, Latex is waiting for you
+to type something, e.g. ^D in the base window.
+
+(2) A file with the extension '.dvi' is presented using xdvi. No ved buffer
+is created for the file.
+
+(3) A file with the extension '.ps' or '.idraw' is presented using
+dxpsview. No ved buffer is created for the file.
+
+(4) A file with the extension '.o' is presented using the nm utility, so
+that the non-local labels referred to in the file are listed. This
+must be an object file for the host machine.

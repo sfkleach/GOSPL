@@ -1,0 +1,59 @@
+HELP dollar_dollar                    R.J.Popplestone sep91
+
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Introduction
+ --  Putting POP-11 variable values in the term
+ --  The ^ symbol is made a prefix operator in Prolog
+ --  Printing Prolog terms in POP-11
+ --  Use inside procedure definitions
+ --  The section -dollar_dollar-
+
+Introduction
+------------
+
+This provides a handy macro for creating Prolog terms in a POP-11  program.
+The term to be created is enclosed between pairs of double-dollar signs, $$
+<TERM> $$. E.g. $$ x+y $$ evaluates to the Prolog term x+y.
+
+Putting POP-11 variable values in the term
+--------------------------------------------
+
+POP-11 variables can be inserted in the  term by prefacing them by ^.  E.g.
+vars x=2; $$a+  ^x$$ will  evaluate to the  term a+2.  Note that  variables
+whose identifier begins with a capital  letter will have to be enclosed  in
+single quotes e.g. $$ 'X' + a $$, to avoid confusion with Prolog variables.
+
+This facility also  permits substitution for  the functor of  a term,  e.g.
+vars f="g"; $$^f(x,y)$$ will evaluate to the term g(x,y).
+
+The ^ symbol is made a prefix operator in Prolog
+------------------------------------------------
+
+The ^ symbol is in fact defined as a Prolog prefix operator.
+
+Printing Prolog terms in POP-11
+-------------------------------
+
+As well as providing the $$ macro, dollar_dollar also assigns  prolog_write
+to be the printing function for prolog_terms.
+
+Use inside procedure definitions
+--------------------------------
+
+The construction can be used inside procedure definitions. E.g.:
+
+    define fred(x);
+       $$ a + ^x$$
+    enddefine;
+
+fred(33)=>
+** a + 33
+
+It will work correctly with lexical variables.
+
+
+The section -dollar_dollar-
+---------------------------
+The only identifier exported by this section is "$$".

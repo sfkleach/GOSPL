@@ -1,0 +1,337 @@
+*** Prolog Object-oriented Embedded Manager (POEM)
+
+Donated by Ben Staveley-Taylor of
+    Plessey Electronic Research Ltd
+    Roke Manor, Romsey,
+    Hampshire S05 0ZN
+
+Related Files
+=============
+poem.pl     the object management package.
+shapes.pl   a demonstration file.
+
+
+                   Prolog Object-oriented Embedded Manager, POEM
+                   ---------------------------------------------
+
+
+
+           This  note explains how to use the simple object manipulation 
+           package  for  Prolog  systems,   POEM.
+
+
+           1. Class Definition
+           -------------------
+
+           POEM makes available some of the features found in  languages 
+           like   Simula-67.     Classes   may   be   defined,   objects 
+           (instantiations  of classes) created and operated on as high-
+           level entities.
+
+           An  example  is  often the best way  to  introduce  an  idea.  
+           Suppose  that  points are to be represented in  2-dimensional 
+           Cartesian co-ordinates,  and only the quadrant 0 <= x,y <= 10 
+           is to be considered:
+
+               class point(X, Y)
+                    checks
+                         ( X >= 0, X =< 10,
+                           Y >= 0, Y =< 10 )
+                    body
+                         identical( point(X1, Y1) ) =>
+                              ( X1 = X, Y1 = Y )
+                     -&-
+                         distance2( point(X1, Y1), Dist ) =>
+                              Dist is (X1-X)*(X1-X)+(Y1-Y)*(Y1-Y).
+
+           This declaration then sets up a class 'point'.   The  clauses 
+           following  'checks' are executed whenever a new point  object 
+           is created, and the 'checks' goal must succeed for the object 
+           to be successfully instantiated.
+
+           Two   predicates   are  defined  to  manipulate  the   class: 
+           identical/1  succeeds if the argument point structure is  the 
+           same as the point that owns this incarnation of  identical/1.  
+           distance2/2 instantiates its second argument to the square of 
+           the distance between the two points.
+
+
+           2. Subclass Definition
+           ----------------------
+
+           As in Simula, a hierarchy of classes may be established. This 
+           allows  subclasses  to  be defined with all  the  checks  and 
+           predicates  of  their  superclasses,   and  further  subclass 
+           specific ones.
+
+           For example,  suppose a class 'rhombus' has been defined.   A
+           rhombus  is specified by any three of its vertices.   Further 
+           to  this,  some  operations can be defined only  for  squares 
+           owing  to  their  special  symmetry.   This  setup  could  be 
+           realised by:
+
+               class rhombus(P1, P2, P3)
+                    checks
+                         /* ensure that P1, P2, P3 are valid points */
+                    body
+                        area(A) => /* find the rhombus's area */.
+ 
+               square(P1, P2, P3) class rhombus
+                    checks
+                         /* extra checks for squares */
+                    body
+                         circle(C) => /* find the circumcircle */.
+
+           For objects of class 'square', both the predicates 'area' and 
+           'circle'  are available.   Note that all  the  initialisation 
+           checks  defined  for rhombuses are automatically  applied  to 
+           squares too.  Extra ones specific to squares may be defined.
+
+           If  class  'square' were to define another predicate  'area', 
+           then  this new version would be executed only on  failure  of 
+           the superclass 'rhombus' version of 'area'.
+
+           Subclasses  must  have  the same description  list  as  their 
+           superclass,   otherwise   the  superclass  predicates  cannot 
+           meaningfully be applied.
+
+
+           3. Class Syntax Summary
+           -----------------------
+
+           Classes of objects may be defined with the following syntax:
+
+               <class> ::= <superclass> | <subclass>
+
+               <superclass> ::= class <object> <class_body>
+
+               <subclass> ::= <object> class <class_name> <class_body>
+
+               <class_body> ::= checks <init_checks>
+                                body   <class_preds>.
+
+               <object> ::= <class_name>(<class_description>)
+
+               <class_name> ::= {Prolog atom}
+
+               <class_description> ::= {Prolog argument list}
+
+               <init_checks> ::= {Prolog goal} |
+                                 none
+
+               <class_preds> ::= <class_pred> [-&- <class_pred>]* |
+                                 none
+
+               <class_pred> ::= {Prolog clause head} =>
+                                   {Prolog goal}
+
+
+           { and } are meta-symbols enclosing an informal description of 
+           a syntactic term.
+
+           [  and  ]  are meta-symbols enclosing an  optional  syntactic 
+           term.
+
+           *  is a meta-symbol denoting arbitrary repetition (0 or  more 
+           times) of the preceding syntactic term.
+
+           The terminal items 'class',  'checks', 'body', '=>' and '-&-' 
+           are  all  operators  (defined in 'poem.pl').   In  order  for 
+           Prolog to parse the class patterns, the initialisation checks 
+           and  the  predicates must be composed only  of  operators  of 
+           lower  numeric precedence.   So any compound goals  involving 
+           ','  or ';' must be enclosed in brackets,  as in the  example 
+           class 'point' of section 1.
+
+
+           4. Object Manipulation
+           ----------------------
+
+           To enter the class definitions into the Prolog database,  the 
+           top level predicate poem/0 is used.   The necessary procedure 
+           is:
+
+               - consult the file 'poem.pl'.  This sets up the
+                 necessary operator declarations.
+
+               - consult the user defined file of class definitions.
+
+               - invoke the predicate poem/0.  This translates the class
+                 definitions into the internal Prolog representation.
+
+
+           Once   this  is  done,   the  objects  can  be  defined   and 
+           manipulated.   Here  is  how the above example class  'point' 
+           might be used:
+
+               new( point(3,4), P34 ).
+               new( point(6,7), P67 ).
+               new( point(3,4), AnotherP34).
+
+           new/2 is a predicate that instantiates its second argument to 
+           be  a new object of type and attributes defined by the  first 
+           argument.   Any  initialisation checks required by the  class 
+           definition  are  performed - the goal new/2 will simply  fail 
+           (without an error message) if these checks are not satisfied.
+
+           new/2  in  fact calls instance/1,  and this can  be  directly 
+           accessed  by  the user to verify an object's  validity.   For 
+           example,
+
+               instance( point(3,4) ).  { or instance( P34 ) }
+
+           succeeds  if  the argument is a valid instance of  the  class 
+           'point'.
+
+           Then  the  operator  ':' provides  the  access  mechanism  to 
+           objects and their manipulation predicates, of the form
+
+               <object>:<predicate>(<argument_list>).
+
+           This  mechanism calls the <predicate> belonging to  <object>. 
+           So:
+
+               P34:identical( AnotherP34 ).  succeeds,
+
+               P34:distance2( P67, D ).
+           or  P67:distance2( P34, D ). instantiates D to 18.
+
+           There   is  no  run-time  distinction  between  classes   and 
+           subclasses, and they are accessed identically.
+
+
+           5. Further Explanation
+           ----------------------
+
+           Some  indication  of the mechanisms used by  poem/0  and  the 
+           operator  ':'  will  be useful to understand how  the  object 
+           manipulation works.  The code for POEM is written entirely in 
+           Prolog and can be inspected in the file 'poem.pl'. 
+
+           poem/0  translates all clauses in the Prolog  database  which 
+           match the patterns
+
+                    class Name checks Checks body Body.
+            or      Subname class Supername checks Checks body Body.
+
+
+           Firstly the initialisation checks are processed:  a predicate 
+           instance/1  is  defined for each new class which succeeds  if 
+           the object described is a valid instance of its class.
+
+           Secondly  the object manipulation predicates are  translated.  
+           Since  different  classes may define operations of  the  same 
+           name,  to  differentiate  between  these the  predicates  are 
+           asserted into the Prolog database as a goal with a functor of 
+           their class name.  So in the example given above of the class 
+           'point',   the   predicate   'identical(P)'  is   stored   as 
+           'point(identical(P))'.
+
+           In addition, the attributes of each object created need to be 
+           bound  into the manipulation predicate definitions.   This is 
+           done by appending the object description list to the argument 
+           list of each predicate.   So,  for example, in the definition 
+           of  identical/1  in  the example class  'point( X,Y )'  given 
+           previously,
+
+               identical( point(X1,Y1) ) ...
+
+           translates to internal form:
+
+               point( identical( point(X1,Y1), X, Y ) ) ...
+
+
+           The operator ':' provides the run-time translations needed to 
+           call  the  object manipulation predicates by  their  internal 
+           names.  ':' is used by calling
+
+                    <object>:<predicate_name>(<arglist>).
+
+           ':' takes the functor name from <object>, creates a goal with 
+           that functor name, and an argument of the predicate name with 
+           its arguments.  For example,
+
+               point(1,2):distance(point(3,4), D).
+
+           translates to
+
+               point( distance(point(3,4), D, 1, 2) ).
+
+           Subclasses  are treated by preprocessing their new checks and 
+           predicates  into new classes,  and redirecting all  calls  to 
+           predicates  of  that subclass to its superclass.   So in  the 
+           square/rectangle  example  given in  section  2,  the  square 
+           subclass translates to
+
+             /* make all rectangle predicates available to square */
+               square(X) :- rectangle(X).
+
+             /* setup square as a new class, keeping rectangle checks */
+               class square(P1,P2,P3)
+                    checks ( instance(rectangle(P1,P2,P3)),
+                             {any square-specific checks} )
+                    body   {any square-specific predicates}.
+
+
+           6. Examples Of POEM In Action
+           -----------------------------
+
+           An  example  of POEM in use as a classic Simula-style  object 
+           programming language is given in the file 'shapes.pl'.   This 
+           is  a geometric shape manipulation application,  and is ready 
+           for consulting by Prolog.  It will automatically consult POEM 
+           as required.  Comments in the file should prove adequate.
+
+
+           POEM  could  be used in a simple way to force some degree  of 
+           type-checking  onto  Prolog  structures.   This  is  done  by 
+           defining  classes with only a 'checks' part and ignoring  the 
+           'body'.  For example,
+
+               class complex( R, Theta )
+                    checks
+                         ( numeric( R ),
+                           0 =< R,
+                           numeric( Theta ),
+                           -180 < Theta,
+                           180 >= Theta )
+                    body
+                         none.
+
+           So this way, if a complex number is 'created' by
+
+               new( complex(1,90), _i ).
+
+           then  range checks are automatically applied to  the  modulus 
+           and  argument of the new number,  and '_i' is instantiated to 
+           the    verified   complex   number,    ie    the    structure 
+           'complex(1,90)'.   Of course,  this does rely on the goodwill 
+           of  the  user to call new/2 for each  creation,  since  using 
+           'complex(1,90)'  literally  in place of '_i' will bypass  the 
+           system. 
+
+
+           7. Parting Shot
+           ---------------
+
+           Wholly  wonderful  as POEM is,  it is only a quickly  written 
+           program  and  does not make any  claims  to  robustness.   In 
+           particular,  there  is  no  error  detection  mechanism  - if 
+           classes  are  defined with incorrect  syntax,  the  malformed 
+           classes will not be processed.   Generally,  errors result in 
+           logical failure of the associated goal.
+
+           Any  comments,  suggestions  or improvements  would  be  very 
+           welcome.  Contact
+
+               Ben Staveley-Taylor,
+               Plessey Electronic Systems Research Ltd.,
+               Roke Manor,
+               ROMSEY,
+               Hants.    SO5 0ZN.
+
+               Tel. Romsey (0794) 515222 ext 311
+
+
+
+           BST, June 1985.

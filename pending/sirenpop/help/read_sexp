@@ -1,0 +1,7 @@
+HELP READ_SEXP                                          Steve Knight, Feb 94
+                                                        SIREN Project
+lib read_sexp
+
+    read_sexp( RPTR ) -> SEXP
+    discin_sexps( FILE_NAME ) -> SEXP_LIST
+    string_to_sexps( STRING ) -> SEXP_LIST

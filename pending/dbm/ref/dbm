@@ -1,0 +1,289 @@
+REF DBM                                         Jonathan Meyer Nov 1992
+
+      Copyright Integral Solutions Ltd 1993. All Rights Reserved.
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<   DBM DATABASE FACILITIES   >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+         CONTENTS - (Use <ENTER> g to access required sections)
+
+ --  Overview
+ --  DBM Databases
+ --  Datatypes
+ --  Opening and Closing DBM Databases
+ --  Accessing Entries
+ --  Predicates on DBM Databases
+ --  Examples
+ --  DBM Properties
+ --  . Example
+
+Overview
+--------
+This document describes  a Pop-11  interface to the  GNU GDBM  database
+mechanism.
+
+DBM Databases
+-------------
+LIB * DBM is an interface  to functions  provided by  the GDBM  database
+mechanism in  GNU. You should read the GNU README file for more details
+of GDBM databases.
+
+These  functions  maintain  argument/value  pairs  in  a  database.
+
+In LIB  * DBM  arguments and  values  are Pop-11  strings (but  see  the
+section 'DBM Properties' below).
+
+Datatypes
+---------
+DBM                                                           [datatype]
+        An argument/value pair database opened by LIB * DBM.
+
+
+Opening and Closing DBM Databases
+---------------------------------
+dbm_open(FILENAME, FOR_WRITE) -> DBM                         [procedure]
+        Opens a  'DBM' file  and  returns a  handle  for that  file.  If
+        FOR_WRITE is  -true-,  then  new  entries can  be  made  in  the
+        database, otherwise the database can only be queried.
+
+        If FILENAME  does  not exist  and  FOR_WRITE is  -true-,  a  new
+        database file is created. Otherwise  if the file does not  exist
+        and FOR_WRITE is  -false-, or  if some other  error occurs,  DBM
+        will be  -false- and  sysiomessage() can  be used  to obtain  an
+        error message.
+
+
+dbm_close(DBM)                                               [procedure]
+        Closes a 'DBM' file. Notice that DBM files are closed when  they
+        are garbage collected.
+
+
+Accessing Entries
+-----------------
+dbm_value(DBM, ARG_STRING) -> VAL_STRING                     [procedure]
+VAL_STRING -> dbm_value(DBM, ARG_STRING)
+dbm_value(DBM, ARG_STRING, false) -> BOOL
+        Retrieves or sets the entry keyed on ARG_STRING in a DBM file.
+
+        In the  base  form,  VAL_STRING  will be  the  string  keyed  on
+        ARG_STRING if one is found in the database, or -false- if  there
+        is no entry for ARG_STRING in the database. E.g.
+
+            dbm_value(dbmfile, 'example') =>
+            ** false
+
+        In the updater form, if  VAL_STRING is -false-, the entry  keyed
+        on ARG_STRING is deleted from the database, otherwise the  entry
+        keyed on ARG_STRING is replaced  with the new string. Note  that
+        after the VAL_STRING you can specify an optional size  argument,
+        specifying how many bytes from VAL_STRING to write. E.g.
+
+            'hello', 3 -> dbm_value(dbmfile, 'example')
+
+        sets the entry keyed under 'example' to 'hel':
+
+            dbm_value(dbmfile, 'example') =>
+            ** 'hel'
+
+        In the  third form,  ie. when  an optional  boolean argument  of
+        -false- is provided, dbm_value is used to test for the  presence
+        of ARG_STRING in the database: it returns -true- if there is  an
+        entry  keyed  under  ARG_STRING  in  the  database,  or  -false-
+        otherwise. E.g.
+
+            dbm_value(dbmfile, 'example', false) =>
+            ** true
+
+
+fast_appdbmkeys(DBM, P)                                      [procedure]
+        Applies the  procedure P  to every  key in  the DBM  database. P
+        should be a procedure of the form:
+
+            P(ARG_STRING)
+
+        The  procedure  P  should  call  dbm_value(DBM,  ARG_STRING)  to
+        retrieve  the  VAL_STRING  keyed   against  ARG_STRING  in   the
+        database.
+
+        The results of P updating entries in the DBM file are undefined.
+        In addition, calls to  appdbm on a specific  DBM file cannot  be
+        nested, i.e. P should not itself call appdbm on DBM.
+
+
+Predicates on DBM Databases
+---------------------------
+isdbm(ITEM) -> BOOL                                          [procedure]
+        Returns -false- if ITEM is not a DBM database, -true- if ITEM is
+        an open DBM database  as returned by  dbm_open (see above),  and
+        the integer 0 if  ITEM is a DBM  database that has already  been
+        closed.
+
+
+dbm_writeable(DBM) -> BOOL                                   [procedure]
+        Returns -true-  if  DBM  entries can  be  updated,  and  -false-
+        otherwise (this simply  returns the boolean  value of  FOR_WRITE
+        passed to dbm_open to open DBM).
+
+
+dbm_compact(DBM) -> BOOL                                     [procedure]
+        Removes any  redundant space  from DBM.  Returns -true-  if  the
+        operation succeeds.
+
+
+dbm_reopen(DBM) -> DBM                                       [procedure]
+        If DBM is  a closed  DBM database (i.e.  isdbm(DBM) returns  0),
+        this will open the  DBM database again, or  produce a mishap  if
+        the database cannot  be reopened.  If DBM  is not  a closed  DBM
+        database this procedure does nothing.
+
+        It returns the argument it is passed in.
+
+
+Examples
+--------
+To create a DBM database  called 'test' use:
+
+    vars dbmfile = dbm_open('test', true);
+
+Check that the dbmfile was creates successfully:
+
+    isdbm(dbmfile) =>
+    ** true
+
+You can now make entries in the database using:
+
+    'hello' -> dbm_value(dbmfile, 'foo');
+
+And retrieve them using:
+
+    dbm_value(dbmfile, 'foo') =>
+    ** hello
+
+You can print out all of the keys in a database using:
+
+    fast_appdbmkeys(dbmfile, npr);
+    ** foo
+
+To test if an entry exists, use:
+
+    dbm_value(dbmfile, 'foo', false) =>
+    ** true
+
+and to delete an entry in the database, do:
+
+    false -> dbm_value(dbmfile, 'foo');
+
+Finally, to close the database, use:
+
+    dbm_close(dbmfile);
+
+You can test if a database has been closed using -isdbm-:
+
+    isdbm(dbmfile) =>
+    ** 0 ;;; i.e. its a closed DBM database
+
+
+DBM Properties
+--------------
+DBM properties are  very similar  to Pop-11 properties  except that  the
+data stored in a DBM property is 'persistent' i.e. its stored in a file,
+and can be recovered on a future invokation of Poplog.
+
+Most but not all  Poplog datatypes can be  written into DBM  properties.
+See REF * DATAINOUT for more information.
+
+DBM properties always effectively use  sys_= to lookup entries from  the
+file; as far  as DBM is  concerned, there is  no difference between  two
+strings containing the same characters.
+
+Note that identity  (i.e. == )  is preserved within  entries of the  dbm
+property, but not between entries.
+
+
+dbm_property(DBM, DEFAULT, ACTIVE_DEFAULT) -> DBM_PROP       [procedure]
+        Takes a DBM  database and  returns a procedure  DBM_PROP of  the
+        form:
+
+            DBM_PROP(ARG) -> VALUE
+
+        and (if DBM is writeable)
+
+            VALUE -> DBM_PROP(ARG)
+
+        where ARG and VALUE are arbritrary Poplog items that conform  to
+        the rules specified by REF * DATAINOUT. Note that a new copy  of
+        VALUE is  constructed each  time you  retrieve the  contents  of
+        DBM_PROP(ARG).
+
+        DEFAULT is  any  Poplog  item,  and is  the  value  returned  by
+        DBM_PROP when ARG  does not  exist in the  database. Also,  when
+        updating elements of the database, assigning DEFAULT to an entry
+        deletes the entry from the database.
+
+        ACTIVE_DEFAULT is  either a  procedure or  -false-. If  it  is a
+        procedure, when DBM_PROP  is called  with an ARG  that does  not
+        exist in the database, ACTIVE_DEFAULT is applied to the ARG  and
+        DBM_PROP to produce the value, i.e.
+
+            ACTIVE_DEFAULT(ARG, DBM_PROP) -> VALUE
+
+
+isdbmproperty(ITEM) -> DBM_OR_FALSE                          [procedure]
+        If ITEM is a  DBM property as  returned by -dbm_property-,  then
+        the underlying  DBM  of  the  property  is  returned.  Otherwise
+        -false- is returned.
+
+
+is_dbm_property_arg(DBM_PROP, ARG) -> BOOL                   [procedure]
+        Returns -true-  if there  is a  value associated  with -ARG-  in
+        DBM_PROP,  or  -false-  otherwise.  This  is  a  slightly   more
+        efficient way of testing whether ARG is present in the  DBM_PROP
+        without actually retrieving its associated value.
+
+
+appdbmproperty(DBM_PROP, P)                                  [procedure]
+        Applies P to every  argument/value pair in DBM_PROP  property. P
+        should be a procedure of the form:
+
+            P(ARG, VALUE)
+
+        Note that the results of P modifying the entries in DBM_PROP are
+        undefined.
+
+
+. Example
+---------
+The following creates a  new dbm database called  'test' and then  turns
+the constructs a dbm property from the database:
+
+    vars p = dbm_property(dbm_open('test', true), false, false);
+
+You use dbm properties in the  same way that you use normal  properties.
+For example, to see if the word "hello" has an entry, do:
+
+    p("hello") =>
+    ** false
+
+Now assign 10 to the "hello" entry:
+
+    10 -> p("hello");
+
+You can retrieve the 10 using:
+
+    p("hello") =>
+    ** 10
+
+You can use arbritrary items as keys and values (but see REF *DATAINOUT):
+
+    p('hello') =>
+    ** false
+
+    [a list] -> p('hello');
+    p('hello') =>
+    ** [a list]
+
+--- $poplocal/local/dbm/ref/dbm ----------------------------------------
+--- Copyright Integral Solutions Ltd 1993. All rights reserved. --------

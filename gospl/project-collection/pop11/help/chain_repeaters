@@ -1,0 +1,6 @@
+HELP CHAIN_REPEATERS                                Steve Knight, Jan 1991
+
+chain_repeaters( list ) -> repeater
+
+This procedure takes a list of repeaters as its argument and delivers a
+repeater than uses each repeater in the list in turn.

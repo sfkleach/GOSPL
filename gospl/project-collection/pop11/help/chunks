@@ -1,0 +1,111 @@
+LIB CHUNKS                                        Chris Thornton, May 84
+
+
+                  VED COMMANDS TO DEAL WITH LOGICAL 'CHUNKS'
+                  ==========================================
+
+
+This package of ENTER commands, lets you treat chunks of text (or code) as
+'independent' objects, for the purposes of moving, justifying, transcribing,
+deleting, yanking, framing etc.
+
+
+To access the package do
+
+   <ENTER> LIB CHUNKS
+
+
+----ENTER Commands----------------------------------------------------------
+
+SHCH                    (SHow how big this CHunk is (& display dimensions))
+
+BOX  <height>,<width>   (draw a BOX 'here', using ordinary chars)
+
+BOXG <height>,<width>   (draw a BOX here, using Graphics chars)
+
+TBOX <height>,<width>   (Trace out the area a BOX this size would occupy)
+
+RBOX                    (Redo this BOX (i.e. change the frame))
+
+DBOX                    (Delete this BOX (but leave the contents))
+
+CCH                     (Compile this CHunk)
+
+JCH                     (Justify this CHunk within its own dimensions)
+
+CHL  [<num>]            (move this CHunk Left (by NUM places, default = 1))
+
+CHR  [<num>]            (move this CHunk Right)
+
+CHU  [<num>]            (move this CHunk Up)
+
+CHD  [<num>]            (move this CHunk Down)
+
+CHBOX                   (enclose this CHunk in a BOX)
+
+CHBOXG                  (enclose this CHunk in a Graphics-chars BOX)
+
+VCH                     (Ved this CHunk (ie. move it to end of file))
+
+RCH                     (Replace this CHunk where it was)
+
+CHMARG                  (align MARGins at left and right of CHunk)
+
+NMARG                   (reset MARGins as they were)
+
+DMARG                   (set Default MARGins (left = 0, right = 78))
+
+DCH                     (Delete this CHunk)
+
+YANKCH                  (YANK the last deleted CHunk)
+
+MBR                     (Mark Bottom Right of chunk--ready for next command)
+                        (can be called with <ESC> m (unless otherwise defined))
+
+TCH                     (Transcribe (i.e. copy) the marked CHunk to 'here')
+
+MCH                     (Move (i.e. transfer) the marked CHUnk to 'here')
+
+The 'TCH' and 'MCH' commands require you to explicitly identify which chunk
+you want transfered, and where you want it transfered to. To do this,
+
+         (1) move the cursor to the top, left corner of the chunk.
+         (2) press <POSITION PUSH>.
+optional (3) move the cursor to the bottom, right of the chunk.
+optional (4) do <ESC> m, or <ENTER> mbr.
+         (5) move the cursor to the top, left corner of the target area.
+         (6) do <ENTER> TCH/MCH
+
+-------------------------------------------------------------------------
+
+Additional information:
+
+The program employs a set of assumptions whenever it has to work out which bit
+of text is the 'current chunk' (i.e. the chunk the user wants to operate on).
+Its initial assumption is that the current chunk is
+
+   the 'square' of text between the cursor position and the position
+   JUST 'marked' with <ESC> m or <ENTER> mbr;
+
+if this assumption breaks down (i.e. if the user has NOT just marked a
+position) it assumes instead that it must be
+
+   wrapped up in a box;
+
+if there ISN'T any enclosing box, it switches to assuming that it must be
+
+   vertically delimited by the end-of-range mark (F8) (if the mark is not
+   more than <max_height> lines below), and horizontally delimited by the
+   first occurence in each line of <separation> blank spaces;
+
+failing this, it assumes that it is
+
+   vertically delimited by the first occurence (working downwards from
+   the cursor position) of a line which is indented more than <tab_step>
+   spaces, and horizontally delimited by <separation> blank spaces.
+
+If none of these assumptions turn out to be valid, the program complains.
+
+
+NB. The variables <max_height>, <separation> and <tab_step> can be set by the
+user. They default to 25, 3 and 6 respectively.

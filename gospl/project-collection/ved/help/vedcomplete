@@ -1,0 +1,17 @@
+HELP VEDCOMPLETE            Steve Knight          2nd March 89
+
+"vedcomplete" determines the current item that the VED cursor is inside, by
+working back to the first white space (see footnote), and tries to complete 
+it as a filename.  If there are multiple completions it extends it as far 
+as it can uniquely and then beeps.  If there are no completions it beeps.  
+If there is a unique completion it simply extends it.
+
+See also:
+    HELP *FILECOMPLETE
+    HELP *VEDCOMPLETIONS
+    HELP *VEDUSECOMPLETION
+
+Footnote:
+    In fact, it tries to complete back to the first space, tab, immediate
+    mode space (char 160), or string quote.  This latter property is useful
+    when writing filenames inside strings.

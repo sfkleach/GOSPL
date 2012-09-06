@@ -1,0 +1,14 @@
+HELP IN_DIRECTORY                               Steve Knight, 14 Oct 1991
+
+    for <variable> in_directory <expression> do
+        <STATEMENTS>
+    endfor
+
+This for-loop extension enables you to loop over all the files in a directory
+(excluding '.' and '..') in a convenient fashion.
+
+Note that the loop variable is declared for you as an LVARS.  This is not
+yet standard with for-loops but it protects you against forgetting to declare
+the loop-variables.
+
+For more information on for-loop extensions see * FOR_FORM.

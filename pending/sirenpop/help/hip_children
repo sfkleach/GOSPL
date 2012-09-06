@@ -1,0 +1,5 @@
+HELP HIP_CHILDREN                                       Steve Knight, Jan94
+
+hip_children( ITEM ) -> LIST
+
+Returns a list of the HiP children of the HiP object ITEM.

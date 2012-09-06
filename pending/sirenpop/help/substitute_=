@@ -1,0 +1,10 @@
+HELP SUBSTITUTE_=                                      Steve Knight, Oct 93
+
+substitute_=( X, Y, SEQ ) -> SEQ'
+
+This routine replaces X by Y in sequence SEQ to return a new sequence
+SEQ'.  The elements of the sequence SEQ are compared with X using the
+-=- operator.
+
+See also:
+    HELP * SUBSTITUTE_==

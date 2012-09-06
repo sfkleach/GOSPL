@@ -1,0 +1,52 @@
+TEACH SPACE                                     Steve Knight, 7/10/92
+
+    SPACE <expression>
+
+The SPACE command is a convenient way of examining the amount of space
+consumed by the execution of an expression.  It executes the expression
+once and reports on the difference in used memory before and after.  It
+distinguishes between two types of store -- heap and stack.
+
+
+-- Example ------------------------------------------------------------
+
+Here's a simple example showing the overhead on a vector of 10 elements
+is 2 longwords (i.e. 8 bytes).  One word is consumed by the key, the
+other by the length.  Note that the resulting pointer to the vector
+is left on the stack, consuming 1 longword there.
+
+    SPACE initv( 10 );
+        Heap   : 12 longwords
+        Stack  : 1 longwords
+
+
+-- What the Numbers Mean ----------------------------------------------
+
+The SPACE command works by repeatedly garbage collecting before and
+after the expression is executed and measuring the difference in space.
+The space can even decrease and you may get a negative result!  Because
+it works in this fashion it only reports about store usage that survives
+a garbage collection.
+
+For example, the following expression turns over quite a lot of store,
+but none is reported at the end of the computation:
+
+    SPACE repeat 100 times erase( [1 2 3 4 5] ) endrepeat;
+        Heap   : 0 longwords
+        Stack  : 0 longwords
+
+The "Heap" value is therefore reporting on store usage that is required
+because there are surviving pointers to it -- in this case the pointer
+is the top of the stack.
+
+The "Stack" value simply reports the number of items left on the stack.
+This is the same value as would be reported by -stacklength-.
+
+
+-- See also -----------------------------------------------------------
+
+    TEACH   *TIME
+    HELP    *POPMEMUSED
+    TEACH   *GC
+
+-----------------------------------------------------------------------

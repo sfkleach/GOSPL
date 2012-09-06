@@ -1,0 +1,11 @@
+HELP USES_PROJECT                                    Steve Leach, Jan 05
+
+    uses_project ____name
+
+This syntax word quietly loads a GOSPL project by name from the search list
+pop_project_search_list.  The project structure is described in
+load_project.
+
+See also:
+    HELP *LOAD_PROJECT
+    HELP *LIB_PROJECT

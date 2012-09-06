@@ -1,0 +1,7 @@
+HELP LFOR                                       Steve Leach, 2nd June 1998
+
+An alternative and regular extensible loop syntax.
+
+    lfor i, j, ... in list Ci, vector Cj, ... do STATEMENTS endlfor
+
+Keywords:

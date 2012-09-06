@@ -1,0 +1,117 @@
+#!/bin/sh
+# --- Copyright University of Sussex 1993. All rights reserved. ----------
+# File:             local/dbm/gdbm/mkgdbm
+# Purpose:          Build the GNU object DB
+# Author:           Jon Meyer (based on mkXpw), 1Q 94.
+# Documentation:
+# Related Files:
+
+# Usage: mkgdbm [ -I<directory> ... ]
+
+DBMDIR=$pophipworks/local/dbm
+
+cd $DBMDIR/gdbm
+
+# get a string uniquely identifying system, e.g. "sun4_sparc"
+MTYPE=`$popsys/basepop11 %noinit \
+    ":pr(sys_machine_type(1) >< '_' >< sys_processor_type(1));"`
+
+DBMLIB=$DBMDIR/bin/libgdbm_$MTYPE
+
+# Get Poplog configuration
+CONFIG=`$popsys/basepop11 %noinit << \EEOOFF
+    printf('%p%p.%p.%p\n', [%
+        sys_os_type(2),                     ;;; e.g. "sunos"
+        if length(sys_os_type) > 2
+        and isnumber(sys_os_type(3))
+        then
+            intof(sys_os_type(3))           ;;; e.g. 5
+        else
+            nullstring
+        endif,
+        if isdefined("XLINK_TYPE") then
+            valof("XLINK_TYPE")             ;;; e.g. "openlook"
+        else
+            undef
+        endif,
+        sys_processor_type(1),              ;;; e.g. "sparc"
+    %]);
+EEOOFF
+`
+
+# If this is an HP-UX system, should we be linking dynamically?
+case $CONFIG in
+    hpux*)
+        if file $popsys/basepop11 | grep -q 'dynamically linked'
+        then
+            HPUX_DYNAMIC=yes
+        else
+            HPUX_DYNAMIC=no
+        fi
+        ;;
+esac
+
+# Compiler flags
+CFLAGS=-O
+case $CONFIG in
+    sunos4*)
+        ;;
+    sunos*)
+        # SunOS 5+
+        CFLAGS="-Kpic $CFLAGS"
+        ;;
+    hpux*)
+	# hpux doesn't have alloca
+	CFLAGS="-DNOALLOCA"
+        case $HPUX_DYNAMIC in
+            yes) CFLAGS="+z $CFLAGS" ;;
+        esac
+        ;;
+    riscos*)
+        CFLAGS="-systype bsd43 $CFLAGS"
+        ;;
+    irix*)
+        CFLAGS="-cckr $CFLAGS"
+        ;;
+esac
+case $CONFIG in
+    *.mips)
+        CFLAGS="-G 0 $CFLAGS"
+        ;;
+esac
+
+# Archive commands
+AR="ar crv $DBMLIB.a"
+RANLIB="ranlib $DBMLIB.a"
+case $CONFIG in
+    sunos4*)
+        ;;
+    sunos*)
+        # SunOS 5+
+        AR="ld -G -o $DBMLIB.so"
+        RANLIB=:
+        ;;
+    irix5*)
+        AR="ld -shared -o $DBMLIB.so"
+        RANLIB=:
+        ;;
+    irix*)
+        RANLIB=:
+        ;;
+    hpux*)
+        case $HPUX_DYNAMIC in
+            yes) AR="ld -b -o $DBMLIB.sl" ;;
+        esac
+        RANLIB=:
+        ;;
+esac
+
+echo cc -c $CFLAGS $IDIRS
+
+cc -c $CFLAGS $IDIRS *.c    && \
+$AR *.o                     && \
+$RANLIB                     && \
+rm *.o
+
+
+# --- Revision History ---------------------------------------------------

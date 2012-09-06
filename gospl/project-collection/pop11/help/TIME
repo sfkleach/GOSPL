@@ -1,0 +1,75 @@
+TEACH TIME                                      Steve Knight, 7/10/92
+
+    TIME <expression>
+
+The TIME command is a convenient way of determining the amount of time
+consumed by an expression to a reasonable degree of accuracy.  It works
+by repeatedly running the expression until sufficient time has passed to
+give a reliable answer.  This compensates for the limited accuracy of
+the system clock.  It then reports on the average time taken by the
+expression.
+
+The time taken to execute an expression is best considered in two parts;
+that required by the garbage collector and the time exclusive of garbage
+collection.  This is because you can alter the ratio between these two
+by changing *POPGCRATIO.
+
+Be aware that the TIME utility does not truncate its answers to the
+right number of significant places.  Answers such as 4819.1982
+milliseconds should be quoted to no more than 2 significant places (i.e.
+4800) unless the defaults are changed.
+
+
+-- Example ------------------------------------------------------------
+
+Here's a small example that shows the format of the report issued by the
+TIME command.
+
+    define factorial( n ); lvars n;
+        if n <= 1 then
+            1
+        else
+            n * factorial( n - 1 )
+        endif;
+    enddefine;
+
+    TIME factorial( 100 );
+        Av. time    =  4.8 msecs
+                    =  1.33333 micro-hours
+        Av. GC time =  0.241667 msecs
+                  =  4.02778 micro-mins
+        Number of iterations 1200
+
+Note that the average time is printed in two formats.  The first one is
+simply in milli-seconds, a standard unit that is useful for comparing
+many computations.  The second version is in micro-units, where the
+units are seconds, minutes, hours, days and so on.  This is useful when
+trying to understand the times in everyday terms.
+
+
+-- Defaults -----------------------------------------------------------
+
+By default, the TIME command executes until at least 5 seconds have
+passed.  This minimum time can be altered by assigning to the variable
+-TIME_min_time- which is defined in centi-seconds.  i.e. the default
+value is 500.  If you wanted to make the minimum time 20 seconds you
+would type
+    20 * 100 -> TIME_min_time;
+
+Also, the TIME command performs a minimum number of iterations of teh
+expression.  By default this is 1.  There are two ways to change this.
+Firstly, you can assign to the variable -TIME_min_iterations-.  More
+conveniently, you can write
+    TIME*<number> <expression>
+for example
+    TIME*1e7 identfn();
+to locally arrange that the expression is executed at least that number
+of times.
+
+
+-- See also -----------------------------------------------------------
+
+    REF *SYSTIME
+    REF *POPGCTIME
+
+-----------------------------------------------------------------------

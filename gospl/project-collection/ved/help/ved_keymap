@@ -1,0 +1,6 @@
+HELP VED_KEYMAP                                           Steve Knight, Jan 95
+
+ENTER keymap RETURN
+
+This VED command generates a description of the current key bindings
+in VED.

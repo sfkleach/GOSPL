@@ -1,0 +1,6 @@
+HELP sysGVAR                                            Steve Knight, Nov 93
+                                                        SIREN Project
+sysGVAR( w )
+
+Plants code to declare -w- as a top-level permanent procedure
+variable declared globally.

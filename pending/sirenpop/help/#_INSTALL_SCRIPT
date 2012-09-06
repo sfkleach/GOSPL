@@ -1,0 +1,13 @@
+HELP #_INSTALL_SCRIPT                                   Steve Knight, Jan 94
+                                                        SIREN Project
+
+#_INSTALL_SCRIPT <production file-name>
+
+This macro is a convenient way of installing a script into the current
+scene of a HiP production.  It reads the remainder of the file into a
+string and then inserts that into the "script" property of the current
+scene.
+
+Note that this macro performs a -hip_go_production- prior to reading the
+file.  This ensures that the production is open and the script gets
+installed in the correct place.

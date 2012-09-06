@@ -1,0 +1,65 @@
+LOCAL HELP HELPLOG                              Jonathan Laventhol, 8 Oct 1984.
+
+    HELPLOG is a cheap and cheerful demonstration of how to use the system
+facility for logging documention file requests.  To make something tailored to
+your needs, see the end of this file.  In some systems (notably the Sussex
+unx1 system) it is used automatically.
+
+    If HELPLOG is being used, every documentation file request (HELP, TEACH,
+DOC, REF, SHOWLIB ...) will write a line to the logfile.  The logfile will be
+called
+        $usepop/pop/local/spool/helplogs/H466102337.1018
+
+or somesuch (ie, with different numbers).
+
+--- WHAT'S IN THE FILE -----------------------------------------------------
+
+    The file with the silly name has got lines like this in it:
+
+        ved_help 0 466102341 foo
+        ved_showlib 0 466102347 bax
+        ved_help $usepop/pop/help/index 466102350 index
+
+    Which means I asked for help foo.  The 0 means that there isn't such
+a file.  466102341 is the time and date, expressed in seconds from some time
+in 1970.
+
+    Four seconds later, I tried showlib bax, but couldn't find that either.
+    Three seconds later, I succeeded in finding help index, which is the file
+$usepop/pop/help/index.
+
+--- FOR HACKERS ------------------------------------------------------------
+
+    HELPLOG is used if it is autoloadable from a directory before $popautolib
+in popliblist (say, for example, $poplocalauto).
+
+    The format of each line in a helplog file is
+        the pdprops of the caller of vedsysfile (typically ved_help)
+        one space
+        the filename of the file, or 0 if not found
+        one space
+        the date and time, in sys_real_time format (see ref * sysutil)
+        one space
+        the request, verbatim
+        one newline
+
+    The request is the last thing on the line because it can contain anything,
+or may have been an empty string - programs reading this data should read to
+the end of the line.
+
+    The name of the log file is made from the date and the process number.
+    The prefix 'H' on the log file name is the default -- set the environment
+variable HELPLOGGROUP to be something else if you want different prefixes.
+For example, in your .login file, add
+        setenv HELPLOGGROUP dphil
+
+    The files go into the directory $usepop/pop/local/spool/logfiles by
+default -- set the environment variable HELPLOGDIR to something different if
+you like.
+
+    For converting the time and date, use SYS_CONVERT_DATE, see REF SYSUTIL.
+
+    This program uses the system procedure *VEDSYSFILELOG, which is called
+every time VEDSYSFILE is called, if set up right. See also *VEDSYSFILE.
+
+    See the program for nitty gritty details: SHOWLIB HELPLOG

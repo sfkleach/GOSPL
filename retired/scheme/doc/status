@@ -1,0 +1,258 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; doc status              Steve Knight            Tue Nov 25, 1986 ;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+Identifier              Category                Status
+
+'                       essential syntax        done
+* (2 args)              essential procedure     done
+* (N args)              procedure               done
++ (2 args)              essential procedure     done
++ (N args)              procedure               done
+- (2 args)              essential procedure     done
+- (N args)              procedure               done
+/ (2 args)              essential procedure     done
+/ (N args)              procedure               done
+<  (2 args)             essential procedure     done
+<  (N args)             procedure               done
+<= (2 args)             essential procedure     done
+<= (N args)             procedure               done
+=  (2 args)             essential procedure     done
+=  (N args)             procedure               done
+>  (2 args)             essential procedure     done
+>  (N args)             procedure               done
+>= (2 args)             essential procedure     done
+>= (N args)             procedure               done
+` (backquote)           syntax                  done
+abs                     essential procedure     done
+acos                    procedure               done/untested
+and                     syntax                  done/untested
+angle                   procedure               done/untested
+append (2 args)         essential procedure     done
+append (N args)         procedure               done
+apply (2 args)          essential procedure     done
+apply (N args)          procedure               done
+asin                    procedure               done/untested
+assoc                   essential procedure     done
+assq                    essential procedure     done
+assv                    essential procedure     done
+atan (1 arg)            procedure               done/untested
+atan (2 arg)            procedure               done/untested
+begin                   essential syntax        done
+boolean?                essential procedure     done
+caaaar                  essential procedure     done/untested
+caaadr                  essential procedure     done/untested
+caaar                   essential procedure     done/untested
+caadar                  essential procedure     done/untested
+caaddr                  essential procedure     done/untested
+caadr                   essential procedure     done/untested
+caar                    essential procedure     done/untested
+cadaar                  essential procedure     done/untested
+cadadr                  essential procedure     done/untested
+cadar                   essential procedure     done/untested
+caddar                  essential procedure     done/untested
+cadddr                  essential procedure     done/untested
+caddr                   essential procedure     done/untested
+cadr                    essential procedure     done/untested
+call-with-current-continuation  essential procedure done/untested
+call-with-input-file    essential procedure     done/untested
+call-with-output-file   essential procedure     done/untested
+call/cc                 essential procedure     done/untested
+car                     essential procedure     done/untested
+case                    syntax                  done/untested
+cdaaar                  essential procedure     done/untested
+cdaadr                  essential procedure     done/untested
+cdaar                   essential procedure     done/untested
+cdadar                  essential procedure     done/untested
+cdaddr                  essential procedure     done/untested
+cdadr                   essential procedure     done/untested
+cdar                    essential procedure     done/untested
+cddaar                  essential procedure     done/untested
+cddadr                  essential procedure     done/untested
+cddar                   essential procedure     done/untested
+cdddar                  essential procedure     done/untested
+cddddr                  essential procedure     done/untested
+cdddr                   essential procedure     done/untested
+cddr                    essential procedure     done/untested
+cdr                     essential procedure     done/untested
+ceiling                 procedure               done/untested
+char->integer           procedure               done/untested
+char-alphabetic?        procedure               done/untested
+char-ci<=?              procedure               done/untested
+char-ci<?               procedure               done/untested
+char-ci=?               procedure               done/untested
+char-ci>=?              procedure               done/untested
+char-ci>?               procedure               done/untested
+char-downcase           procedure               done/untested
+char-lower-case?        procedure               done/untested
+char-numeric?           procedure               done/untested
+char-ready?             procedure               done/untested
+char-upcase             procedure               done/untested
+char-upper-case?        procedure               done/untested
+char-whitespace?        procedure               done/untested
+char<=?                 essential procedure     done/untested
+char<?                  essential procedure     done/untested
+char=?                  essential procedure     done/untested
+char>=?                 essential procedure     done/untested
+char>?                  essential procedure     done/untested
+char?                   essential procedure     done/untested
+close-input-port        essential procedure     done/untested
+close-output-port       essential procedure     done/untested
+complex?                essential procedure     done/untested
+cond                    essential syntax        done/untested
+cons                    essential procedure     done/untested
+cos                     procedure               done/untested
+current-input-port?     essential procedure     done/untested
+current-output-port?    essential procedure     done/untested
+define (call)           syntax                  done/untested
+define (dotted call)    syntax                  done/untested
+define (variable)       essential syntax        done/untested
+delay                   syntax                  done/untested
+denominator             procedure               done/untested
+display                 essential procedure     done/untested
+do                      syntax                  done/untested
+eof-object?             essential procedure     done/untested
+eq?                     essential procedure     done/untested
+equal?                  essential procedure     done/untested
+eqv?                    essential procedure     done/untested
+even?                   essential procedure     done/untested
+exact->inexact          procedure               done/untested
+exact?                  essential procedure     done/untested  
+exp                     procedure               done/untested
+expt                    procedure               done/untested
+f                       variable                done/untested
+floor                   procedure               done/untested
+for-each (2 args)       essential procedure     done/untested
+for-each (N args)       procedure               done/untested
+force                   procedure               done/untested
+gcd                     procedure               done/untested
+if (2 args)             syntax                  done/untested
+if (3 args)             essential syntax        done/untested
+imag-part               procedure               done/untested
+inexact->exact          procedure               done/untested
+inexact?                essential procedure     done/untested
+input-port?             essential procedure     done/untested
+integer->char           procedure               done/untested
+integer?                essential procedure     done/untested
+lambda                  essential syntax        done/untested
+last-pair               procedure               done/untested
+lcd                     procedure               done/untested
+length                  essential procedure     done/untested
+let                     essential syntax        done/untested
+let (named)             syntax                  done/untested
+let*                    essential syntax        done/untested
+letrec                  essential syntax        done/untested
+list                    essential procedure     done/untested
+list->string            essential procedure     done/untested
+list->vector            essential procedure     done/untested
+list-ref                procedure               done/untested
+list-tail               procedure               done/untested
+load                    essential procedure     done/untested
+log                     procedure               done/untested
+magnitude               procedure               done/untested
+make-polar              procedure               done/untested
+make-rectangular        procedure               done/untested
+make-string (1 arg)     procedure               done/untested
+make-string (2 args)    procedure               done/untested
+make-vector (1 arg)     essential procedure     done/untested
+make-vector (2 args)    procedure               done/untested
+map (2 args)            essential procedure     done/untested
+map (N args)            procedure               done/untested
+max (2 args)            essential procedure     done/untested
+max (N args)            procedure               done/untested
+member                  essential procedure     done/untested
+memq                    essential procedure     done/untested
+memv                    essential procedure     done/untested
+min (2 args)            essential procedure     done/untested
+min (N args)            procedure               done/untested
+modulo                  procedure               done/untested
+negative?               essential procedure     done/untested
+newline                 essential procedure     done/untested
+nil                     variable                done/untested
+not                     essential procedure     done/untested
+null?                   essential procedure     done/untested
+number->string          procedure               *unimplemented*
+number?                 essential procedure     done/untested
+numerator               procedure               done/untested
+odd?                    essential procedure     done/untested
+open-input-file         essential procedure     done/untested
+open-output-file        essential procedure     done/untested
+or                      syntax                  done/untested
+output-port?            essential procedure     done/untested
+pair?                   essential procedure     done/untested
+positive?               essential procedure     done/untested
+procedure?              essential procedure     done/untested
+quasiquote              syntax                  done/untested
+quote                   essential syntax        done/untested
+quotient                essential procedure     done/untested
+rational?               essential procedure     done/untested
+rationalize (1 arg)     procedure               done/untested
+rationalize (2 args)    procedure               done/untested
+read                    essential procedure     done/untested
+read-char               essential procedure     done/untested
+real-part               procedure               done/untested
+real?                   essential procedure     done/untested
+remainder               essential procedure     done/untested
+reverse                 procedure               done/untested
+round                   procedure               done/untested
+set!                    essential syntax        done/untested
+set-car!                essential procedure     done/untested
+set-cdr!                essential procedure     done/untested
+sin                     procedure               done/untested
+sqrt                    procedure               done/untested
+string->list            essential procedure     done/untested
+string->number          procedure               *unimplemented*
+string->symbol          essential procedure     done/untested
+string-append (2 args)  essential procedure     done/untested
+string-append (N args)  procedure               done/untested
+string-ci<=?(2 args)    essential procedure     done/untested
+string-ci<=?(N args)    procedure               done/untested
+string-ci<? (2 args)    essential procedure     done/untested
+string-ci<? (N args)    procedure               done/untested
+string-ci=? (2args)     essential procedure     done/untested
+string-ci=? (Nargs)     procedure               done/untested
+string-ci>=?(2 args)    essential procedure     done/untested
+string-ci>=?(N args)    procedure               done/untested
+string-ci>? (2 args)    essential procedure     done/untested
+string-ci>? (N args)    procedure               done/untested
+string-copy             essential procedure     done/untested
+string-fill!            essential procedure     done/untested
+string-length           essential procedure     done/untested
+string-null?            essential procedure     done/untested
+string-ref              essential procedure     done/untested
+string-set!             essential procedure     done/untested
+string<=?(2 args)       essential procedure     done/untested
+string<=?(N args)       procedure               done/untested
+string<? (2 args)       essential procedure     done/untested
+string<? (N args)       procedure               done/untested
+string=? (2args)        essential procedure     done/untested
+string=? (Nargs)        procedure               done/untested
+string>=?(2 args)       essential procedure     done/untested
+string>=?(N args)       procedure               done/untested
+string>? (2 args)       essential procedure     done/untested
+string>? (N args)       procedure               done/untested
+string?                 essential procedure     done/untested
+substring               essential procedure     done/untested
+substring-fill!         essential procedure     done/untested
+symbol->string          essential procedure     done/untested
+symbol?                 essential procedure     done/untested
+t                       variable                done/untested
+tan                     procedure               done/untested
+transcript-off          essential procedure     done/untested
+transcript-on           essential procedure     done/untested
+truncate                procedure               done/untested
+unquote                 syntax                  done/untested
+unquote-splicing        syntax                  done/untested
+vector                  essential procedure     done/untested
+vector->list            essential procedure     done/untested
+vector-fill!            procedure               done/untested
+vector-length           essential procedure     done/untested
+vector-ref              essential procedure     done/untested
+vector-set!             essential procedure     done/untested
+vector?                 essential procedure     done/untested
+with-input-from-file    procedure               done/untested
+with-output-to-file     procedure               done/untested
+write                   essential procedure     done/untested
+write-char              essential procedure     done/untested
+zero?                   essential procedure     done/untested
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

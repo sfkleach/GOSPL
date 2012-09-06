@@ -1,0 +1,6 @@
+HELP CHECK_WORD                                         Steve Knight, Nov 93
+                                                        SIREN Project
+check_word( ITEM ) -> ITEM
+
+This procedure checks whether the item on the top of the stack is a word.
+If it is not a mishap is raised.  If it is, the stack is left alone.

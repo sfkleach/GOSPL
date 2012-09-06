@@ -1,0 +1,8 @@
+HELP XT_NEW_BULLETIN_BOARD                              Steve Knight, Oct 93
+                                                        SIREN Project
+
+xt_new_bulletin_board( PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED] )
+        -> WIDGET
+
+This procedure creates a bulletin board widget.  The arguments are processed
+using *XT_NEW_ARGS.

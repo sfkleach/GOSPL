@@ -1,0 +1,8 @@
+HELP VED_POPMEMLIM                                      Steve Knight, Nov 93
+                                                        SIREN Project
+ENTER popmemlim [NUMBER] RETURN
+
+This VED command sets the user-defineable heap limit to a number.  If
+the number is omitted (which is usual) then the heap limit is disabled.
+
+See REF *POPMEMLIM

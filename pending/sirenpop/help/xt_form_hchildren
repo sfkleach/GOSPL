@@ -1,0 +1,8 @@
+HELP XT_FORM_HCHILDREN                                  Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_form_hchildren(#| WIDGET, ... |#)
+
+This procedure takes a counted group of widgets and attaches them horizontally
+together as children of a form widget.  The left widget comes first (i.e. is
+deepest on the stack.

@@ -1,0 +1,17 @@
+HELP CONST                                      Steve Knight, Oct 91
+
+    const( x )( y ) -> x
+
+This simple procedure is called the K, or constant, combinator.  When applied
+to an item x, it returns a procedure that will deliver x when applied to
+any other value y.
+
+The main use of -const- is when specialising procedures written in the
+functional style.
+
+e.g.
+    const( 99 )( "fred" ) =>
+    ** 99
+
+    maplist( [a b c], const( 0 ) ) =>
+    ** [0 0 0]

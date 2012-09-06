@@ -1,0 +1,6 @@
+HELP HIP_POINTER_COORDS
+
+hip_pointer_coords() -> ( x, y )
+
+A temporary hack.  Returns the current pointer coordinates with respect
+to the current storyboard.

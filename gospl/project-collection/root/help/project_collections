@@ -1,0 +1,25 @@
+HELP PROJECT_COLLECTIONS                            Steve Leach, Feb 05
+
+Project collections simply directories containing project
+subdirectories.  All of the enclosed projects can be made available via
+the command
+
+    : uses_project_collection <pathname>
+
+However, this does not actually load the projects.  To to that you
+would then use the command
+
+    : uses_project <name>
+
+Where <name> matches the name of a project directory of a project
+collection.
+
+
+Given that a GOSPL project is itself suitable for small to medium sized
+coding efforts, a project collection suitable for organizing on a large
+scale.  It would typically represent an archive of work by several
+contributors or a single worker over a substantial period of time. The
+GOSPL repository itself is a single project collection.
+
+See also:
+    HELP *PROJECT

@@ -1,0 +1,10 @@
+HELP IS_STRINTEGER                                  Steve Knight, Oct 93
+                                                    SIREN Project
+is_strinteger( STRING ) -> BOOL
+
+This procedure returns true if its argument is a string representing
+an integer.
+
+See also:
+    HELP *IS_STRFLOAT
+    HELP *IS_STRDATE

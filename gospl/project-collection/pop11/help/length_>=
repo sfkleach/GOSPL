@@ -1,0 +1,10 @@
+HELP length_>=                                  Steve Leach, Nov 99
+
+    length_>=( Item, <N:integral> ) -> <boolean>
+
+This procedure returns the same as the expression
+    length( Item ) >= N
+would return.  However, in the particular case of lists, it examines
+the minimum number of pairs to establish the truth of the predicate.
+
+Item can be a list, a vectorclass object, or a word.  N must be integral.

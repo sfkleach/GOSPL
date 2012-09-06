@@ -1,0 +1,20 @@
+alxample.p              example for use with lib eprospect
+atndict.p
+atndraw.p
+atnends.p
+atngramm.p
+atnparse.p
+callslist.p
+chart.p
+cliques.p
+context.p               save/restore collections of globals
+ctbrackets.p            compile-time brackets <# & #>, <## & ##>, <#| & |#>
+dollar_dollar.p         syntax for quasi-quoting prolog terms elegantly
+epson_fx_1000.p         library supporting the EPSON FX 1000 printer
+modtransfms.p           affine transformations in any whole-numbered dimension
+newobj.p                a simple object-oriented programming library
+profiler.p              John Meyer's alpha release of a code profiler
+publish_and_subscribe.p library extending sections in powerul ways
+sublists.p              returns the list of all sublists of a list
+tinyglobe.p             amusing example teaching the use of flavours
+trap.p                  early debug package - now use pop debugger

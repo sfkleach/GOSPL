@@ -1,0 +1,184 @@
+HELP HIP_CUSTOM_MENUBAR                                 Jon Meyer
+                                                        Steve Knight 4/2/94
+
+lib hip_custom_menubar
+
+
+Loading the following library adds these properties to storyboards:
+
+customMenuBar -> VECTOR_OR_FALSE
+        This is a vector specifying a custom menubar, or -false- if the
+        storyboard does not have a custom menubar.
+
+
+customMenuBarVisible -> BOOL
+        This controls whether the system menubar or the custom menubar
+        is displayed.
+
+
+customMenuBarPane -> MENUPANE_OR_FALSE
+        This is  an  object  which  you  can  use  with  menupane_label,
+        menupane_sensitive, and menupane_value to dynamically change the
+        labels, sensitivity and toggle states of options on the menu.
+
+(note that these properties do not persist - they are not saved in
+the production file).
+
+MenuBar Specification
+---------------------
+A menubar is a vector of the form:
+
+    {
+        {<title>
+            <item>
+            <item>
+            <item>
+            ...
+        }
+        ...
+    }
+
+Each <title> corrosponds to a top level menu item on the menubar. It  is
+either a word or a string. If it is a string, it can also be a  dstring,
+in which case the first  character specifying an underline attribute  is
+used as the mnemonic for the menu option. For example the dstring:
+
+    'S\[u]tyle'
+
+shows as S_tyle and <Alt> t activates the Style menu.
+
+. Menu items
+------------
+Each <item> in a menu specification is either:
+
+    a vector specifying a menu option - see below
+
+    a string - the string is placed as an inactive label in the menu
+
+    the word "space" - a separator is placed in the menu
+
+. . Options
+-----------
+A menu option is a vector in one of two forms:
+
+    {<name>}
+
+or:
+    {<name> <modifier name> <key name>}
+
+<name> is a word or a string. It can also be a dstring with an underline
+attribute specifying the character to use as the mnemonic for the menu
+option (see the description of <title> above). e.g. the dstring:
+
+    'Save \[u]As...'
+
+is shown as 'Save  _As...', with the A  character underlined to  indicate
+that pressing 'a' will activate the menu button.
+
+You use the  3 element vector  to specify menu  options which also  have
+accelerators:
+
+    {<name> <modifier name> <key name>}
+
+where <modifier name> is one of the  words Ctrl, Alt or Shift, and  <key
+name>  is  a  word   specifying  the  name  of   a  key,  described   in
+REF * HIP_EVENTS/Key Names.
+
+e.g. writing:
+
+    {'Close' Alt F4}
+
+Specifies that the  keyboard accelerator  for the close  menu option  is
+Alt+F4.
+
+Toggle Options
+--------------
+If you append a {} to the  end of a menu option specification, then  the
+menu option is displayed with a checkbox next to it that shows an on/off
+state.
+
+By default the toggle indicator  is a square shape,  i.e. a Motif 'N  of
+many' check option.  You can use  the special pattern  {<>} to  create a
+diamond shaped radio indicator  when you want to  display a radio  list,
+i.e. a Motif 'one of many' option.
+
+Handlers
+--------
+When a menu option is activated, a message is sent to the current scene.
+The name of the message is tha  name of the menu option, so to  define a
+handler for the 'Close' menu option you simply do:
+
+    define :handler Close;
+        'Closing the window' =>
+        hip_close_storyboard();
+    enddefine;
+
+Case, spaces and  other punctuation are  important. If you  have a  menu
+option which contains spaces or punctuation, remember that you must  use
+string quotes around the handler name:
+
+    ;;; a handler for the 'Save As...' menu option
+    define :handler 'Save As...';
+    enddefine;
+
+The data argument to menu handlers is -undef- for most menu options, but
+for toggle menu options  it is the state  of the toggle indicator  (i.e.
+either true or false).
+
+Menu Panes
+----------
+You can dynamically  alter the  label, sensitivity and  toggle state  of
+menubar options  by retrieving  the customMenuBarPane  property for  the
+storyboard   and    using   menupane_value,    menupane_sensitive    and
+menupane_label, for example:
+
+    vars menupane = hip_system("currentStoryboard")("customMenuBarPane");
+
+    ;;; make the 'Save As...' option insensitive
+    false -> menupane_sensitive(menupane, 'File', 'Save As...');
+
+    ;;; change the 'Close' option label to read 'hello'
+    'hello' -> menupane_label(menupane, 'File', 'Close');
+
+Example
+-------
+constant my_menu_bar = {
+    {'\[u]File'
+        {'\[u]New'       }
+        {'\[u]Open...'   Ctrl O}
+        {'\[u]Save'      Ctrl S}
+        {'Save \[u]As...' }
+        space
+        {'\[u]Close' Alt F4}
+        {'E\[u]xit' Ctrl Q}
+    }
+    {'\[u]Edit'
+        {'\[u]Undo' Ctrl Z}
+        space
+        {'Cu\[u]t' Ctrl X}
+        {'\[u]Copy' Ctrl C}
+        {'\[u]Paste' Ctrl V}
+        {'\[u]Background' Ctrl B {}}
+    }
+    {'\[u]Help'
+        {'On \[u]Context...' }
+        {'On \[u]Window...' }
+        {'On \[u]Help...' }
+        {'On \[u]Keys...' }
+        space
+        {'C\[u]ontents...' '<Key>F1' 'F1'}
+        {'\[u]Glossary...' }
+        {'\[u]Tours...' }
+        {'\[u]Support...' }
+        space
+        {'On \[u]Version...' }
+    }
+};
+
+
+;;; switch to the custom menubar
+my_menu_bar -> hip_system("currentStoryboard")("customMenuBar");
+true -> hip_system("currentStoryboard")("customMenuBarVisible");
+
+;;; switch back to the original menubar
+false -> hip_system("currentStoryboard")("customMenuBarVisible");

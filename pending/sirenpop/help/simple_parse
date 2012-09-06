@@ -1,0 +1,44 @@
+HELP SIMPLE_PARSE                                       Steve Knight, Nov 93
+                                                        SIREN Project
+
+TO BE COMPLETED
+    The following documentation is not accurate.  I have excised
+    new_macro_parser and extended new_infix_parser.
+
+This library package provides routines that are suitable for writing simple
+parsers.  It is especially useful in combination with
+    LIB * SIMPLE_TOKEN
+There are two routines provided
+    new_infix_parser( read, table, constructor ) -> parser
+    new_macro_parser( table ) -> parser
+which construct parsers of type
+    parser() -> tree
+and typically read from proglist.
+
+-- new_infix_parser ---------------------------------------------------
+
+new_infix_parser( read, table, constructor ) -> parser
+
+This routine allows one to build expression readers that handle infix syntax.
+(a) The "read" routine is used to process individual terms and may be
+    arbitrarily complex.
+(b) The "table" is a mapping from tokens to precedence levels, with higher
+    precedence meaning looser bindings, or to false which halts the
+    parser.
+(c) The "constructor" is used to construct nodes of the parse tree.
+    constructor( operator, first_arg, secong_arg )
+
+-- new_macro_parser ---------------------------------------------------
+
+new_macro_parser( table ) -> parser
+
+This routine constructs elementary parsers from a table that maps tokens to
+macro-routines.  A word is read-off the input and the procedure entry of the
+table is applied to that word.  The result is delivered.  The default entry
+of this table should be carefully constructed.
+
+Reserved words typically have entries of FALSE in this table.  Therefore the
+predicate "is_reserved" is normally defined as
+    table <> not
+
+-----------------------------------------------------------------------

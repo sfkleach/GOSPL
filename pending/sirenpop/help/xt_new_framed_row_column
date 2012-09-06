@@ -1,0 +1,12 @@
+HELP XT_NEW_FRAMED_ROW_COLUMN                           Steve Knight, Nov 93
+                                                        SIREN Project
+
+xt_new_framed_row_column(
+    PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED]
+) -> WIDGET
+
+This procedure creates a Motif row column widget as a child of a Motif
+frame widget. The arguments are processed using *XT_NEW_ARGS.
+
+See also:
+    HELP *XT_NEW_ARGS

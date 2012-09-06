@@ -1,0 +1,50 @@
+HELP IN_LINE                                            Steve Knight, Jan 90
+
+plant_in_line( PROC ) -> IPROC;
+IPROC -> plant_in_line( PROC );
+
+This library package redefines the code-planting routines
+    sysCALLQ, sysCALL, sysUCALLQ, sysUCALL
+so that calls to some procedures can be compiled in-line.  The interface
+provided is through the property -plant_in_line-.
+
+A simple example might be -erase- which could be compiled in-line to
+yield
+    ERASE
+rather than
+    CALL erase
+By adding
+    sysERASE(% undef %) -> plant_in_line( erase );
+to the in_line table, the compiler will now run this closure of
+-sysERASE- rather than plant a call to -erase-.
+
+If an in-line routine has an updater, then that is taken to plant in-line
+code for an update call. A simple example is provided by -apply- which has an
+entry in -in_line- specified as follows:
+
+    define lconstant in_line_apply();
+        sysCALLS( undef )
+    enddefine;
+
+    define updaterof in_line_apply();
+        sysUCALLS( undef )
+    enddefine;
+
+    in_line_apply -> plant_in_line( apply );
+
+Obviously, this capability must be treated with respect.  As it operates
+completely silently it would be very easy to plant incorrect code without any
+awareness until an error was manifested.  For that reason, I recommend using
+it sparingly and under tightly controlled circumstances.  Should any suspicion
+of errors arise from the use of this package, simply clear -plant_in_line- 
+using -clearproperty-, recompile and re-test.
+
+Examples
+--------
+Here are some simple examples of how plant_in_line can be used.  When
+these simple procedures are used in Pop11 code they will automatically
+be eliminated.
+
+sysCALLS(% undef %) -> plant_in_line( apply );
+sysERASE(% undef %) -> plant_in_line( erase );
+identfn -> plant_in_line( identfn );

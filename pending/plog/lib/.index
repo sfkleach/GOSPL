@@ -1,0 +1,16 @@
+Plug Archive Index: send poplog/prolog/lib/.index
+=================================================
+
+This file lists all of the files in this terminal directory. They
+are not annotated here. See the corresponding help directory for
+annotation. The help directory is a sibling of this one.
+
+The numbers to the left of the file names are their sizes in K
+Bytes. These numbers, and comments beginning with "#", will be
+stripped out by the archive server, so you needn't remove them,
+unless you want to.
+
+#  total 13 K Bytes
+   1 poplog/prolog/lib/.index
+   4 poplog/prolog/lib/poem.pl
+   8 poplog/prolog/lib/shapes.pl

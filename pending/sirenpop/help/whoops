@@ -1,0 +1,10 @@
+HELP WHOOPS                                             Steve Knight, Nov 93
+                                                        SIREN Project
+
+whoops()
+
+This procedure causes a mishap with the message
+
+    INTERNAL ERROR IN SIREN SOFTWARE
+
+It is used whenever the program enters an ``impossible'' state.

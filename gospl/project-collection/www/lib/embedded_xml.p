@@ -1,0 +1,230 @@
+;;; I need to finish this off by inserting some kind of entity code
+;;; processing.  This will be applied in the case of attributes
+;;; values enclosed with double quotes.
+
+
+compile_mode :pop11 +strict;
+
+section;
+
+uses xml_elements;
+
+define vars embedded_xml_minimization_warning( n, message );
+    erasenum( n )
+enddefine;
+
+#_IF not( DEF less_than )
+global constant sys_< = nonop < ;
+#_ENDIF
+
+sysunprotect( "nonop" );
+
+define syntax nonop;
+    lvars id;
+    lvars w = readitem();
+    unless w.isword do
+        mishap( w, 1, 'VARIABLE NEEDED' )
+    endunless;
+    if w == "<" then
+        sysPUSH( "sys_<" )
+    elseif sys_current_ident( w ) ->> id then
+        if identprops( w ).isnumber then
+            sysPUSH( w )
+        else
+            mishap( w, 1, 'OPERATOR NEEDED' )
+        endif
+    else
+        mishap( w, 1, 'UNDECLARED IDENTIFIER' )
+    endif
+enddefine;
+
+sysprotect( "nonop" );
+
+
+;;; Possible "conflicts" between XML syntax and Pop11 syntax.
+;;;   sequence     word         w   proglist
+;;; <...><...>      ><          >   ; <
+;;; <...></...>     ></         >   ; </
+;;; <.../><...>     /><         />  ; <
+;;; <.../></...>    /></        />  ; <
+
+
+define readvalidname();
+
+    define save( itemiser );
+
+        define alphabetic( ch, itemiser ) -> t;
+            item_chartype( ch, itemiser ) -> t;
+            1 -> item_chartype( ch, itemiser )
+        enddefine;
+
+        if itemiser then
+            (
+                alphabetic( `:`, itemiser ),
+                alphabetic( `.`, itemiser ),
+                alphabetic( `-`, itemiser )
+            )
+        endif
+    enddefine;
+
+    define updaterof save( itemiser );
+        if itemiser then
+            lvars ( a, b, c ) = ();
+            a -> item_chartype( `:`, itemiser );
+            b -> item_chartype( `.`, itemiser );
+            c -> item_chartype( `-`, itemiser );
+        endif
+    enddefine;
+
+    dlocal 3 % save( isincharitem( readitem ) ) %;
+
+    readitem()
+enddefine;
+
+define lconstant get_attributes( type );
+
+    define read_attribute( it );
+        if it == """ then
+            lvars r = isincharitem( readitem );
+            if r then
+                consstring(#|
+                    repeat
+                        lvars ch = nextchar( r );
+                        quitif( ch == `"` );
+                        if ch == `\n` or ch == termin do
+                            mishap( 0, 'No closing quote for attribute value' )
+                        endif;
+                        ch
+                    endrepeat
+                |#)
+            else
+                mishap( 0, 'Compilation stream not an itemiser' )
+            endif
+        elseif it.isstring or it.isnumber then
+            it
+        elseif it.isword then
+            it.word_string
+        else
+            mishap( it, 1, 'Invalid attribute' )
+        endif
+    enddefine;
+
+    define plant_attribute( it );
+        if it == "(" then
+            pop11_comp_expr_to( ")" ) -> _
+        elseif it == "%" then
+            pop11_comp_expr_to( "%" ) -> _
+        else
+            read_attribute( it )
+        endif
+    enddefine;
+
+    lconstant closers = [  >  />  ><  ></  /><  /></  ];
+    lconstant planters = [% "%", "(" %];
+    lvars c;
+    sysPUSH( "popstackmark" );
+    until pop11_try_nextreaditem( closers ) ->> c do
+        sysPUSHQ( readvalidname() );
+        if pop11_try_nextreaditem( "=" ) then
+            lvars p = pop11_try_nextreaditem( planters );
+            if p then
+                plant_attribute( p );
+            else
+                sysPUSHQ( read_attribute( readitem() ) )
+            endif
+        else
+            sysPUSHQ( false );
+        endif
+    enduntil;
+    sysCALL( "sysconslist" );
+    return( c );
+enddefine;
+
+define lconstant correct( c ) -> c;
+    if c == "><" then
+        ">" -> c;
+        [ ; < ^^proglist ] -> proglist
+    elseif c == "></" then
+        ">" -> c;
+        [ ; </ ^^proglist ] -> proglist
+    elseif c == "/><" then
+        "/>" -> c;
+        [ ; < ^^proglist ] -> proglist
+    elseif c == "/></" then
+        "/>" -> c;
+        [ ; </ ^^proglist ] -> proglist
+    endif
+enddefine;
+
+
+constant syntax </ ;
+
+sysunprotect( "<" );
+
+define syntax 6 < ;
+    dlocal pop_new_lvar_list;
+    if pop_expr_inst == pop11_EMPTY then
+        lconstant closers = [  >  />  ><  ></  /><  /></  ];
+
+        ;;; Type name
+        lvars type = readvalidname();
+        sysPUSHQ( type );
+
+        ;;; Attributes.  NOT TOO EFFICIENT FOR CONSTANT TAGS WITH
+        ;;; NUMERICAL ATTRIBUTES.  THIS NEEDS SORTING OUT.
+
+        lvars c = get_attributes( type );
+
+        ;;; Now correct for conflicts between XML syntax and Pop11 syntax.
+        correct( c ) -> c;
+
+        ;;; And avoid the need to separate XML elements with commas
+        if pop11_try_nextreaditem( "<" ) then
+            [ ; < ^^proglist ] -> proglist;
+        endif;
+
+        ;;; And now plant the code to construct the XML element.
+        if c == ">" then
+
+            ;;; This branch is for a start tag.
+            lvars tmp = sysNEW_LVAR();
+            sysCALL( "stacklength" ); sysPOP( tmp );
+            pop11_comp_stmnt_seq_to( "</" ) -> _;
+            sysCALL( "stacklength" ); sysPUSH( tmp ); sysCALL( "fi_-" );
+
+            lvars x = readvalidname();
+            unless x == type do
+                mishap( x, 1, 'Unexpected closing tag (expected ' sys_>< type sys_>< ')' )
+            endunless;
+            pop11_need_nextreaditem( closers ) -> c;
+            correct( c ) -> c;
+
+            "new_element" -> pop_expr_item;
+            sysCALL -> pop_expr_inst;
+        else
+            ;;; This is for a standalone tag.
+            sysPUSHQ( 0 );
+            "new_element" -> pop_expr_item;
+            sysCALL -> pop_expr_inst;
+        endif
+    elseif pop_expr_inst.isundef then
+        ;;; Whoa!  Someone has tried to get hold of the less than
+        ;;; operator via its ident.  Better try to pretend we are
+        ;;; the real less than!
+        chain( sys_< )
+    else
+        ;;; This branch is for an ordinary use of < i.e. for numerical
+        ;;; comparison.
+        pop_expr_inst( pop_expr_item );
+        pop11_comp_prec_expr( 121, pop_expr_update ) -> _;
+        sysCALL -> pop_expr_inst;
+        "sys_<" -> pop_expr_item;
+    endif;
+enddefine;
+
+sysprotect( "<" );
+
+;;; Usual hack for -uses-.
+vars embedded_xml = true;
+
+endsection;

@@ -1,0 +1,7 @@
+HELP MEMOFN                                             Steve Knight, Nov 93
+                                                        SIREN Project
+memofn( PROC ) -> PROC'
+
+This procedure takes a procedure PROC of arity 1-1 and delivers a memoised
+version of that same procedure PROC'.  The memoised procedure is implemented
+by a "tmparg" hash table, indexed on the domain of PROC.

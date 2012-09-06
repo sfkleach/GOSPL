@@ -1,0 +1,8 @@
+HELP NEW_XT_NEW_WIDGET                                  Steve Knight, Oct 93
+                                                        SIREN Project
+
+    new_xt_new_widget( WIDGETCLASS ) -> WIDGET_ALLOCATOR
+
+This procedure takes a widgetclass and returns a widget constructor.
+The constructor uses *XT_NEW_ARGS to perform argument processing for
+the constructor.  It builds the widget using -XtVaCreateManagedWidget-.

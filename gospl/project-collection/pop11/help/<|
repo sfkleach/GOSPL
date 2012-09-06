@@ -1,0 +1,21 @@
+HELP <|                                                 Steve Knight, Jan 92
+                                            modified by Steve Leach, Nov 99
+
+<| STATEMENTS |>
+<| VARIABLES : STATEMENTS |>
+
+The <| ... |> syntax is a shorthand for writing procedures.  Optional
+input locals should comma-separated and followed by a ":".  The main
+body is a general Pop11 statement.
+
+Example:
+    <| x, y : y, x |> is a procedure to swap the top two items on the stack
+    <| rev(); hd() |> is a procedure that finds the last element. cf -last-
+    <| swap( 3 )() |> is a procedure that takes the third element. cf. -third-
+
+On a stylistic note, this syntax really is intended for short definitions.
+It is intended to enhance readability when programming with higher-order
+functions such as -maplist- by keeping expressions visually compact.
+Using it for functions which spill over a couple of lines would be an
+bad idea.  (But we're not stopping you because we know sometimes you are
+in a hurry or just think differently to us.)

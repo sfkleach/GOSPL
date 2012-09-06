@@ -1,0 +1,5 @@
+HELP ISVECTORCLASSKEY                               Steve Leach, Jun 98
+
+    isvectorclasskey( x ) -> bool
+
+Returns true if x is a key for vectorclass objects, otherwise false.

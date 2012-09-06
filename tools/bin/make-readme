@@ -1,0 +1,26 @@
+#!/bin/bash
+
+
+if [[ ! -d ${popgospldev?}/gospl ]]; then
+    echo '${popgospldev?}/gospl does not exist'
+    exit 1
+fi
+
+cd ${popgospldev?}/gospl
+
+# Make the project-collection folder writeable.
+echo "Make project-collection directory writeable"
+chmod -R u+w project-collection
+
+
+# Create the relevant files and tidy up as we go.
+echo "Create the content files"
+${popsys?}/basepop11 ${popgospldev?}/tools/lib/make_readme.p
+echo "Tidy up the old files"
+find project-collection -type f -name '*-' | xargs /bin/rm
+find project-collection -type f -name .htaccess- | xargs /bin/rm
+
+# Fix the permissions.
+#echo "Remove write permission"
+#chmod -R a+r,go-w project-collection
+#find project-collection -type d | xargs chmod a+x,a-w

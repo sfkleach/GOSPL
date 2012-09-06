@@ -1,0 +1,5 @@
+HELP PRINT_FILE                                 Steve Knight, Oct 1991
+
+    print_file( <device|string:F> )
+
+Prints a file F to cucharout.

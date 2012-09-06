@@ -1,0 +1,16 @@
+HELP FILES_MATCHING                             Steve Knight, Oct 1991
+
+    files_matching( <string:FS> ) -> files, ...
+
+This procedure returns on the stack all the files that match a particular
+file specification FS.  The file-specification obeys the rules defined by
+-sys_file_match- and includes UNIX-like wildcards.
+
+e.g. On my filing system,
+
+    files_matching( '/usr/*' ) =>
+    ** /usr/CC /usr/adm /usr/architect /usr/architect1.1 /usr/bin /usr/boot
+         /usr/contrib /usr/doc /usr/etc /usr/frame /usr/hp64000 /usr/include
+         /usr/lib /usr/local /usr/lost+found /usr/mail /usr/man /usr/netdemo
+         /usr/nettest /usr/news /usr/preserve /usr/pub /usr/sam /usr/softbench
+         /usr/softbench.vue /usr/spool /usr/tmp

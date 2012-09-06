@@ -1,0 +1,9 @@
+JM, 9/6/93
+	Added compilation flag NOALLOCA, for systems that don't have alloca.
+	Altered gdbmopen.c, gdbmfetch.c and falloc.c so that they use the
+	macro ALLOCA_FREE to free the storage on these systems.
+
+JM, 25/5/93
+	Added pop_gdbm.c and mkgdbm.
+	Changes systems.h to remove use of flock
+	Removed files for ndbm and dbm. Removed test files.

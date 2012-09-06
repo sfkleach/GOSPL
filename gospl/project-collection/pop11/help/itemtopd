@@ -1,0 +1,9 @@
+HELP ITEMTOPD                                           Steve Leach, Dec 04
+
+    itemtopd( item ) -> procedure
+
+Converts any item into a procedure via its own class_apply.  If the item is
+already a procedure then it is returned unchanged.
+
+This function is useful in combination with functions such as -appdata-
+that only accept procedures as arguments.

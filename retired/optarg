@@ -1,0 +1,63 @@
+HELP OPTARG                                             Steve Leach, Dec 04
+
+    uses optarg
+
+-----------------------------------------------------------------------
+1  The optarg Library
+-----------------------------------------------------------------------
+
+This library defines a simple but effective facility for utilizing
+optional arguments in Pop-11.  It provides a syntax word optarg for
+conveniently passing optional arguments and some utilities for
+writing procedures that use them.
+
+
+-----------------------------------------------------------------------
+2  Passing Optional Arguments Using optarg
+-----------------------------------------------------------------------
+
+The ______optarg syntax word is used to help to supply optional arguments to
+procedure calls that need them.  It has two forms which are explained in
+more detail below.
+
+
+    ;;; Used for writing procedure values.
+    optarg _____________selector_name( ____________input_locals );
+        __________statements
+    endoptarg
+
+    ;;; Used for writing simple values.
+    optarg _____________selector_name = __________statements optarg
+
+Both forms of the syntax push three values onto the stack.
+
+    ________selector, _____value, ____mark
+
+The ________selector is the value of the variable _____________selector_name and may be any
+value at all.  It is a key defining the option. it commonly will be a
+procedure with an updater. When used in this way it should indicate that
+the value is used as with the updater to modify something.  See HELP
+*NEW_PROPERTY for an example.
+
+The value ____mark is an internal unique value used to flag the group as an
+optional argument.  It is utilized by _________is_optarg to determine whether or
+not there are any optional arguments remaining to be processed.  It is
+guaranteed to be distinct from any other value and have a key dedicated
+to stack marks.
+
+
+-----------------------------------------------------------------------
+3  Writing Procedures that Use Optional Arguments
+-----------------------------------------------------------------------
+
+is_optarg -> bool
+    Returns true if there is an optional argument on top of the
+    stack, otherwise false.
+
+
+next_optarg() -> ( ________selector, _____value, ____bool )
+    Returns the next selector and value along with a flag indicating
+    whether they are genuine optional values.  If they were not, they
+    will be -false-.
+
+    Does not mishap if the stack is empty.

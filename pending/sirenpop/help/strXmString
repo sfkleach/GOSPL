@@ -1,0 +1,8 @@
+HELP strXmString                                        Steve Knight, Oct 93
+                                                        SIREN Project
+    strXmString( MOTIF_STRING ) -> STRING
+
+Converts Motif strings to Pop11 strings.
+
+See also:
+    HELP *newXmString

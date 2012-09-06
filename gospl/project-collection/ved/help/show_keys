@@ -1,0 +1,9 @@
+HELP VED_SHOW_KEYS                             R.J.Popplestone January 1992
+
+This VED command produces a listing of all the keys currently bound in
+VED.  These are presented in two columns, the first containing key-sequences
+and the second being the name of the procedure to which the key-sequence
+is bound. Anonymous procedures are printed as <false>.
+
+The keys which insert themselves in the document (i.e. the "normal" keys
+like A-Z) are listed separately at the end.

@@ -1,0 +1,15 @@
+HELP XT_NEW_ARGS                                        Steve Knight, Oct 93
+                                                        SIREN Project
+
+    xt_new_args( PARENT, [NAME], BINDING1, ..., BINDINGn, [MANAGED] )
+        -> ( NAME, PARENT, ARGLIST, MANAGED )
+
+This procedure is used for processing optional argument for widget
+creation routines.  The PARENT is the parent widget.  NAME is an optional
+string parameter that is the instance name of the widget.  The bindings
+are each 2-element vectors or lists of 2-element vectors.  MANAGED is
+an optional boolean (default <true>) that specifies whether the widget
+should be managed.
+
+The returned ARGLIST is suitable as an argument to -XptArgList- or
+-XptVaArgList-.

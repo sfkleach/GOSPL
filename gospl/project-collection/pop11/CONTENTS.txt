@@ -1,0 +1,115 @@
+auto/&_until.p          
+auto/&_while.p          
+auto/*_n.p              multiplies top N items on stack
+auto/+_n.p              adds top N items on stack
+auto/-&-.p              
+auto/<##.p              compile-time statement bracket (get-many)
+auto/<#.p               compile-time expr bracket (get-one)
+auto/<#|.p              compile-time count bracket
+auto/<<|.p              procedure variable composition brackets
+auto/<|.p               shorthand for anonymous functions (lambdas)
+auto/@.p                invaluable infix call syntax - write f(x,y) as x @f y
+auto/SPACE.p            measure heap space consumed -- used at PLUG92
+auto/TIME.p             facility for timing commands  -- used at PLUG92
+auto/allfirst.p         
+auto/alllast.p          
+auto/app_n.p            iterate over a counted group
+auto/apprepeater.p      iterate over a repeater
+auto/ceiling.p          
+auto/chain_repeaters.p    compose a list of repeaters into a single repeater
+auto/cons_last.p        adds an item onto the end of a list
+auto/consrepeater.p     
+auto/const.p            useful combinator, const( x )( y ) => x
+auto/datainout.p        more sophisticated version of datafile
+auto/daytimediff.p      differences in time in friendly format
+auto/def_typespec_predicate.p    
+auto/dest_last.p        
+auto/destrepeater.p     explodes elements of repeater with a count
+auto/discinline.p       like discin <> incharline but more efficient
+auto/discoutline.p      like discout but works on whole strings
+auto/exact_dl.p         dl (list explode) with a count check
+auto/exact_explode.p    explode with a count check
+auto/fetch_optarg.p     
+auto/filecomplete.p     completes filenames (used by lib vedfnc)
+auto/files_in_directory.p    gets all files in a directory
+auto/files_matching.p    all files matching wildcard specification
+auto/first.p            find the first element (uses class_apply)
+auto/floor.p            finds the nearest integer to -infinity
+auto/forall_match.p     all matches
+auto/gensymbefore.p     comparison predicate for gensym'd words
+auto/in_directory.p     for-extension for iterating over directories
+auto/in_items.p         for-extension for iterating over the stack
+auto/incharline.p       character repeater to line repeater
+auto/is_white_space.p    
+auto/isnull.p           an is-empty predicate that works on many datatypes
+auto/isrecordclasskey.p    
+auto/isvectorclasskey.p    
+auto/itemtopd.p         converts any item into a procedure via its own class_apply.
+auto/length_>=.p        efficient version of length( X ) >= N
+auto/lfor.p             
+auto/library.p          a simple module control facility for code development
+auto/libsrc.p           like -lib- but uses -vedsrclist-
+auto/lif.p              
+auto/listreadline.p     like readline, but gets nested lists
+auto/listtopd.p         converts a list to an item repeater
+auto/lrepeat.p          
+auto/lunless.p          
+auto/luntil.p           
+auto/lvars_optargs.p    
+auto/lwhile.p           
+auto/maprepeater.p      like maplist but for repeaters
+auto/module.p           enhanced syntax for section/endsection
+auto/new_char_accumulator.p    
+auto/new_item_accumulator.p    
+auto/new_property.p     simpler property constructor
+auto/newpushable.p      wraps a repeater so it is updateable (can push items back on)
+auto/oneof_n.p          Randomly chooses one of N items on the stack and erases the rest.
+auto/plant_in_line.p    permits a crude but effective form of in-lining.
+auto/pop11_comp_section.p    service function for module/endmodule syntax
+auto/pr_num_bin.p       print numbers as binary, hex, octal, and decimal
+auto/print_file.p       print a file to cucharout
+auto/printi.p           
+auto/property_keys_list.p    returns a list of all the keys of a property.
+auto/property_keys_n.p    Returns a counted group of all the keys in a property.
+auto/read_variables.p    
+auto/restack.p          syntax word for manipulating top items of stack
+auto/rev_n.p            reverses order of top N items of the stack
+auto/revdl.p            
+auto/second.p           
+auto/section_publish.p    
+auto/section_subscribe.p    
+auto/slice.p            
+auto/split.p            
+auto/split_fields.p     
+auto/split_with.p       
+auto/sys_grbg_destlist.p    
+auto/sys_grbg_dl.p      
+auto/sysplant.p         plants code from list of tokens
+auto/syssort_by.p       
+auto/syssort_n.p        
+auto/third.p            
+auto/usessrc.p          like -uses- but uses -vedsrclist-
+lib/alxample.p          example for use with lib eprospect
+lib/atndict.p           
+lib/atndraw.p           
+lib/atnends.p           
+lib/atngramm.p          
+lib/atnparse.p          
+lib/buffers.p           an implementation of extensible vectors
+lib/chart.p             
+lib/cliques.p           
+lib/context.p           save/restore collections of globals
+lib/ctbrackets.p        compile-time brackets <# #>, <## ##>, <#| |#>
+lib/data_io.p           
+lib/dollar_dollar.p     syntax for quasi-quoting prolog terms elegantly
+lib/epson_fx_1000.p     library supporting the EPSON FX 1000 printer
+lib/extend_section.p    
+lib/for_lvars.p         
+lib/modtransfms.p       affine transformations in any whole-numbered dimension
+lib/named_args.p        Named (or optional) arguments library.
+lib/newobj.p            a simple object-oriented programming library
+lib/newtokeniser.p      
+lib/profiler.p          Jon Meyer's alpha release of a code profiler
+lib/server.p            A simple server shell.
+lib/sublists.p          returns the list of all sublists of a list
+lib/universal_time.p    library for working with universal time.
